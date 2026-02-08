@@ -1,1537 +1,277 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
-    <link
-        as="style"
-        href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&family=Space+Grotesk%3Awght%40400%3B500%3B700"
-        onload="this.rel='stylesheet'"
-        rel="stylesheet"
-    />
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>F1 2025 Dashboard</title>
-    <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Avanthika ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.7);
+            --apple-pink: #ff2d55;
+            --pixel-font: 'Press Start 2P', cursive;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
         body {
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        .driver-stat-card {
-            border: 1px solid #3D5245;
-            background-color: #1C2620;
-        }
-        .tab-button {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            color: #9EB7A8; /* text-gray-400 */
-            background-color: #1C2620; /* bg-gray-800 */
-            flex-shrink: 0; /* Prevent buttons from shrinking in flex container */
-        }
-        .tab-button.active {
-            color: #38E07B; /* text-green-400 */
-            background-color: #2A3830; /* bg-gray-700 */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .live-status {
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
-        }
-        /* Loading Overlay Styles */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(17, 23, 20, 0.8); /* bg-[#111714] with opacity */
+            margin: 0;
+            padding: 0;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-        }
-        .loading-overlay.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-        .loading-spinner {
-            border: 4px solid #1C2620; /* Lighter background for the spinner */
-            border-top: 4px solid #38E07B; /* Accent color for the spinner */
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            font-family: var(--pixel-font);
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #a1c4fd 100%);
+            background-size: 400% 400%;
+            animation: moveBg 15s ease infinite;
+            overflow: hidden;
         }
 
-        /* Driver Buttons Specific Styles */
-        .driver-button {
-            flex-shrink: 0; /* Prevent buttons from shrinking */
-            padding: 0.5rem 1rem;
-            border-radius: 9999px; /* Full pill shape */
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            background-color: #2A3830; /* A darker shade for buttons */
-            color: #9EB7A8;
-            border: 1px solid transparent;
-            white-space: nowrap; /* Prevent text wrapping */
-        }
-        .driver-button.active {
-            background-color: #38E07B; /* Green accent */
-            color: #111714; /* Dark text for contrast */
-            border-color: #38E07B;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-        .driver-button:hover:not(.active) {
-            background-color: #3D5245; /* Slightly lighter on hover */
-            color: #E0E7E0;
-        }
-        /* Hide scrollbar for aesthetic purposes, but still allow scrolling */
-        .hide-scrollbar {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-        }
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
+        @keyframes moveBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        /* Sidebar specific styles */
-        #sidebar {
-            transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
-        }
-        /* Mobile: Hidden by default, slides in */
-        @media (max-width: 1023px) { /* Tailwind's 'lg' breakpoint */
-            #sidebar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                height: 100%;
-                z-index: 500;
-                transform: translateX(-100%);
-            }
-            #sidebar.open {
-                transform: translateX(0);
-            }
-            /* Overlay for when sidebar is open */
-            .overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.6);
-                z-index: 499;
-                display: none;
-            }
-            .overlay.active {
-                display: block;
-            }
-        }
-        /* Desktop/Tablet: Always visible */
-        @media (min-width: 1024px) { /* Tailwind's 'lg' breakpoint */
-            #sidebar {
-                position: relative; /* Reset from fixed */
-                transform: translateX(0) !important; /* Ensure it's visible */
-                width: 20rem; /* w-80 */
-                flex-shrink: 0; /* Prevent shrinking */
-            }
+        .glass-card {
+            width: 92%;
+            max-width: 340px;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 4px solid #fff;
+            border-radius: 20px;
+            padding: 20px 15px;
+            text-align: center;
+            box-shadow: 0 10px 0 rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
         }
 
-        /* Adjust main content padding on small screens */
-        @media (max-width: 1023px) {
-            main {
-                padding: 1rem; /* Smaller padding for mobile */
-            }
-        }
-        @media (min-width: 1024px) {
-             main {
-                padding: 2rem; /* p-8 */
-            }
+        .hp-label {
+            font-size: 8px;
+            color: #333;
+            margin-bottom: 8px;
+            text-transform: uppercase;
         }
 
-        /* Tab buttons responsive stacking */
-        @media (max-width: 767px) { /* Tailwind's 'md' breakpoint */
-            .tab-buttons-container {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem; /* Space between stacked buttons */
-            }
-            .tab-button {
-                width: 100%; /* Full width buttons */
-                text-align: center;
-            }
-        }
-        .driver-standing-img {
-            width: 32px; /* Small fixed width for consistency */
-            height: 32px; /* Small fixed height */
-            border-radius: 50%; /* Make it round */
-            object-fit: cover; /* Ensure image covers the area */
-            margin-right: 8px; /* Space between image and text */
-            border: 1px solid #38E07B; /* Small border for visibility */
-        }
-
-        .driver-info-cell {
+        .hearts-row {
             display: flex;
-            align-items: center;
-            white-space: nowrap;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 12px;
         }
 
+        .pixel-heart {
+            width: 18px;
+            height: 18px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 9"><path d="M2 1h1v1h1v1h1V2h1V1h1v1h1v3H7v1H6v1H5v1H4V7H3V6H2V5H1V2h1V1z" fill="%23ff2d55"/></svg>');
+            background-size: contain;
+            image-rendering: pixelated;
+            transition: all 0.3s ease;
+        }
+
+        .pixel-heart.broken {
+            filter: grayscale(1) opacity(0.2);
+            transform: scale(0.6);
+        }
+
+        .img-frame {
+            width: 100%;
+            height: 200px;
+            border: 4px solid #000;
+            border-radius: 8px;
+            background: #fff;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cat-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        h1 {
+            font-size: 10px;
+            line-height: 1.5;
+            color: #000;
+            margin: 15px 0;
+            min-height: 30px;
+        }
+
+        .button-area {
+            position: relative;
+            height: 180px;
+            width: 100%;
+            background: rgba(0,0,0,0.05);
+            border: 2px dashed rgba(0,0,0,0.1);
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            position: absolute;
+            font-family: var(--pixel-font);
+            font-size: 12px;
+            border: 4px solid #000;
+            padding: 15px;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 #000;
+            transition: transform 0.1s, width 0.2s, height 0.2s;
+        }
+
+        .btn:active {
+            box-shadow: 2px 2px 0 #000;
+            transform: translate(2px, 2px);
+        }
+
+        #yesBtn {
+            background: #4ef037;
+            color: #000;
+            left: 50%;
+            top: 65%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            width: 110px;
+        }
+
+        #noBtn {
+            background: #ff2d55;
+            color: #fff;
+            left: 50%;
+            top: 25%;
+            transform: translateX(-50%);
+            z-index: 50;
+            width: 80px;
+        }
+
+        .shake { animation: shake 0.2s ease-in-out; }
+        @keyframes shake {
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        #success {
+            position: fixed;
+            inset: 0;
+            background: #fff;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <div
-        class="relative flex size-full min-h-screen flex-col bg-[#111714] dark group/design-root overflow-x-hidden"
-        style="font-family: 'Space Grotesk', 'Noto Sans', sans-serif"
-    >
-        <audio id="background-music" loop>
-            <source src="/background_music.mp3" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
 
-        <div id="loading-overlay" class="loading-overlay">
-            <div class="loading-spinner"></div>
+    <div class="glass-card" id="mainCard">
+        <div class="hp-label">Avanthika HP</div>
+        <div class="hearts-row" id="heartContainer">
+            <div class="pixel-heart"></div><div class="pixel-heart"></div><div class="pixel-heart"></div><div class="pixel-heart"></div><div class="pixel-heart"></div>
         </div>
 
-        <header class="lg:hidden flex items-center justify-between p-4 bg-[#181F1B] border-b border-[#38E07B]/20">
-            <h1 class="text-white text-xl font-bold">F1 Dashboard</h1>
-            <button id="sidebar-toggle" class="text-[#38E07B] hover:text-white focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
-        </header>
+        <div class="img-frame">
+            <img id="catImg" class="cat-photo" src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=500&auto=format&fit=crop" alt="Cat Loving">
+        </div>
 
-        <div class="layout-container flex h-full grow flex-col lg:flex-row">
-            <aside
-                id="sidebar" class="flex flex-col w-80 bg-[#181F1B] p-6 space-y-6 border-r border-[#38E07B]/20 overflow-y-auto"
-            >
-                <div class="flex flex-col items-center space-y-4">
-                    <div
-                        id="driver-profile-picture"
-                        class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-32 h-32 border-2 border-[#38E07B]"
-                        style="
-                            background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCV57OtZuYy_OHYn5ArLvAbgN-deCbVO85ShQQ1wvvFkkOswJj_n-jllfySLLB-AUc_s9jwHcT7NrQGHCXvFbH8v8KsctmbtOq0c6eRy17EGyG6rTEPJYCb3iIhIT7nxmSzK6NXYyVFH2QVswN6j-4gCkQElwXrCrHk6dMWMh4kTCRRXrCW0-TIkduImgaimpsdKR37OGTZKuVsQJfPCUCSW0RG-XTnFbbgiA-7dKzG90LHpVBffqZXrKgLTkWuHyHGQSwd-qhl9nw');
-                        "
-                    ></div>
-                    <div class="text-center">
-                        <p id="driver-name" class="text-white text-2xl font-bold">Fernando Alonso</p>
-                        <p
-                            id="driver-title"
-                            class="text-[#38E07B] text-xs font-semibold uppercase tracking-wider"
-                        >
-                            F1 Driver
-                        </p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-3 gap-3 text-center">
-                    <div
-                        class="flex flex-col gap-1 rounded-lg border border-[#3D5245] bg-[#1C2620] p-3 driver-stat-card"
-                    >
-                        <p id="driver-stat-champs" class="text-[#38E07B] text-2xl font-bold">2</p>
-                        <p class="text-[#9EB7A8] text-xs">World Champs</p>
-                    </div>
-                    <div
-                        class="flex flex-col gap-1 rounded-lg border border-[#3D5245] bg-[#1C2620] p-3 driver-stat-card"
-                    >
-                        <p id="driver-stat-wins" class="text-[#38E07B] text-2xl font-bold">99</p>
-                        <p class="text-[#9EB7A8] text-xs">Race Wins</p>
-                    </div>
-                    <div
-                        class="flex flex-col gap-1 rounded-lg border border-[#3D5245] bg-[#1C2620] p-3 driver-stat-card"
-                    >
-                        <p id="driver-stat-podiums" class="text-[#38E07B] text-2xl font-bold">106</p>
-                        <p class="text-[#9EB7A8] text-xs">Podiums</p>
-                    </div>
-                </div>
-                <div>
-                    <h2 class="text-white text-lg font-bold mb-3">
-                        Career Highlights
-                    </h2>
-                    <div id="career-highlights-container" class="space-y-3">
-                    </div>
-                </div>
-                 <button id="sidebar-close" class="lg:hidden absolute top-4 right-4 text-[#38E07B] hover:text-white focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </aside>
+        <h1 id="headline">Will you be my Valentine?</h1>
 
-            <div id="sidebar-overlay" class="overlay"></div>
-
-            <main class="flex-1 p-4 lg:p-8 overflow-y-auto">
-                <div class="mb-6 flex flex-wrap gap-4 tab-buttons-container">
-                    <button id="tab-driver-btn" class="tab-button active">DRIVER</button>
-                    <button id="tab-races-btn" class="tab-button">RACES</button>
-                    <div class="flex items-center gap-2 ml-4">
-                        <button id="music-toggle-btn" class="text-[#9EB7A8] hover:text-white focus:outline-none">
-                            <svg id="speaker-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 4L8 8H4V16H8L12 20V4ZM14 6V18C16.37 17.13 18 15.22 18 13C18 10.78 16.37 8.87 14 8V6ZM20 12C20 9.8 19.14 7.82 17.75 6.25L16.34 7.66C17.26 8.58 18 9.77 18 11C18 12.23 17.26 13.42 16.34 14.34L17.75 15.75C19.14 14.18 20 12.2 20 10V12Z"/>
-                            </svg>
-                            <svg id="pause-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6 19H10V5H6V19ZM14 5V19H18V5H14Z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <div id="driver-dashboard" class="tab-content active">
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-[#9EB7A8] mb-1">Select Driver:</label>
-                        <div id="driver-buttons-container" class="flex overflow-x-auto space-x-3 pb-2 hide-scrollbar">
-                            </div>
-                    </div>
-                    <div class="mb-8">
-                        <h1 id="dashboard-title" class="text-white text-2xl sm:text-3xl lg:text-4xl font-bold">
-                            Driver Performance Dashboard
-                        </h1>
-                        <p id="dashboard-subtitle" class="text-[#9EB7A8] text-sm sm:text-md">
-                            Track the performance of Formula 1 driver Fernando Alonso
-                        </p>
-                    </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                        <div
-                            class="flex flex-col gap-3 rounded-xl border border-[#3D5245] bg-[#1C2620] p-4 sm:p-6 shadow-lg"
-                        >
-                            <p class="text-white text-lg font-semibold">Race Results</p>
-                            <p id="race-results-average" class="text-[#38E07B] text-3xl sm:text-4xl font-bold">Average: 5th</p>
-                            <div class="flex items-center gap-2">
-                                <p id="race-results-period" class="text-[#9EB7A8] text-sm">Last 10 Races</p>
-                                <p id="race-results-trend" class="text-[#38E07B] text-sm font-semibold">+10%</p>
-                            </div>
-                            <div class="flex-1 mt-4">
-                                <svg
-                                    id="race-results-chart-svg"
-                                    fill="none"
-                                    height="160"
-                                    preserveAspectRatio="xMidYMax meet"
-                                    viewBox="0 0 472 150"
-                                    width="100%"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        id="race-results-chart-fill"
-                                        fill="url(#gradient-green)"
-                                    ></path>
-                                    <path
-                                        id="race-results-chart-stroke"
-                                        stroke="#38E07B"
-                                        stroke-linecap="round"
-                                        stroke-width="3"
-                                    ></path>
-                                    <defs>
-                                        <linearGradient
-                                            gradientUnits="userSpaceOnUse"
-                                            id="gradient-green" x1="236" x2="236" y1="1" y2="149" >
-                                            <stop stop-color="#38E07B" stop-opacity="0.3"></stop>
-                                            <stop offset="1" stop-color="#38E07B" stop-opacity="0"></stop>
-                                        </linearGradient>
-                                        <linearGradient
-                                            gradientUnits="userSpaceOnUse"
-                                            id="gradient-red"
-                                            x1="236" x2="236" y1="1" y2="149" >
-                                            <stop stop-color="#EF4444" stop-opacity="0.3"></stop> <stop offset="1" stop-color="#EF4444" stop-opacity="0"></stop>
-                                        </linearGradient>
-                                    </defs>
-                                </svg>
-                                <div id="race-results-labels" class="flex justify-between text-[#9EB7A8] text-xs mt-2">
-                                </div>
-                            </div>
-                        </div>
-                        <div
-                            class="flex flex-col gap-3 rounded-xl border border-[#3D5245] bg-[#1C2620] p-4 sm:p-6 shadow-lg"
-                        >
-                            <p class="text-white text-lg font-semibold">
-                                Championship Points
-                            </p>
-                            <p id="champ-points-total" class="text-[#38E07B] text-3xl sm:text-4xl font-bold">Total: 206</p>
-                            <div class="flex items-center gap-2">
-                                <p id="champ-points-period" class="text-[#9EB7A8] text-sm">2025 Season</p>
-                                <p id="champ-points-trend" class="text-[#38E07B] text-sm font-semibold">+5%</p>
-                            </div>
-                            <div
-                                id="champ-points-bars-container"
-                                class="grid gap-3 items-end justify-items-center flex-1 mt-4 min-h-[160px]"
-                                style="grid-template-columns: repeat(var(--num-bars, 7), minmax(0, 1fr));"
-                            >
-                            </div>
-                            <div id="champ-points-labels" class="flex justify-between text-[#9EB7A8] text-xs mt-2">
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <h2 class="text-white text-xl sm:text-2xl font-bold mb-4">Recent Races</h2>
-                        <div
-                            class="overflow-x-auto rounded-lg border border-[#3D5245] bg-[#1C2620] shadow-lg"
-                        >
-                            <table class="w-full text-left">
-                                <thead class="bg-[#2A3830]">
-                                    <tr>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Race</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Date</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Position</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Points</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="recent-races-tbody" class="divide-y divide-[#3D5245]">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="races-dashboard" class="tab-content">
-                    <h1 class="text-white text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">2025 F1 Season Overview</h1>
-
-                    <div class="mb-8">
-                        <h2 class="text-white text-xl sm:text-2xl font-bold mb-4 flex flex-col sm:flex-row items-start sm:items-center">
-                            Live Race: <span id="live-race-name" class="ml-0 sm:ml-2 mt-2 sm:mt-0 text-[#38E07B] live-status">None (No live race)</span>
-                            <div class="flex flex-wrap gap-2 mt-3 sm:mt-0 sm:ml-4">
-                                <button id="simulate-live-btn" class="px-3 py-1 sm:px-4 sm:py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white text-sm">Simulate Live Race</button>
-                                <button id="end-live-btn" class="px-3 py-1 sm:px-4 sm:py-2 bg-red-600 hover:bg-red-700 rounded-md text-white text-sm hidden">End Live Race</button>
-                            </div>
-                        </h2>
-                        <div id="live-race-standings-container" class="overflow-x-auto rounded-lg border border-[#3D5245] bg-[#1C2620] shadow-lg hidden">
-                            <h3 class="text-white text-lg font-semibold px-4 sm:px-6 py-3 border-b border-[#3D5245]">Live Standings</h3>
-                            <table class="w-full text-left">
-                                <thead class="bg-[#2A3830]">
-                                    <tr>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Pos</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Driver</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Team</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Laps</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Time/Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="live-standings-tbody" class="divide-y divide-[#3D5245]">
-                                    <tr><td colspan="5" class="px-3 sm:px-6 py-4 text-center text-[#9EB7A8]">No live race data available.</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="mb-8">
-                        <h2 class="text-white text-xl sm:text-2xl font-bold mb-4">Driver Standings</h2>
-                        <div class="overflow-x-auto rounded-lg border border-[#3D5245] bg-[#1C2620] shadow-lg">
-                            <table class="w-full text-left">
-                                <thead class="bg-[#2A3830]">
-                                    <tr>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Pos</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Driver</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Team</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Points</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="season-driver-standings-tbody" class="divide-y divide-[#3D5245]">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="mb-8">
-                        <h2 class="text-white text-xl sm:text-2xl font-bold mb-4">Constructor Standings</h2>
-                        <div class="overflow-x-auto rounded-lg border border-[#3D5245] bg-[#1C2620] shadow-lg">
-                            <table class="w-full text-left">
-                                <thead class="bg-[#2A3830]">
-                                    <tr>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Pos</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Constructor</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Points</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="season-constructor-standings-tbody" class="divide-y divide-[#3D5245]">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="mb-8">
-                        <h2 class="text-white text-xl sm:text-2xl font-bold mb-4">Race Results (Completed Races)</h2>
-                        <div class="overflow-x-auto rounded-lg border border-[#3D5245] bg-[#1C2620] shadow-lg">
-                            <table class="w-full text-left">
-                                <thead class="bg-[#2A3830]">
-                                    <tr>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Grand Prix</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Date</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Winner</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Team</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="season-race-results-tbody" class="divide-y divide-[#3D5245]">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h2 class="text-white text-xl sm:text-2xl font-bold mb-4">Upcoming Races</h2>
-                        <div class="overflow-x-auto rounded-lg border border-[#3D5245] bg-[#1C2620] shadow-lg">
-                            <table class="w-full text-left">
-                                <thead class="bg-[#2A3830]">
-                                    <tr>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Round</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Grand Prix</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Date</th>
-                                        <th class="px-3 sm:px-6 py-3 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider">Circuit</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="season-upcoming-races-tbody" class="divide-y divide-[#3D5245]">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </main>
-            </div>
+        <div class="button-area" id="gameArea">
+            <button class="btn" id="noBtn">NO</button>
+            <button class="btn" id="yesBtn">YES</button>
         </div>
     </div>
-<script>
-    const themes = {
-        'green-black': {
-            accent: '#38E07B',
-            borderOpacity20: 'rgba(56, 224, 123, 0.2)',
-            bgOpacity50: 'rgba(56, 224, 123, 0.5)',
-            profileBorder: '#38E07B',
-            gradientUrl: 'url(#gradient-green)'
-        },
-        'red-black': {
-            accent: '#EF4444',
-            borderOpacity20: 'rgba(239, 68, 68, 0.2)',
-            bgOpacity50: 'rgba(239, 68, 68, 0.5)',
-            profileBorder: '#EF4444',
-            gradientUrl: 'url(#gradient-red)'
-        }
-    };
 
-    const driversData = [
-        {
-            id: "piastri",
-            name: "Oscar Piastri",
-            profilePictureUrl: "https://picsum.photos/300/300?random=1",
-            title: "F1 Driver",
-            theme: "green-black",
-            stats: { champs: 0, wins: 5, podiums: 8 },
-            careerHighlights: [
-                { year: "2023", title: "Rookie Season", team: "McLaren" },
-                { year: "2024", title: "First Win (Qatar Sprint)", team: "McLaren" },
-                { year: "2025", title: "Multiple Wins, Championship Leader", team: "McLaren" },
-            ],
-            dashboardSubtitle: "Leading the charge in 2025 for McLaren",
-            raceResults: { average: "2nd", period: "Last 7 Races", trend: "+15%", chartData: [2, 1, 1, 3, 1, 2, 1], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau", "Mia", "Imo"] },
-            championshipPoints: { total: 186, period: "2025 Season", trend: "+10%", barData: [85, 90, 80, 95, 88, 92, 100], labels: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "1st", points: 25 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "2nd", points: 18 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "1st", points: 25 },
-            ]
-        },
-        {
-            id: "norris",
-            name: "Lando Norris",
-            profilePictureUrl: "https://picsum.photos/300/300?random=2",
-            title: "F1 Driver",
-            theme: "green-black",
-            stats: { champs: 0, wins: 3, podiums: 10 },
-            careerHighlights: [
-                { year: "2021", title: "First Podium", team: "McLaren" },
-                { year: "2024", title: "First Grand Prix Win", team: "McLaren" },
-                { year: "2025", title: "Multiple Wins, Championship Contender", team: "McLaren" },
-            ],
-            dashboardSubtitle: "A strong title contender for McLaren in 2025",
-            raceResults: { average: "3rd", period: "Last 7 Races", trend: "+8%", chartData: [1, 2, 3, 2, 2, 4, 3], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau", "Mia", "Imo"] },
-            championshipPoints: { total: 176, period: "2025 Season", trend: "+7%", barData: [80, 85, 75, 90, 82, 88, 95], labels: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "3rd", points: 15 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "1st", points: 25 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "4th", points: 12 },
-            ]
-        },
-        {
-            id: "verstappen",
-            name: "Max Verstappen",
-            profilePictureUrl: "https://picsum.photos/300/300?random=3",
-            title: "F1 Driver",
-            theme: "red-black",
-            stats: { champs: 3, wins: 56, podiums: 100 },
-            careerHighlights: [
-                { year: "2021", title: "World Champion", team: "Red Bull Racing" },
-                { year: "2022", title: "World Champion", team: "Red Bull Racing" },
-                { year: "2023", title: "World Champion", team: "Red Bull Racing" },
-            ],
-            dashboardSubtitle: "The reigning champion's 2025 performance",
-            raceResults: { average: "4th", period: "Last 7 Races", trend: "-5%", chartData: [3, 4, 1, 5, 4, 1, 5], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau", "Mia", "Imo"] },
-            championshipPoints: { total: 137, period: "2025 Season", trend: "-2%", barData: [90, 85, 95, 70, 75, 90, 60], labels: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "5th", points: 10 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "4th", points: 12 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "1st", points: 25 },
-            ]
-        },
-        {
-            id: "russell",
-            name: "George Russell",
-            profilePictureUrl: "https://picsum.photos/300/300?random=4",
-            title: "F1 Driver",
-            theme: "red-black",
-            stats: { champs: 0, wins: 1, podiums: 10 },
-            careerHighlights: [
-                { year: "2022", title: "First Pole Position & Win", team: "Mercedes" },
-                { year: "2023", title: "Consistent Podium Finishes", team: "Mercedes" },
-                { year: "2025", title: "Leading Mercedes' Charge", team: "Mercedes" },
-            ],
-            dashboardSubtitle: "Tracking George Russell's 2025 season with Mercedes",
-            raceResults: { average: "6th", period: "Last 7 Races", trend: "+3%", chartData: [4, 5, 6, 4, 5, 7, 6], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau", "Mia", "Imo"] },
-            championshipPoints: { total: 111, period: "2025 Season", trend: "+5%", barData: [70, 75, 65, 80, 72, 78, 85], labels: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "6th", points: 8 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "5th", points: 10 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "7th", points: 6 },
-            ]
-        },
-        {
-            id: "antonelli",
-            name: "Andrea Kimi Antonelli",
-            profilePictureUrl: "https://picsum.photos/300/300?random=5",
-            title: "F1 Driver",
-            theme: "red-black",
-            stats: { champs: 0, wins: 0, podiums: 0 },
-            careerHighlights: [
-                { year: "2024", title: "F2 Rookie Season", team: "Prema Racing" },
-                { year: "2025", title: "F1 Debut Season", team: "Mercedes" }
-            ],
-            dashboardSubtitle: "Andrea Kimi Antonelli's debut F1 season with Mercedes",
-            raceResults: { average: "8th", period: "Last 5 Races", trend: "+7%", chartData: [10, 8, 9, 7, 8], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau"] },
-            championshipPoints: { total: 48, period: "2025 Season", trend: "+6%", barData: [10, 12, 8, 10, 8], labels: ["R1", "R2", "R3", "R4", "R5"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "8th", points: 4 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "7th", points: 6 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "9th", points: 2 },
-            ]
-        },
-        {
-            id: "leclerc",
-            name: "Charles Leclerc",
-            profilePictureUrl: "https://picsum.photos/300/300?random=6",
-            title: "F1 Driver",
-            theme: "red-black",
-            stats: { champs: 0, wins: 6, podiums: 30 },
-            careerHighlights: [
-                { year: "2019", title: "First Win (Belgian GP)", team: "Ferrari" },
-                { year: "2022", title: "Championship Contender", team: "Ferrari" },
-                { year: "2025", title: "Leading Ferrari's Charge", team: "Ferrari" },
-            ],
-            dashboardSubtitle: "Charles Leclerc's 2025 season with Ferrari",
-            raceResults: { average: "5th", period: "Last 7 Races", trend: "-2%", chartData: [2, 3, 5, 4, 6, 5, 4], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau", "Mia", "Imo"] },
-            championshipPoints: { total: 94, period: "2025 Season", trend: "-1%", barData: [75, 80, 70, 85, 78, 82, 90], labels: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "4th", points: 12 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "3rd", points: 15 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "5th", points: 10 },
-            ]
-        },
-        {
-            id: "hamilton",
-            name: "Lewis Hamilton",
-            profilePictureUrl: "https://picsum.photos/300/300?random=7",
-            title: "F1 Driver",
-            theme: "red-black",
-            stats: { champs: 7, wins: 103, podiums: 198 },
-            careerHighlights: [
-                { year: "2008", title: "World Champion", team: "McLaren" },
-                { year: "2014-2020", title: "Six World Championships", team: "Mercedes" },
-                { year: "2025", title: "New Era with Ferrari", team: "Ferrari" },
-            ],
-            dashboardSubtitle: "Lewis Hamilton's debut season with Ferrari in 2025",
-            raceResults: { average: "7th", period: "Last 7 Races", trend: "-3%", chartData: [5, 6, 7, 6, 7, 8, 7], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau", "Mia", "Imo"] },
-            championshipPoints: { total: 71, period: "2025 Season", trend: "+2%", barData: [60, 65, 55, 70, 62, 68, 75], labels: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "7th", points: 6 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "6th", points: 8 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "8th", points: 4 },
-            ]
-        },
-        {
-            id: "alonso",
-            name: "Fernando Alonso",
-            profilePictureUrl: "https://picsum.photos/300/300?random=8",
-            title: "F1 Driver",
-            theme: "green-black",
-            stats: { champs: 2, wins: 32, podiums: 106 },
-            careerHighlights: [
-                { year: "2005", title: "World Champion", team: "Renault" },
-                { year: "2006", title: "World Champion", team: "Renault" },
-                { year: "2023", title: "Return to Form with Aston Martin", team: "Aston Martin" },
-            ],
-            dashboardSubtitle: "Tracking the performance of Formula 1 driver Fernando Alonso",
-            raceResults: { average: "9th", period: "Last 7 Races", trend: "+1%", chartData: [6, 9, 8, 10, 9, 7, 10], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau", "Mia", "Imo"] },
-            championshipPoints: { total: 2, period: "2025 Season", trend: "+0%", barData: [40, 35, 30, 25, 20, 15, 10], labels: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "10th", points: 1 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "9th", points: 2 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "11th", points: 0 },
-            ]
-        },
-        {
-            id: "stroll",
-            name: "Lance Stroll",
-            profilePictureUrl: "https://picsum.photos/300/300?random=9",
-            title: "F1 Driver",
-            theme: "green-black",
-            stats: { champs: 0, wins: 0, podiums: 3 },
-            careerHighlights: [
-                { year: "2017", title: "Podium Finish (Azerbaijan GP)", team: "Williams" },
-                { year: "2020", title: "Pole Position (Turkish GP)", team: "Racing Point" },
-                { year: "2020", title: "Two Podium Finishes", team: "Racing Point" }
-            ],
-            dashboardSubtitle: "Tracking the performance of Formula 1 driver Lance Stroll",
-            raceResults: { average: "12th", period: "Last 7 Races", trend: "-5%", chartData: [11, 13, 12, 10, 14, 13, 11], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau", "Mia", "Imo"] },
-            championshipPoints: { total: 14, period: "2025 Season", trend: "-3%", barData: [30, 40, 20, 50, 15, 35, 25], labels: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "11th", points: 0 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "12th", points: 0 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "10th", points: 1 },
-            ]
-        },
-        {
-            id: "gasly",
-            name: "Pierre Gasly",
-            profilePictureUrl: "https://picsum.photos/300/300?random=10",
-            title: "F1 Driver",
-            theme: "red-black",
-            stats: { champs: 0, wins: 1, podiums: 3 },
-            careerHighlights: [
-                { year: "2020", title: "Italian Grand Prix Winner", team: "AlphaTauri" },
-                { year: "2021", title: "Consistent Points Finishes", team: "AlphaTauri" },
-                { year: "2023", title: "Move to Alpine", team: "Alpine" },
-            ],
-            dashboardSubtitle: "Pierre Gasly's 2025 season with Alpine",
-            raceResults: { average: "13th", period: "Last 5 Races", trend: "-1%", chartData: [12, 14, 13, 11, 15], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau"] },
-            championshipPoints: { total: 11, period: "2025 Season", trend: "+0%", barData: [15, 10, 12, 8, 10], labels: ["R1", "R2", "R3", "R4", "R5"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "13th", points: 0 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "14th", points: 0 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "12th", points: 0 },
-            ]
-        },
-        {
-            id: "doohan",
-            name: "Jack Doohan",
-            profilePictureUrl: "https://picsum.photos/300/300?random=11",
-            title: "F1 Driver",
-            theme: "red-black",
-            stats: { champs: 0, wins: 0, podiums: 0 },
-            careerHighlights: [
-                { year: "2024", title: "F2 Championship Contender", team: "Invicta Racing" },
-                { year: "2025", title: "F1 Debut Season", team: "Alpine" }
-            ],
-            dashboardSubtitle: "Jack Doohan's F1 debut season with Alpine",
-            raceResults: { average: "15th", period: "Last 3 Races", trend: "+0%", chartData: [16, 15, 17], labels: ["Spa", "Monz", "Aze"] },
-            championshipPoints: { total: 0, period: "2025 Season", trend: "+0%", barData: [0, 0, 0, 0, 0], labels: ["R1", "R2", "R3", "R4", "R5"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "16th", points: 0 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "15th", points: 0 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "17th", points: 0 },
-            ]
-        },
-        {
-            id: "albon",
-            name: "Alexander Albon",
-            profilePictureUrl: "https://picsum.photos/300/300?random=12",
-            title: "F1 Driver",
-            theme: "green-black",
-            stats: { champs: 0, wins: 0, podiums: 2 },
-            careerHighlights: [
-                { year: "2020", title: "First Podium (Tuscan GP)", team: "Red Bull Racing" },
-                { year: "2022", title: "Return to F1", team: "Williams" },
-                { year: "2023", title: "Leading Williams' Charge", team: "Williams" },
-            ],
-            dashboardSubtitle: "Alexander Albon's 2025 season with Williams",
-            raceResults: { average: "10th", period: "Last 7 Races", trend: "+4%", chartData: [9, 11, 10, 8, 12, 9, 11], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau", "Mia", "Imo"] },
-            championshipPoints: { total: 42, period: "2025 Season", trend: "+3%", barData: [20, 18, 22, 15, 17, 19, 21], labels: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "9th", points: 2 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "10th", points: 1 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "8th", points: 4 },
-            ]
-        },
-        {
-            id: "sainz",
-            name: "Carlos Sainz",
-            profilePictureUrl: "https://picsum.photos/300/300?random=13",
-            title: "F1 Driver",
-            theme: "green-black",
-            stats: { champs: 0, wins: 3, podiums: 18 },
-            careerHighlights: [
-                { year: "2022", title: "First Win (British GP)", team: "Ferrari" },
-                { year: "2023", title: "Consistently on Podium", team: "Ferrari" },
-                { year: "2025", title: "New Chapter with Williams", team: "Williams" },
-            ],
-            dashboardSubtitle: "Carlos Sainz's new challenge with Williams in 2025",
-            raceResults: { average: "11th", period: "Last 7 Races", trend: "-1%", chartData: [8, 10, 9, 12, 11, 10, 13], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau", "Mia", "Imo"] },
-            championshipPoints: { total: 12, period: "2025 Season", trend: "+0%", barData: [25, 20, 30, 15, 22, 18, 28], labels: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "10th", points: 1 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "11th", points: 0 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "9th", points: 2 },
-            ]
-        },
-        {
-            id: "tsunoda",
-            name: "Yuki Tsunoda",
-            profilePictureUrl: "https://picsum.photos/300/300?random=14",
-            title: "F1 Driver",
-            theme: "red-black",
-            stats: { champs: 0, wins: 0, podiums: 0 },
-            careerHighlights: [
-                { year: "2023", title: "Highest Finish: 8th", team: "AlphaTauri" },
-                { year: "2024", title: "Racing for RB", team: "Visa Cash App RB" },
-                { year: "2025", title: "Consistent Points Finishes", team: "Racing Bulls" }
-            ],
-            dashboardSubtitle: "Tracking the performance of Formula 1 driver Yuki Tsunoda",
-            raceResults: { average: "10th", period: "Last 7 Races", trend: "+2%", chartData: [8, 10, 9, 7, 11, 10, 9], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau", "Mia", "Imo"] },
-            championshipPoints: { total: 10, period: "2025 Season", trend: "+1%", barData: [40, 50, 60, 45, 30, 55, 65], labels: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "9th", points: 2 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "10th", points: 1 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "9th", points: 2 },
-            ]
-        },
-        {
-            id: "hadjar",
-            name: "Isack Hadjar",
-            profilePictureUrl: "https://picsum.photos/300/300?random=15",
-            title: "F1 Driver",
-            theme: "red-black",
-            stats: { champs: 0, wins: 0, podiums: 0 },
-            careerHighlights: [
-                { year: "2024", title: "F2 Championship Contender", team: "Campos Racing" },
-                { year: "2025", title: "F1 Debut Season", team: "Racing Bulls" }
-            ],
-            dashboardSubtitle: "Isack Hadjar's F1 debut season with Racing Bulls",
-            raceResults: { average: "14th", period: "Last 5 Races", trend: "+0%", chartData: [15, 13, 16, 14, 15], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau"] },
-            championshipPoints: { total: 21, period: "2025 Season", trend: "+0%", barData: [5, 6, 4, 3, 3], labels: ["R1", "R2", "R3", "R4", "R5"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "14th", points: 0 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "13th", points: 0 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "15th", points: 0 },
-            ]
-        },
-        {
-            id: "lawson",
-            name: "Liam Lawson",
-            profilePictureUrl: "https://picsum.photos/300/300?random=16",
-            title: "F1 Driver",
-            theme: "red-black",
-            stats: { champs: 0, wins: 0, podiums: 0 },
-            careerHighlights: [
-                { year: "2023", title: "F1 Debut (Dutch GP)", team: "AlphaTauri" },
-                { year: "2024", title: "Reserve Driver", team: "RB" },
-                { year: "2025", title: "Full-Time F1 Driver", team: "Racing Bulls" }
-            ],
-            dashboardSubtitle: "Liam Lawson's full-time F1 season with Racing Bulls",
-            raceResults: { average: "12th", period: "Last 5 Races", trend: "+1%", chartData: [10, 11, 12, 9, 13], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau"] },
-            championshipPoints: { total: 4, period: "2025 Season", trend: "+1%", barData: [12, 10, 15, 8, 11], labels: ["R1", "R2", "R3", "R4", "R5"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "12th", points: 0 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "11th", points: 0 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "13th", points: 0 },
-            ]
-        },
-        {
-            id: "ocon",
-            name: "Esteban Ocon",
-            profilePictureUrl: "https://picsum.photos/300/300?random=17",
-            title: "F1 Driver",
-            theme: "green-black",
-            stats: { champs: 0, wins: 1, podiums: 2 },
-            careerHighlights: [
-                { year: "2021", title: "Hungarian Grand Prix Winner", team: "Alpine" },
-                { year: "2023", title: "Consistent Points Finishes", team: "Alpine" },
-                { year: "2025", title: "New Challenge with Haas", team: "Haas" }
-            ],
-            dashboardSubtitle: "Esteban Ocon's 2025 season with Haas",
-            raceResults: { average: "11th", period: "Last 7 Races", trend: "+2%", chartData: [10, 12, 11, 9, 13, 10, 12], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau", "Mia", "Imo"] },
-            championshipPoints: { total: 20, period: "2025 Season", trend: "+1%", barData: [15, 10, 12, 8, 10, 14, 11], labels: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "11th", points: 0 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "12th", points: 0 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "10th", points: 1 },
-            ]
-        },
-        {
-            id: "bearman",
-            name: "Oliver Bearman",
-            profilePictureUrl: "https://picsum.photos/300/300?random=18",
-            title: "F1 Driver",
-            theme: "green-black",
-            stats: { champs: 0, wins: 0, podiums: 0 },
-            careerHighlights: [
-                { year: "2024", title: "F1 Debut (Saudi Arabian GP)", team: "Ferrari" },
-                { year: "2024", title: "F2 Championship Contender", team: "Prema Racing" },
-                { year: "2025", title: "F1 Debut Season", team: "Haas" }
-            ],
-            dashboardSubtitle: "Oliver Bearman's F1 debut season with Haas",
-            raceResults: { average: "15th", period: "Last 5 Races", trend: "+0%", chartData: [18, 15, 17, 16, 19], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau"] },
-            championshipPoints: { total: 6, period: "2025 Season", trend: "+0%", barData: [2, 0, 0, 4, 0], labels: ["R1", "R2", "R3", "R4", "R5"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "15th", points: 0 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "16th", points: 0 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "14th", points: 0 },
-            ]
-        },
-        {
-            id: "hulkenberg",
-            name: "Nico Hülkenberg",
-            profilePictureUrl: "https://picsum.photos/300/300?random=19",
-            title: "F1 Driver",
-            theme: "red-black",
-            stats: { champs: 0, wins: 0, podiums: 0 },
-            careerHighlights: [
-                { year: "2010", title: "Pole Position (Brazilian GP)", team: "Williams" },
-                { year: "2023", title: "Return to Full-Time Driving", team: "Haas" },
-                { year: "2025", title: "Veteran at Kick Sauber", team: "Kick Sauber" }
-            ],
-            dashboardSubtitle: "Nico Hülkenberg's 2025 season with Kick Sauber",
-            raceResults: { average: "12th", period: "Last 7 Races", trend: "-1%", chartData: [11, 10, 12, 13, 9, 14, 11], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau", "Mia", "Imo"] },
-            championshipPoints: { total: 16, period: "2025 Season", trend: "+0%", barData: [8, 6, 10, 4, 2, 5, 7], labels: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "10th", points: 1 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "11th", points: 0 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "12th", points: 0 },
-            ]
-        },
-        {
-            id: "bortoleto",
-            name: "Gabriel Bortoleto",
-            profilePictureUrl: "https://picsum.photos/300/300?random=20",
-            title: "F1 Driver",
-            theme: "red-black",
-            stats: { champs: 0, wins: 0, podiums: 0 },
-            careerHighlights: [
-                { year: "2023", title: "FIA F3 Champion", team: "Trident" },
-                { year: "2024", title: "F2 Rookie Season", team: "Invicta Racing" },
-                { year: "2025", title: "F1 Debut Season", team: "Kick Sauber" }
-            ],
-            dashboardSubtitle: "Gabriel Bortoleto's F1 debut season with Kick Sauber",
-            raceResults: { average: "18th", period: "Last 5 Races", trend: "+0%", chartData: [19, 18, 20, 17, 18], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau"] },
-            championshipPoints: { total: 0, period: "2025 Season", trend: "+0%", barData: [0, 0, 0, 0, 0], labels: ["R1", "R2", "R3", "R4", "R5"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "17th", points: 0 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "18th", points: 0 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "19th", points: 0 },
-            ]
-        },
-        {
-            id: "perez",
-            name: "Sergio Perez",
-            profilePictureUrl: "https://picsum.photos/300/300?random=21",
-            title: "F1 Driver",
-            theme: "red-black",
-            stats: { champs: 0, wins: 6, podiums: 39 },
-            careerHighlights: [
-                { year: "2020", title: "First Win (Sakhir GP)", team: "Racing Point" },
-                { year: "2023", title: "Runner-up in Championship", team: "Red Bull Racing" },
-                { year: "2025", title: "With Red Bull Racing", team: "Red Bull Racing" }
-            ],
-            dashboardSubtitle: "Sergio Perez's 2025 season with Red Bull Racing",
-            raceResults: { average: "7th", period: "Last 7 Races", trend: "-5%", chartData: [4, 5, 6, 7, 8, 9, 6], labels: ["Aus", "Chn", "Jap", "Bhr", "Sau", "Mia", "Imo"] },
-            championshipPoints: { total: 0, period: "2025 Season", trend: "+0%", barData: [70, 65, 75, 60, 55, 70, 65], labels: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"] },
-            recentRaces: [
-                { race: "Spanish Grand Prix", date: "June 1, 2025", position: "6th", points: 8 },
-                { race: "Monaco Grand Prix", date: "May 25, 2025", position: "5th", points: 10 },
-                { race: "Emilia-Romagna GP", date: "May 18, 2025", position: "7th", points: 6 },
-            ]
-        }
-    ];
+    <div id="success">
+        <h1 style="font-size: 16px;">SUCCESS! ❤️</h1>
+        <div class="img-frame" style="width: 240px; height: 240px;">
+            <img src="https://images.unsplash.com/photo-1573865526739-10659fef78a1?q=80&w=500&auto=format&fit=crop" class="cat-photo">
+        </div>
+        <p style="margin-top: 25px; font-size: 10px;">LEVEL CLEARED!</p>
+    </div>
 
-    const seasonData = {
-        driverStandings: [
-            {"Pos": 1, "Driver": "Oscar Piastri", "Team": "McLaren", "Points": 186, "image": "https://picsum.photos/64/64?random=101"},
-            {"Pos": 2, "Driver": "Lando Norris", "Team": "McLaren", "Points": 176, "image": "https://picsum.photos/64/64?random=102"},
-            {"Pos": 3, "Driver": "Max Verstappen", "Team": "Red Bull Racing", "Points": 137, "image": "https://picsum.photos/64/64?random=103"},
-            {"Pos": 4, "Driver": "George Russell", "Team": "Mercedes", "Points": 111, "image": "https://picsum.photos/64/64?random=104"},
-            {"Pos": 5, "Driver": "Charles Leclerc", "Team": "Ferrari", "Points": 94, "image": "https://picsum.photos/64/64?random=105"},
-            {"Pos": 6, "Driver": "Lewis Hamilton", "Team": "Ferrari", "Points": 71, "image": "https://picsum.photos/64/64?random=106"},
-            {"Pos": 7, "Driver": "Andrea Kimi Antonelli", "Team": "Mercedes", "Points": 48, "image": "https://picsum.photos/64/64?random=107"},
-            {"Pos": 8, "Driver": "Alexander Albon", "Team": "Williams", "Points": 42, "image": "https://picsum.photos/64/64?random=108"},
-            {"Pos": 9, "Driver": "Isack Hadjar", "Team": "Racing Bulls", "Points": 21, "image": "https://picsum.photos/64/64?random=109"},
-            {"Pos": 10, "Driver": "Esteban Ocon", "Team": "Haas", "Points": 20, "image": "https://picsum.photos/64/64?random=110"},
-            {"Pos": 11, "Driver": "Nico Hülkenberg", "Team": "Kick Sauber", "Points": 16, "image": "https://picsum.photos/64/64?random=111"},
-            {"Pos": 12, "Driver": "Lance Stroll", "Team": "Aston Martin", "Points": 14, "image": "https://picsum.photos/64/64?random=112"},
-            {"Pos": 13, "Driver": "Carlos Sainz", "Team": "Williams", "Points": 12, "image": "https://picsum.photos/64/64?random=113"},
-            {"Pos": 14, "Driver": "Pierre Gasly", "Team": "Alpine", "Points": 11, "image": "https://picsum.photos/64/64?random=114"},
-            {"Pos": 15, "Driver": "Yuki Tsunoda", "Team": "Red Bull Racing", "Points": 10, "image": "https://picsum.photos/64/64?random=115"},
-            {"Pos": 16, "Driver": "Oliver Bearman", "Team": "Haas", "Points": 6, "image": "https://picsum.photos/64/64?random=116"},
-            {"Pos": 17, "Driver": "Liam Lawson", "Team": "Racing Bulls", "Points": 4, "image": "https://picsum.photos/64/64?random=117"},
-            {"Pos": 18, "Driver": "Fernando Alonso", "Team": "Aston Martin", "Points": 2, "image": "https://picsum.photos/64/64?random=118"},
-            {"Pos": 19, "Driver": "Gabriel Bortoleto", "Team": "Kick Sauber", "Points": 0, "image": "https://picsum.photos/64/64?random=119"},
-            {"Pos": 20, "Driver": "Jack Doohan", "Team": "Alpine", "Points": 0, "image": "https://picsum.photos/64/64?random=120"},
-            {"Pos": 21, "Driver": "Sergio Perez", "Team": "Red Bull Racing", "Points": 0, "image": "https://picsum.photos/64/64?random=121"}, // Placeholder if not confirmed
-        ].sort((a, b) => b.Points - a.Points), // Ensure sorted by points
-        constructorStandings: [
-            {"Pos": 1, "Constructor": "McLaren", "Points": 362},
-            {"Pos": 2, "Constructor": "Ferrari", "Points": 165},
-            {"Pos": 3, "Constructor": "Mercedes", "Points": 159},
-            {"Pos": 4, "Constructor": "Red Bull Racing", "Points": 147}, // Updated to reflect 2 drivers (Max + Checo)
-            {"Pos": 5, "Constructor": "Williams", "Points": 54},
-            {"Pos": 6, "Constructor": "Racing Bulls", "Points": 28},
-            {"Pos": 7, "Constructor": "Haas", "Points": 26},
-            {"Pos": 8, "Constructor": "Kick Sauber", "Points": 16},
-            {"Pos": 9, "Constructor": "Aston Martin", "Points": 16},
-            {"Pos": 10, "Constructor": "Alpine", "Points": 11},
-        ].sort((a, b) => b.Points - a.Points), // Ensure sorted by points
-        raceResults: [
-            {"Grand Prix": "Australian GP", "Date": "2025-03-16", "Winner": "Lando Norris", "Team": "McLaren"},
-            {"Grand Prix": "Chinese GP", "Date": "2025-03-23", "Winner": "Oscar Piastri", "Team": "McLaren"},
-            {"Grand Prix": "Japanese GP", "Date": "2025-04-06", "Winner": "Max Verstappen", "Team": "Red Bull Racing"},
-            {"Grand Prix": "Bahrain GP", "Date": "2025-04-13", "Winner": "Oscar Piastri", "Team": "McLaren"},
-            {"Grand Prix": "Saudi Arabian GP", "Date": "2025-04-20", "Winner": "Oscar Piastri", "Team": "McLaren"},
-            {"Grand Prix": "Miami GP", "Date": "2025-05-04", "Winner": "Oscar Piastri", "Team": "McLaren"},
-            {"Grand Prix": "Emilia-Romagna GP", "Date": "2025-05-18", "Winner": "Max Verstappen", "Team": "Red Bull Racing"},
-            {"Grand Prix": "Monaco GP", "Date": "2025-05-25", "Winner": "Lando Norris", "Team": "McLaren"},
-            {"Grand Prix": "Spanish GP", "Date": "2025-06-01", "Winner": "Oscar Piastri", "Team": "McLaren"},
-        ],
-        fullCalendar: [
-            {"Round": 1, "Grand Prix": "Australian GP", "Date": "2025-03-16", "Circuit": "Albert Park"},
-            {"Round": 2, "Grand Prix": "Chinese GP", "Date": "2025-03-23", "Circuit": "Shanghai International Circuit"},
-            {"Round": 3, "Grand Prix": "Japanese GP", "Date": "2025-04-06", "Circuit": "Suzuka Circuit"},
-            {"Round": 4, "Grand Prix": "Bahrain GP", "Date": "2025-04-13", "Circuit": "Bahrain International Circuit"},
-            {"Round": 5, "Grand Prix": "Saudi Arabian GP", "Date": "2025-04-20", "Circuit": "Jeddah Street Circuit"},
-            {"Round": 6, "Grand Prix": "Miami GP", "Date": "2025-05-04", "Circuit": "Miami International Autodrome"},
-            {"Round": 7, "Grand Prix": "Emilia-Romagna GP", "Date": "2025-05-18", "Circuit": "Autodromo Enzo e Dino Ferrari"},
-            {"Round": 8, "Grand Prix": "Monaco GP", "Date": "2025-05-25", "Circuit": "Circuit de Monaco"},
-            {"Round": 9, "Grand Prix": "Spanish GP", "Date": "2025-06-01", "Circuit": "Circuit de Catalunya"},
-            {"Round": 10, "Grand Prix": "Canadian GP", "Date": "2025-06-15", "Circuit": "Circuit Gilles Villeneuve"},
-            {"Round": 11, "Grand Prix": "Austrian GP", "Date": "2025-06-29", "Circuit": "Red Bull Ring"},
-            {"Round": 12, "Grand Prix": "British GP", "Date": "2025-07-06", "Circuit": "Silverstone Circuit"},
-            {"Round": 13, "Grand Prix": "Belgian GP", "Date": "2025-07-27", "Circuit": "Spa-Francorchamps"},
-            {"Round": 14, "Grand Prix": "Hungarian GP", "Date": "2025-08-03", "Circuit": "Hungaroring"},
-            {"Round": 15, "Grand Prix": "Dutch GP", "Date": "2025-08-31", "Circuit": "Circuit Zandvoort"},
-            {"Round": 16, "Grand Prix": "Italian GP", "Date": "2025-09-07", "Circuit": "Autodromo Nazionale Monza"},
-            {"Round": 17, "Grand Prix": "Azerbaijan GP", "Date": "2025-09-21", "Circuit": "Baku City Circuit"},
-            {"Round": 18, "Grand Prix": "Singapore GP", "Date": "2025-10-05", "Circuit": "Marina Bay Street Circuit"},
-            {"Round": 19, "Grand Prix": "United States GP", "Date": "2025-10-19", "Circuit": "Circuit of the Americas"},
-            {"Round": 20, "Grand Prix": "Mexican GP", "Date": "2025-10-26", "Circuit": "Autodromo Hermanos Rodriguez"},
-            {"Round": 21, "Grand Prix": "Brazilian GP", "Date": "2025-11-09", "Circuit": "Autodromo Jose Carlos Pace Interlagos"},
-            {"Round": 22, "Grand Prix": "Las Vegas GP", "Date": "2025-11-23", "Circuit": "Las Vegas Street Circuit"},
-            {"Round": 23, "Grand Prix": "Qatar GP", "Date": "2025-11-30", "Circuit": "Losail International Circuit"},
-            {"Round": 24, "Grand Prix": "Abu Dhabi GP", "Date": "2025-12-07", "Circuit": "Yas Marina Circuit"},
-        ]
-    };
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const card = document.getElementById('mainCard');
+        const headline = document.getElementById('headline');
+        const catImg = document.getElementById('catImg');
+        const successScreen = document.getElementById('success');
 
-    const dummyLiveRaceData = {
-        name: "Simulated Canadian Grand Prix 2025",
-        standings: [
-            { pos: 1, driver: "Lando Norris", team: "McLaren", laps: 25, status: "0.000" },
-            { pos: 2, driver: "Oscar Piastri", team: "McLaren", laps: 25, status: "+1.234" },
-            { pos: 3, driver: "Max Verstappen", team: "Red Bull Racing", laps: 25, status: "+3.456" },
-            { pos: 4, driver: "George Russell", team: "Mercedes", laps: 25, status: "+5.123" },
-            { pos: 5, driver: "Charles Leclerc", team: "Ferrari", laps: 25, status: "+6.789" },
-            { pos: 6, driver: "Lewis Hamilton", team: "Ferrari", laps: 25, status: "+7.001" },
-            { pos: 7, driver: "Alexander Albon", team: "Williams", laps: 25, status: "+9.123" },
-            { pos: 8, driver: "Andrea Kimi Antonelli", "Team": "Mercedes", laps: 25, status: "+10.456" },
-            { pos: 9, driver: "Yuki Tsunoda", team: "Red Bull Racing", laps: 25, status: "+11.000" },
-            { pos: 10, driver: "Lance Stroll", team: "Aston Martin", laps: 25, status: "+12.321" },
-            { pos: 11, driver: "Carlos Sainz", team: "Williams", laps: 25, status: "+13.123" },
-            { pos: 12, driver: "Fernando Alonso", team: "Aston Martin", laps: 25, status: "+14.567" },
-            { pos: 13, driver: "Pierre Gasly", team: "Alpine", laps: 24, status: "+1 Lap" },
-            { pos: 14, driver: "Esteban Ocon", team: "Haas", laps: 24, status: "+1 Lap" },
-            { pos: 15, driver: "Nico Hülkenberg", team: "Kick Sauber", laps: 24, status: "+1 Lap" },
-            { pos: 16, driver: "Oliver Bearman", team: "Haas", laps: 24, status: "+1 Lap" },
-            { pos: 17, driver: "Liam Lawson", team: "Racing Bulls", laps: 24, status: "+1 Lap" },
-            { pos: 18, driver: "Isack Hadjar", team: "Racing Bulls", laps: 24, status: "+1 Lap" },
-            { pos: 19, driver: "Gabriel Bortoleto", team: "Kick Sauber", laps: 23, status: "+2 Laps" },
-            { pos: 20, driver: "Jack Doohan", team: "Alpine", laps: 23, status: "DNF" },
-            { pos: 21, driver: "Sergio Perez", team: "Red Bull Racing", laps: 23, status: "DNF" },
-        ]
-    };
+        let hp = 5;
+        let scale = 1;
 
-    const driverButtonsContainerEl = document.getElementById('driver-buttons-container');
-    const sidebarEl = document.getElementById('sidebar');
-    const driverProfilePictureEl = document.getElementById('driver-profile-picture');
-    const driverNameEl = document.getElementById('driver-name');
-    const driverTitleEl = document.getElementById('driver-title');
-    const driverStatChampsEl = document.getElementById('driver-stat-champs');
-    const driverStatWinsEl = document.getElementById('driver-stat-wins');
-    const driverStatPodiumsEl = document.getElementById('driver-stat-podiums');
-    const careerHighlightsContainerEl = document.getElementById('career-highlights-container');
-    const dashboardSubtitleEl = document.getElementById('dashboard-subtitle');
-    const raceResultsAverageEl = document.getElementById('race-results-average');
-    const raceResultsPeriodEl = document.getElementById('race-results-period');
-    const raceResultsTrendEl = document.getElementById('race-results-trend');
-    const raceResultsChartFillEl = document.getElementById('race-results-chart-fill');
-    const raceResultsChartStrokeEl = document.getElementById('race-results-chart-stroke');
-    const raceResultsLabelsEl = document.getElementById('race-results-labels');
-    const champPointsTotalEl = document.getElementById('champ-points-total');
-    const champPointsPeriodEl = document.getElementById('champ-points-period');
-    const champPointsTrendEl = document.getElementById('champ-points-trend');
-    const champPointsBarsContainerEl = document.getElementById('champ-points-bars-container');
-    const champPointsLabelsEl = document.getElementById('champ-points-labels');
-    const recentRacesTbodyEl = document.getElementById('recent-races-tbody');
-
-    const tabDriverBtn = document.getElementById('tab-driver-btn');
-    const tabRacesBtn = document.getElementById('tab-races-btn');
-    const driverDashboard = document.getElementById('driver-dashboard');
-    const racesDashboard = document.getElementById('races-dashboard');
-
-    const seasonDriverStandingsTbody = document.getElementById('season-driver-standings-tbody');
-    const seasonConstructorStandingsTbody = document.getElementById('season-constructor-standings-tbody');
-    const seasonRaceResultsTbody = document.getElementById('season-race-results-tbody');
-    const seasonUpcomingRacesTbody = document.getElementById('season-upcoming-races-tbody');
-
-    const liveRaceNameEl = document.getElementById('live-race-name');
-    const liveRaceStandingsContainer = document.getElementById('live-race-standings-container');
-    const liveStandingsTbody = document.getElementById('live-standings-tbody');
-    const simulateLiveBtn = document.getElementById('simulate-live-btn');
-    const endLiveBtn = document.getElementById('end-live-btn');
-    const loadingOverlay = document.getElementById('loading-overlay');
-
-    const sidebarToggle = document.getElementById('sidebar-toggle'); // Mobile toggle
-    const sidebarClose = document.getElementById('sidebar-close');   // Mobile close button
-    const sidebarOverlay = document.getElementById('sidebar-overlay'); // Mobile overlay
-
-    // Music Player Elements
-    const backgroundMusic = document.getElementById('background-music');
-    const musicToggleBtn = document.getElementById('music-toggle-btn');
-    const speakerIcon = document.getElementById('speaker-icon');
-    const pauseIcon = document.getElementById('pause-icon');
-
-    let currentDriverId = driversData[0].id; // Track current driver by ID
-    let liveRaceInterval;
-    let isLiveRaceActive = false;
-
-    function showLoading() {
-        loadingOverlay.classList.add('visible');
-    }
-
-    function hideLoading() {
-        loadingOverlay.classList.remove('visible');
-    }
-
-    function updateCareerHighlights(highlights, currentThemeColors) {
-        careerHighlightsContainerEl.innerHTML = '';
-        highlights.forEach(highlight => {
-            const div = document.createElement('div');
-            div.className = 'flex items-start space-x-3';
-            div.innerHTML = `
-                <div class="text-[#38E07B] pt-1 flex-shrink-0" data-icon="Trophy" data-size="20px" data-weight="bold" style="color: ${currentThemeColors.accent};">
-                    <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M232,64H208V56a16,16,0,0,0-16-16H64A16,16,0,0,0,48,56v8H24A16,16,0,0,0,8,80V96a40,40,0,0,0,40,40h3.65A80.13,80.13,0,0,0,120,191.61V216H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16H136V191.58c31.94-3.23,58.44-25.64,68.08-55.58H208a40,40,0,0,0,40-40V80A16,16,0,0,0,232,64ZM48,120A24,24,0,0,1,24,96V80H48v32q0,4,.39,8Zm144-8.9c0,35.52-28.49,64.64-63.51,64.9H128a64,64,0,0,1-64-64V56H192ZM232,96a24,24,0,0,1-24,24h-.5a81.81,81.81,0,0,0,.5-8.9V80h24Z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-white text-sm font-medium">${highlight.year} ${highlight.title}</p>
-                    <p class="text-[#9EB7A8] text-xs">${highlight.team}</p>
-                </div>
-            `;
-            careerHighlightsContainerEl.appendChild(div);
-        });
-    }
-
-    function updateRecentRaces(races, currentThemeColors) {
-        recentRacesTbodyEl.innerHTML = '';
-        if (races.length === 0) {
-            recentRacesTbodyEl.innerHTML = `<tr><td colspan="4" class="px-3 sm:px-6 py-4 text-center text-[#9EB7A8]">No recent race data available.</td></tr>`;
-            return;
-        }
-        races.forEach(race => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-white text-sm">${race.race}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-[#9EB7A8] text-sm">${race.date}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-[#9EB7A8] text-sm">${race.position}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-semibold" style="color: ${currentThemeColors.accent};">${race.points}</td>
-            `;
-            recentRacesTbodyEl.appendChild(tr);
-        });
-    }
-
-    function updateRaceResultsChart(dataPoints, labels, currentThemeColors) {
-        if (!dataPoints || dataPoints.length === 0) {
-            raceResultsChartStrokeEl.setAttribute('d', '');
-            raceResultsChartFillEl.setAttribute('d', '');
-            raceResultsLabelsEl.innerHTML = '<span class="text-[#9EB7A8] text-xs">No chart data available.</span>';
-            return;
-        }
-
-        const chartWidth = 472; // Based on viewBox
-        const chartHeight = 149; // Based on viewBox
-        const numPoints = dataPoints.length;
-
-        const stepX = numPoints > 1 ? chartWidth / (numPoints - 1) : 0;
-
-        const minDataVal = Math.min(...dataPoints);
-        const maxDataVal = Math.max(...dataPoints);
-
-        const getY = (val) => {
-            const padding = 10;
-            const plotHeight = chartHeight - (2 * padding);
-            let normalized = (val - minDataVal) / (maxDataVal - minDataVal);
-            if (maxDataVal === minDataVal) normalized = 0.5; // Avoid division by zero, center if all same
-            return padding + (1 - normalized) * plotHeight;
+        // Image map for emotions
+        const emotions = {
+            love: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=500&auto=format&fit=crop",
+            shocked: "https://images.unsplash.com/photo-1533733358354-2e974ebc828b?q=80&w=500&auto=format&fit=crop",
+            sad: "https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?q=80&w=500&auto=format&fit=crop",
+            angry: "https://images.unsplash.com/photo-1513245533132-31f507417b26?q=80&w=500&auto=format&fit=crop"
         };
 
-        let linePathD = `M0 ${getY(dataPoints[0])}`;
-        let fillPathD_coords = `M0 ${getY(dataPoints[0])}`;
+        const textStages = ["REALLY?", "WRONG BTN", "Ouch!", "PLEASE?", "LAST CHANCE"];
 
-        for (let i = 1; i < numPoints; i++) {
-            const x = i * stepX;
-            const y = getY(dataPoints[i]);
-            linePathD += ` L${x} ${y}`;
-            fillPathD_coords += ` L${x} ${y}`;
+        function updateCatEmotion() {
+            if (hp === 4) catImg.src = emotions.shocked;
+            if (hp === 2) catImg.src = emotions.sad;
+            if (hp === 1) catImg.src = emotions.angry;
         }
 
-        const completeFillPathD = fillPathD_coords + ` L${(numPoints - 1) * stepX} ${chartHeight} L0 ${chartHeight} Z`;
+        function moveNo() {
+            const area = document.getElementById('gameArea');
+            const maxX = area.clientWidth - noBtn.offsetWidth - 10;
+            const maxY = area.clientHeight - noBtn.offsetHeight - 10;
 
-        raceResultsChartStrokeEl.setAttribute('d', linePathD);
-        raceResultsChartStrokeEl.setAttribute('stroke', currentThemeColors.accent);
-        raceResultsChartFillEl.setAttribute('d', completeFillPathD);
-        raceResultsChartFillEl.setAttribute('fill', currentThemeColors.gradientUrl);
+            const newX = Math.max(5, Math.random() * maxX);
+            const newY = Math.max(5, Math.random() * maxY);
 
-        raceResultsLabelsEl.innerHTML = labels.map(label => `<span class="text-xs">${label}</span>`).join('');
-    }
-
-    function updateChampionshipPointsChart(barData, labels, currentThemeColors) {
-        champPointsBarsContainerEl.innerHTML = '';
-        if (!barData || barData.length === 0) {
-            champPointsLabelsEl.innerHTML = '<span class="text-[#9EB7A8] text-xs">No chart data available.</span>';
-            return;
+            noBtn.style.left = `${newX}px`;
+            noBtn.style.top = `${newY}px`;
+            noBtn.style.transform = 'none';
         }
 
-        champPointsBarsContainerEl.style.setProperty('--num-bars', barData.length);
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (hp > 0) {
+                hp--;
+                const hearts = document.querySelectorAll('.pixel-heart');
+                if (hearts[hp]) hearts[hp].classList.add('broken');
 
-        const maxPoints = Math.max(...barData);
+                card.classList.add('shake');
+                setTimeout(() => card.classList.remove('shake'), 200);
 
-        barData.forEach(points => {
-            const barDiv = document.createElement('div');
-            const heightPercentage = maxPoints > 0 ? (points / maxPoints) * 100 : 0;
-            const validHeight = Math.max(0, Math.min(100, heightPercentage)); // Ensure height is between 0 and 100
+                headline.innerText = textStages[4 - hp] || "CLICK YES!";
+                updateCatEmotion();
 
-            barDiv.className = 'w-full rounded-t-sm';
-            barDiv.style.height = `${validHeight}%`;
-            barDiv.style.backgroundColor = currentThemeColors.bgOpacity50;
-            champPointsBarsContainerEl.appendChild(barDiv);
-        });
+                scale += 0.45;
+                yesBtn.style.transform = `translate(-50%, -50%) scale(${scale})`;
+                
+                moveNo();
 
-        champPointsLabelsEl.innerHTML = labels.map(label => `<span class="text-xs">${label}</span>`).join('');
-    }
-
-    function loadDriverData(driverId) {
-        showLoading();
-        // Close sidebar on mobile after selecting a driver
-        if (window.innerWidth < 1024) { // Based on Tailwind's 'lg' breakpoint
-            sidebarEl.classList.remove('open');
-            sidebarOverlay.classList.remove('active');
-        }
-
-        setTimeout(() => { // Simulate network delay
-            const driver = driversData.find(d => d.id === driverId);
-            if (!driver) {
-                hideLoading();
-                console.error("Driver not found:", driverId);
-                return;
-            }
-
-            currentDriverId = driverId; // Update current driver ID
-
-            // Update active state of buttons
-            document.querySelectorAll('.driver-button').forEach(button => {
-                if (button.dataset.driverId === driverId) {
-                    button.classList.add('active');
-                    // Scroll active button into view if it's not fully visible
-                    button.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                } else {
-                    button.classList.remove('active');
+                if (hp === 0) {
+                    noBtn.style.display = 'none';
+                    yesBtn.style.width = "90%";
+                    yesBtn.style.height = "85%";
+                    yesBtn.style.top = "50%";
+                    yesBtn.style.left = "50%";
+                    yesBtn.style.transform = "translate(-50%, -50%)";
                 }
-            });
-
-            const currentThemeColors = themes[driver.theme] || themes['green-black'];
-
-            // Apply theme colors
-            sidebarEl.style.borderColor = currentThemeColors.borderOpacity20;
-            driverProfilePictureEl.style.borderColor = currentThemeColors.profileBorder;
-            driverTitleEl.style.color = currentThemeColors.accent;
-            [driverStatChampsEl, driverStatWinsEl, driverStatPodiumsEl].forEach(el => el.style.color = currentThemeColors.accent);
-            raceResultsAverageEl.style.color = currentThemeColors.accent;
-            raceResultsTrendEl.style.color = currentThemeColors.accent;
-            champPointsTotalEl.style.color = currentThemeColors.accent;
-            champPointsTrendEl.style.color = currentThemeColors.accent;
-
-            // Update driver profile and stats
-            driverProfilePictureEl.style.backgroundImage = `url('${driver.profilePictureUrl}')`;
-            driverNameEl.textContent = driver.name;
-            driverTitleEl.textContent = driver.title;
-
-            driverStatChampsEl.textContent = driver.stats.champs;
-            driverStatWinsEl.textContent = driver.stats.wins;
-            driverStatPodiumsEl.textContent = driver.stats.podiums;
-
-            updateCareerHighlights(driver.careerHighlights, currentThemeColors);
-
-            dashboardSubtitleEl.textContent = driver.dashboardSubtitle;
-
-            // Update dashboard charts and tables
-            raceResultsAverageEl.textContent = `Average: ${driver.raceResults.average}`;
-            raceResultsPeriodEl.textContent = driver.raceResults.period;
-            raceResultsTrendEl.textContent = driver.raceResults.trend;
-            updateRaceResultsChart(driver.raceResults.chartData, driver.raceResults.labels, currentThemeColors);
-
-            champPointsTotalEl.textContent = `Total: ${driver.championshipPoints.total}`;
-            champPointsPeriodEl.textContent = driver.championshipPoints.period;
-            champPointsTrendEl.textContent = driver.championshipPoints.trend;
-            updateChampionshipPointsChart(driver.championshipPoints.barData, driver.championshipPoints.labels, currentThemeColors);
-
-            updateRecentRaces(driver.recentRaces, currentThemeColors);
-            hideLoading();
-        }, 300); // Small delay for the loading animation to be visible
-    }
-
-    function populateDriverButtons() {
-        driverButtonsContainerEl.innerHTML = '';
-        driversData.forEach(driver => {
-            const button = document.createElement('button');
-            button.className = 'driver-button';
-            button.dataset.driverId = driver.id;
-            button.textContent = driver.name;
-            button.addEventListener('click', () => loadDriverData(driver.id));
-            driverButtonsContainerEl.appendChild(button);
-        });
-    }
-
-    function updateSeasonDriverStandings() {
-        seasonDriverStandingsTbody.innerHTML = '';
-        if (seasonData.driverStandings.length === 0) {
-            seasonDriverStandingsTbody.innerHTML = `<tr><td colspan="4" class="px-3 sm:px-6 py-4 text-center text-[#9EB7A8]">No driver standings available.</td></tr>`;
-            return;
-        }
-        seasonData.driverStandings.forEach(driver => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-white text-sm">${driver.Pos}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-[#9EB7A8] text-sm driver-info-cell">
-                     <img src="${driver.image}" alt="${driver.Driver}" class="driver-standing-img">
-                     <span>${driver.Driver}</span>
-                </td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-[#9EB7A8] text-sm">${driver.Team}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-white text-sm font-semibold">${driver.Points}</td>
-            `;
-            seasonDriverStandingsTbody.appendChild(tr);
-        });
-    }
-
-    function updateSeasonConstructorStandings() {
-        seasonConstructorStandingsTbody.innerHTML = '';
-        if (seasonData.constructorStandings.length === 0) {
-            seasonConstructorStandingsTbody.innerHTML = `<tr><td colspan="3" class="px-3 sm:px-6 py-4 text-center text-[#9EB7A8]">No constructor standings available.</td></tr>`;
-            return;
-        }
-        seasonData.constructorStandings.forEach(constructor => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-white text-sm">${constructor.Pos}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-[#9EB7A8] text-sm">${constructor.Constructor}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-white text-sm font-semibold">${constructor.Points}</td>
-            `;
-            seasonConstructorStandingsTbody.appendChild(tr);
-        });
-    }
-
-    function updateSeasonRaceResults() {
-        seasonRaceResultsTbody.innerHTML = '';
-        if (seasonData.raceResults.length === 0) {
-            seasonRaceResultsTbody.innerHTML = `<tr><td colspan="4" class="px-3 sm:px-6 py-4 text-center text-[#9EB7A8]">No race results available.</td></tr>`;
-            return;
-        }
-        seasonData.raceResults.forEach(race => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-white text-sm">${race['Grand Prix']}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-[#9EB7A8] text-sm">${race.Date}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-[#9EB7A8] text-sm">${race.Winner}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-white text-sm">${race.Team}</td>
-            `;
-            seasonRaceResultsTbody.appendChild(tr);
-        });
-    }
-
-    function updateSeasonUpcomingRaces() {
-        seasonUpcomingRacesTbody.innerHTML = '';
-        const today = new Date('2025-06-03T00:00:00Z'); // Fixed date for simulation
-        const upcoming = seasonData.fullCalendar.filter(race => {
-            const raceDate = new Date(race.Date + 'T00:00:00Z');
-            return raceDate > today;
-        });
-
-        if (upcoming.length === 0) {
-            seasonUpcomingRacesTbody.innerHTML = `<tr><td colspan="4" class="px-3 sm:px-6 py-4 text-center text-[#9EB7A8]">No upcoming races.</td></tr>`;
-            return;
-        }
-
-        upcoming.forEach(race => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-white text-sm">${race.Round}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-[#9EB7A8] text-sm">${race['Grand Prix']}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-[#9EB7A8] text-sm">${race.Date}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-white text-sm">${race.Circuit}</td>
-            `;
-            seasonUpcomingRacesTbody.appendChild(tr);
-        });
-    }
-
-    function switchTab(tabId) {
-        showLoading();
-        setTimeout(() => { // Simulate delay for tab switch
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-
-            document.getElementById(`tab-${tabId}-btn`).classList.add('active');
-            document.getElementById(`${tabId}-dashboard`).classList.add('active');
-
-            // No auto-update for driver dashboard anymore
-            if (tabId === 'races') {
-                updateSeasonDriverStandings();
-                updateSeasonConstructorStandings();
-                updateSeasonRaceResults();
-                updateSeasonUpcomingRaces();
             }
-            hideLoading();
-        }, 300); // Small delay for the loading animation to be visible
-    }
-
-    tabDriverBtn.addEventListener('click', () => switchTab('driver'));
-    tabRacesBtn.addEventListener('click', () => switchTab('races'));
-
-    // Live Race Simulation
-    function updateLiveRaceStandings() {
-        if (!isLiveRaceActive) return;
-
-        liveStandingsTbody.innerHTML = '';
-        // Create a copy to shuffle without affecting the original dummy data
-        const shuffledStandings = [...dummyLiveRaceData.standings];
-
-        // Simple shuffle for dynamic appearance (not a true race simulation)
-        for (let i = shuffledStandings.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffledStandings[i], shuffledStandings[j]] = [shuffledStandings[j], shuffledStandings[i]];
-        }
-
-        // Re-assign positions based on the new order
-        shuffledStandings.forEach((entry, index) => {
-            const tr = document.createElement('tr');
-            // Randomly update time/status slightly to give a 'live' feel
-            let statusText = entry.status;
-            if (statusText.startsWith('+')) {
-                const time = parseFloat(statusText.substring(1));
-                statusText = `+${(time + (Math.random() * 0.1 - 0.05)).toFixed(3)}`; // Add/subtract small random value
-            } else if (statusText === "0.000") {
-                 statusText = "0.000"; // Leader stays at 0
-            } else if (statusText.includes("Lap")) {
-                // Do nothing for lap difference
-            } else {
-                // If it's a DNF, keep it DNF
-            }
-
-            tr.innerHTML = `
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-white text-sm">${index + 1}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-[#9EB7A8] text-sm">${entry.driver}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-[#9EB7A8] text-sm">${entry.team}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-white text-sm">${entry.laps}</td>
-                <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-white text-sm">${statusText}</td>
-            `;
-            liveStandingsTbody.appendChild(tr);
         });
-    }
 
-    simulateLiveBtn.addEventListener('click', () => {
-        isLiveRaceActive = true;
-        liveRaceNameEl.textContent = dummyLiveRaceData.name;
-        liveRaceNameEl.classList.add('live-status');
-        liveRaceStandingsContainer.classList.remove('hidden');
-        simulateLiveBtn.classList.add('hidden');
-        endLiveBtn.classList.remove('hidden');
-        if (liveRaceInterval) clearInterval(liveRaceInterval); // Clear any existing interval
-        liveRaceInterval = setInterval(updateLiveRaceStandings, 2000); // Update every 2 seconds
-        updateLiveRaceStandings(); // Initial update
-    });
-
-    endLiveBtn.addEventListener('click', () => {
-        isLiveRaceActive = false;
-        if (liveRaceInterval) clearInterval(liveRaceInterval);
-        liveRaceNameEl.textContent = "None (No live race)";
-        liveRaceNameEl.classList.remove('live-status');
-        liveRaceStandingsContainer.classList.add('hidden');
-        simulateLiveBtn.classList.remove('hidden');
-        endLiveBtn.classList.add('hidden');
-        liveStandingsTbody.innerHTML = '<tr><td colspan="5" class="px-3 sm:px-6 py-4 text-center text-[#9EB7A8]">No live race data available.</td></tr>';
-    });
-
-    // Mobile Sidebar Toggle Logic
-    sidebarToggle.addEventListener('click', () => {
-        sidebarEl.classList.add('open');
-        sidebarOverlay.classList.add('active');
-    });
-
-    sidebarClose.addEventListener('click', () => {
-        sidebarEl.classList.remove('open');
-        sidebarOverlay.classList.remove('active');
-    });
-
-    sidebarOverlay.addEventListener('click', () => {
-        sidebarEl.classList.remove('open');
-        sidebarOverlay.classList.remove('active');
-    });
-
-    // Music Player Toggle Functionality
-    function toggleMusicPlayback() {
-        if (backgroundMusic.paused) {
-            backgroundMusic.play()
-                .then(() => {
-                    speakerIcon.classList.add('hidden');
-                    pauseIcon.classList.remove('hidden');
-                })
-                .catch(error => {
-                    console.error("Error playing music:", error);
-                    alert("Autoplay prevented. Please interact with the page first or check browser settings.");
-                });
-        } else {
-            backgroundMusic.pause();
-            speakerIcon.classList.remove('hidden');
-            pauseIcon.classList.add('hidden');
-        }
-    }
-    musicToggleBtn.addEventListener('click', toggleMusicPlayback);
-
-
-    // Initial load
-    populateDriverButtons(); // Call the new function to populate buttons
-    if (driversData.length > 0) {
-        loadDriverData(driversData[0].id); // Load data for the first driver
-    }
-</script>
+        yesBtn.addEventListener('click', () => {
+            successScreen.style.display = 'flex';
+        });
+    </script>
 </body>
 </html>
