@@ -3,21 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>For Avanthika ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>For Mythili ❤️!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.85);
-            --apple-pink: #ff2d55;
-            --pixel-font: 'Press Start 2P', cursive;
-            --main-img: url('https://imghoster.co/ib/Uq7zqSxlVgmM3qE_1770636954.jpg');
+            --spotify-green: #1DB954;
+            --brutal-yellow: #FFD600;
+            --brutal-pink: #FF416C;
+            --brutal-blue: #2D31FA;
+            --black: #000000;
+            --white: #FFFFFF;
         }
 
         * {
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
-            touch-action: manipulation;
+            touch-action: none; /* Disable default touch actions for dragging */
         }
 
         body {
@@ -27,259 +29,297 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: var(--pixel-font);
-            background: #000;
+            font-family: 'Archivo', sans-serif;
+            background: var(--brutal-yellow);
             overflow: hidden;
             position: relative;
         }
 
-        /* Blurred background image */
         body::before {
             content: "";
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: var(--main-img);
-            background-size: cover;
-            background-position: center;
-            filter: blur(8px) brightness(0.7);
-            transform: scale(1.1);
-            z-index: 1;
+            inset: 0;
+            background-image: 
+                linear-gradient(var(--black) 1px, transparent 1px),
+                linear-gradient(90deg, var(--black) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.1;
+            z-index: 0;
         }
 
-        .glass-card {
-            width: 92%;
-            max-width: 340px;
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            border: 4px solid #fff;
-            border-radius: 20px;
-            padding: 20px 15px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            position: relative;
+        .brutal-card {
+            width: 90%;
+            max-width: 400px;
+            background: var(--white);
+            border: 4px solid var(--black);
+            padding: 30px;
+            box-shadow: 12px 12px 0px var(--black);
             z-index: 10;
-        }
-
-        .hp-label {
-            font-size: 8px;
-            color: #333;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-
-        .hearts-row {
-            display: flex;
-            justify-content: center;
-            gap: 4px;
-            margin-bottom: 12px;
-        }
-
-        .pixel-heart {
-            width: 18px;
-            height: 18px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 9"><path d="M2 1h1v1h1v1h1V2h1V1h1v1h1v3H7v1H6v1H5v1H4V7H3V6H2V5H1V2h1V1z" fill="%23ff2d55"/></svg>');
-            background-size: contain;
-            image-rendering: pixelated;
-            transition: all 0.3s ease;
-        }
-
-        .pixel-heart.broken {
-            filter: grayscale(1) opacity(0.2);
-            transform: scale(0.6);
-        }
-
-        .img-frame {
-            width: 100%;
-            height: 220px;
-            border: 4px solid #000;
-            border-radius: 8px;
-            background: #eee;
-            overflow: hidden;
             position: relative;
         }
 
-        .main-photo {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .category-tag {
+            display: inline-block;
+            background: var(--spotify-green);
+            color: var(--black);
+            font-weight: 700;
+            padding: 4px 12px;
+            border: 2px solid var(--black);
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            transform: rotate(-2deg);
         }
 
         h1 {
-            font-size: 10px;
-            line-height: 1.5;
-            color: #000;
-            margin: 15px 0;
-            min-height: 30px;
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 32px;
+            line-height: 1.1;
+            color: var(--black);
+            margin: 0 0 30px 0;
+            text-transform: uppercase;
+            word-spacing: 2px;
         }
 
-        .button-area {
+        .stats-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 40px;
+        }
+
+        .hp-bar-segment {
+            flex: 1;
+            height: 12px;
+            background: var(--brutal-pink);
+            border: 2px solid var(--black);
+            transition: all 0.2s ease;
+        }
+
+        .hp-bar-segment.empty {
+            background: var(--white);
+        }
+
+        .button-group {
             position: relative;
-            height: 180px;
+            height: 220px;
             width: 100%;
-            background: rgba(0,0,0,0.05);
-            border: 2px dashed rgba(0,0,0,0.1);
-            border-radius: 10px;
-            margin-top: 10px;
         }
 
-        .btn {
+        .brutal-btn {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 20px;
+            text-transform: uppercase;
+            padding: 16px;
+            border: 4px solid var(--black);
+            cursor: grab;
             position: absolute;
-            font-family: var(--pixel-font);
-            font-size: 12px;
-            border: 4px solid #000;
-            padding: 15px;
-            cursor: pointer;
-            box-shadow: 4px 4px 0 #000;
-            transition: transform 0.1s, width 0.2s, height 0.2s;
+            transition: transform 0.1s;
         }
 
-        .btn:active {
-            box-shadow: 2px 2px 0 #000;
-            transform: translate(2px, 2px);
+        .brutal-btn:active {
+            cursor: grabbing;
         }
 
         #yesBtn {
-            background: #4ef037;
-            color: #000;
-            left: 50%;
-            top: 65%;
-            transform: translate(-50%, -50%);
+            background: var(--spotify-green);
+            color: var(--black);
+            box-shadow: 6px 6px 0px var(--black);
             z-index: 100;
-            width: 110px;
+            width: 100%;
+            left: 0;
+            top: 0;
+            touch-action: none;
         }
 
         #noBtn {
-            background: #ff2d55;
-            color: #fff;
+            background: var(--white);
+            color: var(--black);
+            box-shadow: 6px 6px 0px var(--black);
+            width: 120px;
             left: 50%;
-            top: 25%;
             transform: translateX(-50%);
+            top: 100px;
             z-index: 50;
-            width: 80px;
-        }
-
-        .shake { animation: shake 0.2s ease-in-out; }
-        @keyframes shake {
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
         }
 
         #success {
             position: fixed;
             inset: 0;
-            background: #fff;
+            background: var(--brutal-blue);
             display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 2000;
-            padding: 20px;
             text-align: center;
+            color: var(--white);
+            padding: 20px;
         }
-        
-        #success::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image: var(--main-img);
-            background-size: cover;
-            background-position: center;
-            opacity: 0.15;
-            z-index: -1;
+
+        #success h1 {
+            color: var(--brutal-yellow);
+            font-size: 48px;
+            transform: rotate(-3deg);
+            -webkit-text-stroke: 2px var(--black);
         }
+
+        .success-msg {
+            font-family: 'Archivo Black', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            padding: 10px 20px;
+            border: 4px solid var(--black);
+            box-shadow: 8px 8px 0px var(--black);
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+        }
+
+        .shake { animation: shake 0.3s infinite; }
     </style>
 </head>
 <body>
 
-    <div class="glass-card" id="mainCard">
-        <div class="hp-label">Avanthika HP</div>
-        <div class="hearts-row" id="heartContainer">
-            <div class="pixel-heart"></div><div class="pixel-heart"></div><div class="pixel-heart"></div><div class="pixel-heart"></div><div class="pixel-heart"></div>
+    <div class="brutal-card" id="mainCard">
+        <div class="category-tag">Urgent Request</div>
+        <h1 id="headline">Mythili, will you be my Valentine?</h1>
+
+        <div class="stats-row" id="hpContainer">
+            <div class="hp-bar-segment"></div>
+            <div class="hp-bar-segment"></div>
+            <div class="hp-bar-segment"></div>
+            <div class="hp-bar-segment"></div>
+            <div class="hp-bar-segment"></div>
         </div>
 
-        <div class="img-frame">
-            <img class="main-photo" src="https://imghoster.co/ib/Uq7zqSxlVgmM3qE_1770636954.jpg" alt="Avanthika Photo">
-        </div>
-
-        <h1 id="headline">Will you be my Valentine?</h1>
-
-        <div class="button-area" id="gameArea">
-            <button class="btn" id="noBtn">NO</button>
-            <button class="btn" id="yesBtn">YES</button>
+        <div class="button-group" id="btnGroup">
+            <button class="brutal-btn" id="yesBtn">YES, DUH</button>
+            <button class="brutal-btn" id="noBtn">NO</button>
         </div>
     </div>
 
     <div id="success">
-        <h1 style="font-size: 16px; margin-bottom: 20px;">SUCCESS! ❤️</h1>
-        <div class="img-frame" style="width: 240px; height: 240px;">
-            <img src="https://imghoster.co/ib/Uq7zqSxlVgmM3qE_1770636954.jpg" class="main-photo">
-        </div>
-        <p style="margin-top: 25px; font-size: 12px;">Nanniyunde Sireee! ❤️</p>
+        <h1>IT'S A DATE!</h1>
+        <div class="success-msg">SEE YOU SOON, MYTHILI! ❤️</div>
     </div>
 
     <script>
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
-        const card = document.getElementById('mainCard');
         const headline = document.getElementById('headline');
         const successScreen = document.getElementById('success');
+        const hpSegments = document.querySelectorAll('.hp-bar-segment');
+        const card = document.getElementById('mainCard');
 
-        let hp = 5;
+        let attempts = 0;
         let scale = 1;
-
-        const textStages = [
-            "Eda chathikalle", 
-            "Ada Gommale", 
-            "Ethre click cheyum enn kaanalo", 
-            "ARE YOU SURE?", 
-            "JUST CLICK YES!"
+        const messages = [
+            "Eda drohi",
+            "Chathi",
+            "Ini enth cheyum nee?? buhahaha",
+            "ehh ath ngane opich",
+            "NO CHOICE LEFT."
         ];
 
+        // Dragging Logic for YES button
+        let isDragging = false;
+        let startX, startY;
+        let initialX, initialY;
+        let hasMovedSignificantly = false;
+
+        const startDrag = (e) => {
+            isDragging = true;
+            hasMovedSignificantly = false;
+            const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+            
+            startX = clientX;
+            startY = clientY;
+            
+            const rect = yesBtn.getBoundingClientRect();
+            initialX = rect.left;
+            initialY = rect.top;
+            
+            yesBtn.style.position = 'fixed';
+            yesBtn.style.left = `${initialX}px`;
+            yesBtn.style.top = `${initialY}px`;
+            yesBtn.style.width = `${rect.width}px`;
+            yesBtn.style.margin = '0';
+        };
+
+        const onDrag = (e) => {
+            if (!isDragging) return;
+            const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+            
+            const dx = clientX - startX;
+            const dy = clientY - startY;
+
+            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                hasMovedSignificantly = true;
+            }
+
+            yesBtn.style.left = `${initialX + dx}px`;
+            yesBtn.style.top = `${initialY + dy}px`;
+        };
+
+        const stopDrag = (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            // If they just clicked (didn't drag far), trigger the success
+            if (!hasMovedSignificantly) {
+                successScreen.style.display = 'flex';
+            }
+        };
+
+        yesBtn.addEventListener('mousedown', startDrag);
+        yesBtn.addEventListener('touchstart', startDrag, { passive: false });
+        window.addEventListener('mousemove', onDrag);
+        window.addEventListener('touchmove', onDrag, { passive: false });
+        window.addEventListener('mouseup', stopDrag);
+        window.addEventListener('touchend', stopDrag);
+
+        // Click logic for NO button
         function moveNo() {
-            const area = document.getElementById('gameArea');
-            const maxX = area.clientWidth - noBtn.offsetWidth - 10;
-            const maxY = area.clientHeight - noBtn.offsetHeight - 10;
+            const group = document.getElementById('btnGroup');
+            const maxX = group.clientWidth - noBtn.offsetWidth;
+            const maxY = group.clientHeight - noBtn.offsetHeight;
 
-            const newX = Math.max(5, Math.random() * maxX);
-            const newY = Math.max(5, Math.random() * maxY);
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
 
-            noBtn.style.left = `${newX}px`;
-            noBtn.style.top = `${newY}px`;
-            noBtn.style.transform = 'none';
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+            noBtn.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
         }
 
         noBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (hp > 0) {
-                hp--;
-                const hearts = document.querySelectorAll('.pixel-heart');
-                if (hearts[hp]) hearts[hp].classList.add('broken');
-
+            e.stopPropagation();
+            if (attempts < 5) {
+                hpSegments[4 - attempts].classList.add('empty');
                 card.classList.add('shake');
-                setTimeout(() => card.classList.remove('shake'), 200);
+                setTimeout(() => card.classList.remove('shake'), 300);
 
-                // Updated stages logic
-                headline.innerText = textStages[4 - hp] || "CLICK YES!";
-
-                scale += 0.5;
-                yesBtn.style.transform = `translate(-50%, -50%) scale(${scale})`;
+                headline.innerText = messages[attempts];
+                scale += 0.3;
+                yesBtn.style.transform = `scale(${scale})`;
                 
                 moveNo();
+                attempts++;
 
-                if (hp === 0) {
+                if (attempts === 5) {
                     noBtn.style.display = 'none';
-                    yesBtn.style.width = "95%";
-                    yesBtn.style.height = "90%";
-                    yesBtn.style.top = "50%";
-                    yesBtn.style.left = "50%";
-                    yesBtn.style.transform = "translate(-50%, -50%)";
-                    headline.innerText = "NO MORE OPTIONS!";
+                    headline.innerText = "NO CHOICE LEFT.";
                 }
             }
-        });
-
-        yesBtn.addEventListener('click', () => {
-            successScreen.style.display = 'flex';
         });
     </script>
 </body>
