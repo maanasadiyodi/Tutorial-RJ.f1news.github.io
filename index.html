@@ -7,9 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.7);
+            --glass: rgba(255, 255, 255, 0.85);
             --apple-pink: #ff2d55;
             --pixel-font: 'Press Start 2P', cursive;
+            --main-img: url('https://imghoster.co/ib/Uq7zqSxlVgmM3qE_1770636954.jpg');
         }
 
         * {
@@ -27,16 +28,22 @@
             justify-content: center;
             align-items: center;
             font-family: var(--pixel-font);
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #a1c4fd 100%);
-            background-size: 400% 400%;
-            animation: moveBg 15s ease infinite;
+            background: #000;
             overflow: hidden;
+            position: relative;
         }
 
-        @keyframes moveBg {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* Blurred background image */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: var(--main-img);
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px) brightness(0.7);
+            transform: scale(1.1);
+            z-index: 1;
         }
 
         .glass-card {
@@ -48,7 +55,7 @@
             border-radius: 20px;
             padding: 20px 15px;
             text-align: center;
-            box-shadow: 0 10px 0 rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             position: relative;
             z-index: 10;
         }
@@ -83,19 +90,18 @@
 
         .img-frame {
             width: 100%;
-            height: 200px;
+            height: 220px;
             border: 4px solid #000;
             border-radius: 8px;
-            background: #fff;
+            background: #eee;
             overflow: hidden;
             position: relative;
         }
 
-        .cat-photo {
+        .main-photo {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: opacity 0.3s ease;
         }
 
         h1 {
@@ -170,6 +176,17 @@
             padding: 20px;
             text-align: center;
         }
+        
+        #success::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: var(--main-img);
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            z-index: -1;
+        }
     </style>
 </head>
 <body>
@@ -181,7 +198,7 @@
         </div>
 
         <div class="img-frame">
-            <img id="catImg" class="cat-photo" src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=500&auto=format&fit=crop" alt="Cat Loving">
+            <img class="main-photo" src="https://imghoster.co/ib/Uq7zqSxlVgmM3qE_1770636954.jpg" alt="Avanthika Photo">
         </div>
 
         <h1 id="headline">Will you be my Valentine?</h1>
@@ -193,11 +210,11 @@
     </div>
 
     <div id="success">
-        <h1 style="font-size: 16px;">SUCCESS! ❤️</h1>
+        <h1 style="font-size: 16px; margin-bottom: 20px;">SUCCESS! ❤️</h1>
         <div class="img-frame" style="width: 240px; height: 240px;">
-            <img src="https://images.unsplash.com/photo-1573865526739-10659fef78a1?q=80&w=500&auto=format&fit=crop" class="cat-photo">
+            <img src="https://imghoster.co/ib/Uq7zqSxlVgmM3qE_1770636954.jpg" class="main-photo">
         </div>
-        <p style="margin-top: 25px; font-size: 10px;">LEVEL CLEARED!</p>
+        <p style="margin-top: 25px; font-size: 12px;">Nanniyunde Sireee! ❤️</p>
     </div>
 
     <script>
@@ -205,27 +222,18 @@
         const yesBtn = document.getElementById('yesBtn');
         const card = document.getElementById('mainCard');
         const headline = document.getElementById('headline');
-        const catImg = document.getElementById('catImg');
         const successScreen = document.getElementById('success');
 
         let hp = 5;
         let scale = 1;
 
-        // Image map for emotions
-        const emotions = {
-            love: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=500&auto=format&fit=crop",
-            shocked: "https://images.unsplash.com/photo-1533733358354-2e974ebc828b?q=80&w=500&auto=format&fit=crop",
-            sad: "https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?q=80&w=500&auto=format&fit=crop",
-            angry: "https://images.unsplash.com/photo-1513245533132-31f507417b26?q=80&w=500&auto=format&fit=crop"
-        };
-
-        const textStages = ["REALLY?", "WRONG BTN", "Ouch!", "PLEASE?", "LAST CHANCE"];
-
-        function updateCatEmotion() {
-            if (hp === 4) catImg.src = emotions.shocked;
-            if (hp === 2) catImg.src = emotions.sad;
-            if (hp === 1) catImg.src = emotions.angry;
-        }
+        const textStages = [
+            "Eda chathikalle", 
+            "Ada Gommale", 
+            "Ethre click cheyum enn kaanalo", 
+            "ARE YOU SURE?", 
+            "JUST CLICK YES!"
+        ];
 
         function moveNo() {
             const area = document.getElementById('gameArea');
@@ -250,21 +258,22 @@
                 card.classList.add('shake');
                 setTimeout(() => card.classList.remove('shake'), 200);
 
+                // Updated stages logic
                 headline.innerText = textStages[4 - hp] || "CLICK YES!";
-                updateCatEmotion();
 
-                scale += 0.45;
+                scale += 0.5;
                 yesBtn.style.transform = `translate(-50%, -50%) scale(${scale})`;
                 
                 moveNo();
 
                 if (hp === 0) {
                     noBtn.style.display = 'none';
-                    yesBtn.style.width = "90%";
-                    yesBtn.style.height = "85%";
+                    yesBtn.style.width = "95%";
+                    yesBtn.style.height = "90%";
                     yesBtn.style.top = "50%";
                     yesBtn.style.left = "50%";
                     yesBtn.style.transform = "translate(-50%, -50%)";
+                    headline.innerText = "NO MORE OPTIONS!";
                 }
             }
         });
