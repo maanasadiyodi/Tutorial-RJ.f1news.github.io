@@ -1,1037 +1,823 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark" data-accent="violet" data-glass="on" data-animations="on">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-    <title>Focus</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
-    <style>
-        :root {
-            /* Default Dark Android */
-            --bg-body: #0a0c0e;
-            --shell-bg: rgba(18, 20, 22, 0.95);
-            --shell-border: #000;
-            --surface: #1E2022;
-            --surface-variant: #3F474E;
-            --on-surface: #E2E2E6;
-            --outline: #43484E;
-            
-            --primary: #90C9FF;
-            --primary-container: #00497D;
-            --on-primary-container: #D1E4FF;
-            
-            --radius-shell: 28px;
-            --radius-card: 16px;
-            --radius-btn: 50%;
-            --border-width: 10px;
-            --glass-blur: 0px;
-            --glass-bg: rgba(18, 20, 22, 0.95);
-            --shadow-intensity: 0.7;
-            --font-main: 'Roboto', sans-serif;
-            --btn-transform: scale(0.92);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <!-- ═══════════════════════════════
+       SEO META TAGS
+  ═══════════════════════════════ -->
+  <title>FlowCus — Pomodoro Timer App | Focus & Productivity Tool</title>
+  <meta name="description" content="FlowCus is a free, beautiful Pomodoro timer app with liquid glass design. Boost your productivity with 25/50 minute focus sessions, break reminders, and customizable themes. Works offline, no signup required.">
+  <meta name="keywords" content="pomodoro timer, focus timer, productivity app, pomodoro technique, study timer, work timer, concentration app, flowcus, focus app, time management, pomodoro online, free pomodoro, focus mode, deep work timer, tomato timer">
+  <meta name="author" content="FlowCus">
+  <meta name="robots" content="index, follow">
+  <meta name="googlebot" content="index, follow">
+  <link rel="canonical" href="https://flowcus.app/">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://flowcus.app/">
+  <meta property="og:title" content="FlowCus — Free Pomodoro Timer App | Focus Beautifully">
+  <meta property="og:description" content="Boost your productivity with FlowCus, a stunning Pomodoro timer featuring liquid glass design, customizable themes, and smart break cycles. Free, no signup required.">
+  <meta property="og:image" content="https://flowcus.app/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="FlowCus">
+  <meta property="og:locale" content="en_US">
 
-        /* Light Mode Overrides */
-        body.light-mode {
-            --bg-body: #f0f2f5;
-            --shell-bg: rgba(255, 255, 255, 0.95);
-            --shell-border: #e0e0e0;
-            --surface: #f3f4f6;
-            --surface-variant: #e5e7eb;
-            --on-surface: #1f2937;
-            --outline: #d1d5db;
-            --primary: #0061a4;
-            --primary-container: #d1e4ff;
-            --on-primary-container: #001d36;
-            --shadow-intensity: 0.15;
-        }
-        
-        body.light-mode.ios-mode {
-            --shell-bg: rgba(255, 255, 255, 0.75);
-            --glass-blur: 40px;
-        }
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://flowcus.app/">
+  <meta name="twitter:title" content="FlowCus — Free Pomodoro Timer App">
+  <meta name="twitter:description" content="A beautiful Pomodoro timer with liquid glass design. Focus sessions, break reminders, and stunning themes. 100% free.">
+  <meta name="twitter:image" content="https://flowcus.app/twitter-image.png">
 
-        /* iOS Liquid Glass Overrides */
-        body.ios-mode {
-            --shell-bg: rgba(20, 20, 25, 0.65);
-            --shell-border: rgba(255, 255, 255, 0.15);
-            --surface: rgba(255, 255, 255, 0.08);
-            --surface-variant: rgba(255, 255, 255, 0.12);
-            --on-surface: #ffffff;
-            --outline: rgba(255, 255, 255, 0.15);
-            
-            --glass-blur: 40px;
-            --glass-bg: rgba(20, 20, 25, 0.6);
-            
-            /* iOS Styling */
-            --radius-card: 22px;
-            --radius-btn: 14px;
-            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            --shadow-intensity: 0.4;
-            --btn-transform: scale(0.96);
-        }
-        
-        body.ios-mode .material-symbols-rounded {
-            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
+  <!-- Additional SEO -->
+  <meta name="application-name" content="FlowCus">
+  <meta name="apple-mobile-web-app-title" content="FlowCus">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0a0a1a">
+  <meta name="msapplication-TileColor" content="#0a0a1a">
+  
+  <!-- Structured Data / Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "FlowCus",
+    "alternateName": ["FlowCus Timer", "FlowCus Pomodoro", "Focus Timer"],
+    "description": "A free, beautiful Pomodoro timer app with liquid glass design. Boost productivity with customizable focus sessions, break cycles, and stunning themes.",
+    "url": "https://flowcus.app/",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires JavaScript",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "25 and 50 minute focus sessions",
+      "5 and 15 minute break timers",
+      "Pomodoro technique with 4-cycle system",
+      "Liquid glass UI design",
+      "Multiple color themes",
+      "Sound notifications",
+      "Works offline",
+      "No account required"
+    ],
+    "screenshot": "https://flowcus.app/screenshot.png",
+    "softwareVersion": "1.0",
+    "author": {
+      "@type": "Organization",
+      "name": "FlowCus",
+      "url": "https://flowcus.app/"
+    }
+  }
+  </script>
 
-        /* Computer Mode Overrides */
-        body.computer-mode {
-            --bg-body: #1a1c1e;
-            --shell-bg: var(--surface);
-            --shell-border: transparent;
-            --border-width: 0px;
-            --radius-shell: 16px;
-            --glass-blur: 0px;
-            --shadow-intensity: 0.5;
+  <!-- FAQ Schema for better search visibility -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is FlowCus?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "FlowCus is a free Pomodoro timer app with a beautiful liquid glass design. It helps you stay focused using the Pomodoro Technique with 25 or 50 minute focus sessions followed by short or long breaks."
         }
-        body.computer-mode.light-mode {
-            --bg-body: #eef1f5;
-            --shell-bg: #ffffff;
+      },
+      {
+        "@type": "Question",
+        "name": "How does the Pomodoro Technique work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The Pomodoro Technique involves working in focused 25-minute intervals (called Pomodoros) followed by 5-minute breaks. After completing 4 Pomodoros, you take a longer 15-minute break. FlowCus automates this cycle for you."
         }
+      },
+      {
+        "@type": "Question",
+        "name": "Is FlowCus free to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, FlowCus is completely free with no ads, no signup required, and works offline. All features including themes, sounds, and customization are available at no cost."
+        }
+      }
+    ]
+  }
+  </script>
 
-        body { 
-            background: var(--bg-body);
-            font-family: var(--font-main); 
-            color: var(--on-surface);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            transition: background 0.5s ease;
-            overflow: hidden;
-        }
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Sacramento&display=swap');
+  
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  @property --border-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+  @property --glow-opacity{syntax:'<number>';initial-value:.4;inherits:false}
+  :root{--transition-speed:.4s;--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--font-script:'Sacramento',cursive;--font-sans:'Inter',system-ui,-apple-system,sans-serif}
 
-        /* Dynamic Shell */
-        .android-shell {
-            width: 100%;
-            max-width: 390px;
-            height: fit-content;
-            max-height: 90vh;
-            background: var(--glass-bg);
-            backdrop-filter: blur(var(--glass-blur));
-            -webkit-backdrop-filter: blur(var(--glass-blur));
-            
-            border-radius: var(--radius-shell);
-            border: var(--border-width) solid var(--shell-border);
-            
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            
-            box-shadow: 0 32px 64px rgba(0,0,0,var(--shadow-intensity));
-            transition: all 0.5s cubic-bezier(0.2, 0, 0, 1);
-        }
+  [data-theme="dark"]{--bg-primary:#0a0a1a;--bg-secondary:#111128;--text-primary:#fff;--text-secondary:rgba(255,255,255,.5);--text-muted:rgba(255,255,255,.3);--glass-bg:rgba(255,255,255,.07);--glass-bg-heavy:rgba(255,255,255,.1);--glass-border:rgba(255,255,255,.14);--glass-highlight:rgba(255,255,255,.15);--glass-shadow:rgba(0,0,0,.35);--card-bg:rgba(255,255,255,.05);--overlay-bg:rgba(0,0,0,.5);--settings-bg:rgba(15,15,35,.95);--blob1:#6366f1;--blob1b:#3b82f6;--blob2:#a855f7;--blob2b:#ec4899;--blob3:#06b6d4;--blob3b:#3b82f6;--blob4:#f472b6;--blob4b:#c084fc;--blob5:#34d399;--blob5b:#06b6d4}
+  [data-theme="light"]{--bg-primary:#f0f0f8;--bg-secondary:#e4e4f0;--text-primary:#1a1a2e;--text-secondary:rgba(26,26,46,.5);--text-muted:rgba(26,26,46,.3);--glass-bg:rgba(255,255,255,.55);--glass-bg-heavy:rgba(255,255,255,.7);--glass-border:rgba(255,255,255,.8);--glass-highlight:rgba(255,255,255,.7);--glass-shadow:rgba(0,0,0,.08);--card-bg:rgba(255,255,255,.6);--overlay-bg:rgba(255,255,255,.4);--settings-bg:rgba(240,240,248,.96);--blob1:#818cf8;--blob1b:#60a5fa;--blob2:#c084fc;--blob2b:#f472b6;--blob3:#22d3ee;--blob3b:#60a5fa;--blob4:#f9a8d4;--blob4b:#d8b4fe;--blob5:#6ee7b7;--blob5b:#22d3ee}
+  [data-theme="midnight"]{--bg-primary:#020617;--bg-secondary:#0f172a;--text-primary:#e2e8f0;--text-secondary:rgba(226,232,240,.45);--text-muted:rgba(226,232,240,.25);--glass-bg:rgba(148,163,184,.06);--glass-bg-heavy:rgba(148,163,184,.1);--glass-border:rgba(148,163,184,.12);--glass-highlight:rgba(148,163,184,.1);--glass-shadow:rgba(0,0,0,.5);--card-bg:rgba(148,163,184,.04);--overlay-bg:rgba(0,0,0,.6);--settings-bg:rgba(2,6,23,.96);--blob1:#3b82f6;--blob1b:#1d4ed8;--blob2:#8b5cf6;--blob2b:#6d28d9;--blob3:#0ea5e9;--blob3b:#0284c7;--blob4:#a78bfa;--blob4b:#7c3aed;--blob5:#2dd4bf;--blob5b:#0891b2}
+  [data-theme="sunset"]{--bg-primary:#1a0a0a;--bg-secondary:#2a1215;--text-primary:#fef2f2;--text-secondary:rgba(254,242,242,.5);--text-muted:rgba(254,242,242,.3);--glass-bg:rgba(255,200,180,.07);--glass-bg-heavy:rgba(255,200,180,.12);--glass-border:rgba(255,200,180,.15);--glass-highlight:rgba(255,220,200,.15);--glass-shadow:rgba(0,0,0,.4);--card-bg:rgba(255,200,180,.05);--overlay-bg:rgba(0,0,0,.5);--settings-bg:rgba(26,10,10,.96);--blob1:#f97316;--blob1b:#ef4444;--blob2:#f43f5e;--blob2b:#e11d48;--blob3:#fb923c;--blob3b:#f59e0b;--blob4:#ec4899;--blob4b:#f43f5e;--blob5:#fbbf24;--blob5b:#f97316}
+  [data-theme="ocean"]{--bg-primary:#042f2e;--bg-secondary:#0a3d3c;--text-primary:#ecfdf5;--text-secondary:rgba(236,253,245,.5);--text-muted:rgba(236,253,245,.3);--glass-bg:rgba(153,246,228,.06);--glass-bg-heavy:rgba(153,246,228,.1);--glass-border:rgba(153,246,228,.14);--glass-highlight:rgba(153,246,228,.12);--glass-shadow:rgba(0,0,0,.4);--card-bg:rgba(153,246,228,.04);--overlay-bg:rgba(0,0,0,.5);--settings-bg:rgba(4,47,46,.96);--blob1:#14b8a6;--blob1b:#0d9488;--blob2:#06b6d4;--blob2b:#0891b2;--blob3:#2dd4bf;--blob3b:#14b8a6;--blob4:#22d3ee;--blob4b:#06b6d4;--blob5:#34d399;--blob5b:#10b981}
 
-        /* Computer Mode Layout */
-        body.computer-mode .android-shell {
-            max-width: 1000px;
-            max-height: 700px;
-            flex-direction: row;
-            border: 1px solid var(--outline);
-        }
-        
-        body.computer-mode .status-bar { display: none; }
-        
-        body.computer-mode .app-bar { 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: space-between;
-            gap: 20px;
-            padding: 20px 15px;
-            border-right: 1px solid var(--outline);
-            width: 90px;
-            flex-shrink: 0;
-            height: 100%;
-            background: var(--surface);
-            border-radius: 0;
-        }
-        body.computer-mode .app-title { 
-            writing-mode: vertical-rl; 
-            text-orientation: mixed; 
-            font-size: 16px; 
-            letter-spacing: 2px;
-            margin: 0;
-            font-weight: 700;
-        }
-        body.computer-mode .app-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: auto;
-            margin-bottom: 20px;
-            width: 100%;
-            align-items: center;
-        }
+  [data-accent="violet"]{--accent:#8b5cf6;--accent-light:#c4b5fd;--accent-glow:rgba(139,92,246,.35);--accent-dim:rgba(139,92,246,.15);--accent2:#a855f7;--accent3:#7c3aed}
+  [data-accent="blue"]{--accent:#3b82f6;--accent-light:#93c5fd;--accent-glow:rgba(59,130,246,.35);--accent-dim:rgba(59,130,246,.15);--accent2:#2563eb;--accent3:#1d4ed8}
+  [data-accent="cyan"]{--accent:#06b6d4;--accent-light:#67e8f9;--accent-glow:rgba(6,182,212,.35);--accent-dim:rgba(6,182,212,.15);--accent2:#0891b2;--accent3:#0e7490}
+  [data-accent="emerald"]{--accent:#10b981;--accent-light:#6ee7b7;--accent-glow:rgba(16,185,129,.35);--accent-dim:rgba(16,185,129,.15);--accent2:#059669;--accent3:#047857}
+  [data-accent="rose"]{--accent:#f43f5e;--accent-light:#fda4af;--accent-glow:rgba(244,63,94,.35);--accent-dim:rgba(244,63,94,.15);--accent2:#e11d48;--accent3:#be123c}
+  [data-accent="amber"]{--accent:#f59e0b;--accent-light:#fcd34d;--accent-glow:rgba(245,158,11,.35);--accent-dim:rgba(245,158,11,.15);--accent2:#d97706;--accent3:#b45309}
+  [data-accent="pink"]{--accent:#ec4899;--accent-light:#f9a8d4;--accent-glow:rgba(236,72,153,.35);--accent-dim:rgba(236,72,153,.15);--accent2:#db2777;--accent3:#be185d}
+  [data-accent="white"]{--accent:#e2e8f0;--accent-light:#f1f5f9;--accent-glow:rgba(226,232,240,.25);--accent-dim:rgba(226,232,240,.1);--accent2:#cbd5e1;--accent3:#94a3b8}
 
-        body.computer-mode .scroll-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            padding: 40px;
-            align-items: center;
-        }
-        
-        body.computer-mode .nav-bar { display: none; }
-        
-        body.computer-mode .mode-toggle { margin: 0 0 30px; width: 100%; max-width: 400px; }
-        body.computer-mode .timer-container { align-items: center; padding: 0; }
-        body.computer-mode .progress-ring-wrapper { width: 220px; height: 220px; }
-        body.computer-mode .progress-ring-wrapper circle { r: 95; }
-        body.computer-mode .progress-ring-wrapper svg { width: 220px; height: 220px; }
-        body.computer-mode .timer-display { left: 0; align-items: center; justify-content: center; }
-        body.computer-mode .timer-value { font-size: 52px; }
-        body.computer-mode .preset-chips { margin: 0; padding: 0; justify-content: center; width: 100%; max-width: 400px; }
-        body.computer-mode .stats-card { grid-template-columns: repeat(3, 1fr); width: 100%; max-width: 400px; }
-        body.computer-mode .sound-card { display: flex; align-items: center; gap: 15px; width: 100%; max-width: 400px; }
-        body.computer-mode .sound-header { margin-bottom: 0; flex: 1; }
-        body.computer-mode .volume-slider { width: 120px; }
-        body.computer-mode .zen-exit-btn { bottom: 20px; right: 20px; left: auto; transform: none; }
+  [data-glass="off"] .glass-container,[data-glass="off"] .time-value,[data-glass="off"] .chip,[data-glass="off"] .btn,[data-glass="off"] .settings-panel,[data-glass="off"] .top-action{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+  [data-glass="off"] .glass-container::before,[data-glass="off"] .time-value::before{display:none!important}
+  [data-animations="off"] .blob,[data-animations="off"] .particle,[data-animations="off"] .separator,[data-animations="off"] .glass-container,[data-animations="off"] .progress-border::before,[data-animations="off"] .progress-border::after,[data-animations="off"] .energy-dot,[data-animations="off"] .liquid-fill::before,[data-animations="off"] .brand-glow{animation:none!important}
 
-        /* UI Components */
-        .status-bar {
-            height: 40px; padding: 0 20px;
-            display: flex; align-items: center; justify-content: space-between;
-            font-size: 13px; font-weight: 500; opacity: 0.8;
-        }
+  html{height:-webkit-fill-available}
+  body{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;font-family:var(--font-sans);background:var(--bg-primary);overflow:hidden;position:relative;padding:var(--safe-top) 12px var(--safe-bottom);-webkit-tap-highlight-color:transparent;user-select:none;transition:background var(--transition-speed)}
 
-        .app-bar {
-            padding: 12px 20px;
-            display: flex; align-items: center; justify-content: space-between;
-            background: var(--surface);
-            border-bottom: 1px solid var(--outline);
-        }
-        body.ios-mode .app-bar { background: transparent; border-bottom: none; }
+  .bg-layer{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 30% 50%,var(--bg-secondary) 0%,var(--bg-primary) 70%)}
+  .blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.38;animation:blobMove 18s ease-in-out infinite alternate}
+  .blob:nth-child(1){width:380px;height:380px;background:radial-gradient(circle,var(--blob1),var(--blob1b));top:-12%;left:-12%}
+  .blob:nth-child(2){width:320px;height:320px;background:radial-gradient(circle,var(--blob2),var(--blob2b));bottom:-18%;right:-14%;animation-duration:24s}
+  .blob:nth-child(3){width:260px;height:260px;background:radial-gradient(circle,var(--blob3),var(--blob3b));top:45%;left:58%;animation-duration:22s}
+  .blob:nth-child(4){width:180px;height:180px;background:radial-gradient(circle,var(--blob4),var(--blob4b));top:12%;right:12%;animation-duration:26s}
+  .blob:nth-child(5){width:140px;height:140px;background:radial-gradient(circle,var(--blob5),var(--blob5b));bottom:22%;left:8%;animation-duration:19s}
+  @keyframes blobMove{0%{transform:translate(0,0) scale(1)}50%{transform:translate(50px,-40px) scale(1.08)}100%{transform:translate(-40px,50px) scale(.95)}}
 
-        .icon-btn {
-            width: 40px; height: 40px; border-radius: var(--radius-btn);
-            background: var(--surface-variant);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: transform 0.2s;
-            color: var(--on-surface); border: none;
-        }
-        body.ios-mode .icon-btn { background: rgba(255,255,255,0.15); }
-        .icon-btn:active { transform: var(--btn-transform); }
+  .particles{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+  .particle{position:absolute;width:2px;height:2px;background:var(--text-primary);opacity:.06;border-radius:50%;animation:particleFloat linear infinite}
+  @keyframes particleFloat{0%{transform:translateY(100vh);opacity:0}10%,90%{opacity:.08}100%{transform:translateY(-10vh);opacity:0}}
 
-        .scroll-container {
-            flex: 1; overflow-y: auto; scrollbar-width: none;
-            padding: 0 20px 20px;
-        }
-        .scroll-container::-webkit-scrollbar { display: none; }
+  .top-actions{position:fixed;top:calc(12px + var(--safe-top));right:12px;z-index:50;display:flex;gap:8px}
+  .top-action{width:40px;height:40px;border-radius:12px;background:var(--glass-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--glass-border);color:var(--text-secondary);display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 4px 12px var(--glass-shadow);transition:.3s;cursor:pointer}
+  .top-action:hover,.top-action:active{transform:translateY(-2px);color:var(--text-primary);background:var(--glass-bg-heavy)}
+  .top-action svg{width:18px;height:18px}
+  .insta-btn:hover{border-color:var(--accent);box-shadow:0 4px 16px var(--accent-dim)}
 
-        .mode-toggle {
-            display: flex; background: var(--surface-variant);
-            border-radius: 99px; padding: 4px; margin: 16px 0 24px;
-            position: relative;
-        }
-        body.ios-mode .mode-toggle { background: rgba(0,0,0,0.2); }
-        body.computer-mode .mode-toggle { background: var(--surface-variant); }
+  .settings-overlay{position:fixed;inset:0;z-index:90;background:var(--overlay-bg);opacity:0;pointer-events:none;transition:.35s}
+  .settings-overlay.active{opacity:1;pointer-events:auto}
+  .settings-panel{position:fixed;top:0;right:0;width:300px;max-width:85vw;height:100%;z-index:100;background:var(--settings-bg);backdrop-filter:blur(50px);-webkit-backdrop-filter:blur(50px);border-left:1px solid var(--glass-border);transform:translateX(100%);transition:.4s;overflow-y:auto;padding:calc(20px + var(--safe-top)) 18px calc(20px + var(--safe-bottom));display:flex;flex-direction:column;gap:20px}
+  .settings-panel.active{transform:translateX(0)}
+  .settings-header{display:flex;align-items:center;justify-content:space-between}
+  .settings-title{font-size:16px;font-weight:600;color:var(--text-primary);letter-spacing:.5px}
+  .settings-close{width:36px;height:36px;border-radius:10px;background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--text-secondary);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .settings-close svg{width:16px;height:16px}
+  .settings-section{display:flex;flex-direction:column;gap:10px}
+  .section-label{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+  .theme-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+  .theme-option{padding:10px 4px;border-radius:10px;background:var(--glass-bg);border:2px solid transparent;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer}
+  .theme-option.active{border-color:var(--accent);box-shadow:0 0 16px var(--accent-dim)}
+  .theme-preview{width:28px;height:28px;border-radius:7px}
+  .tp-dark{background:#0a0a1a}.tp-light{background:#f0f0f8}.tp-midnight{background:#020617}.tp-sunset{background:#1a0a0a}.tp-ocean{background:#042f2e}
+  .theme-name{font-size:8px;color:var(--text-secondary);letter-spacing:.5px}
+  .color-grid{display:flex;gap:8px;flex-wrap:wrap}
+  .color-option{width:32px;height:32px;border-radius:10px;border:2px solid transparent;cursor:pointer}
+  .color-option.active{border-color:var(--text-primary);box-shadow:0 0 12px var(--accent-glow)}
+  .co-violet{background:linear-gradient(135deg,#8b5cf6,#a855f7)}.co-blue{background:linear-gradient(135deg,#3b82f6,#2563eb)}.co-cyan{background:linear-gradient(135deg,#06b6d4,#0891b2)}.co-emerald{background:linear-gradient(135deg,#10b981,#059669)}.co-rose{background:linear-gradient(135deg,#f43f5e,#e11d48)}.co-amber{background:linear-gradient(135deg,#f59e0b,#d97706)}.co-pink{background:linear-gradient(135deg,#ec4899,#db2777)}.co-white{background:linear-gradient(135deg,#e2e8f0,#cbd5e1)}
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;background:var(--glass-bg);border:1px solid var(--glass-border)}
+  .toggle-label{font-size:12px;font-weight:500;color:var(--text-primary)}
+  .toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0}
+  .toggle-switch input{display:none}
+  .toggle-track{position:absolute;inset:0;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)}
+  .toggle-thumb{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:10px;background:var(--text-secondary);transition:.3s}
+  .toggle-switch input:checked + .toggle-track{background:var(--accent-dim);border-color:var(--accent)}
+  .toggle-switch input:checked ~ .toggle-thumb{left:22px;background:var(--accent)}
+  .settings-footer{margin-top:auto;padding-top:12px;border-top:1px solid var(--glass-border);text-align:center;font-size:11px;color:var(--text-muted)}
 
-        .mode-option {
-            flex: 1; text-align: center; padding: 8px 0;
-            font-size: 13px; font-weight: 600; z-index: 2;
-            cursor: pointer; opacity: 0.6; transition: opacity 0.3s;
-            color: var(--on-surface);
-        }
-        .mode-option.active { opacity: 1; color: var(--on-primary-container); }
-        .mode-indicator {
-            position: absolute; top: 4px; bottom: 4px; width: 50%;
-            background: var(--primary-container);
-            border-radius: 99px; transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
-            z-index: 1;
-        }
-        body.ios-mode .mode-indicator { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); }
+  .glass-container{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px;padding:24px 22px 22px;border-radius:28px;background:linear-gradient(135deg,var(--glass-bg-heavy),var(--glass-bg),var(--card-bg));backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border:1px solid var(--glass-border);box-shadow:0 8px 32px var(--glass-shadow),inset 0 1px 0 var(--glass-highlight);width:min(380px,85vw);max-height:80vh;overflow-y:auto;scrollbar-width:none}
+  .glass-container::-webkit-scrollbar{display:none}
+  .glass-container::before{content:'';position:absolute;inset:-1px;border-radius:inherit;background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,.07) 32%,transparent 44%,transparent 60%,rgba(255,255,255,.04) 70%,transparent 80%);pointer-events:none}
 
-        .timer-container {
-            display: flex; flex-direction: column; align-items: center;
-            padding: 10px 0;
-        }
-        .progress-ring-wrapper { position: relative; width: 240px; height: 240px; }
-        .progress-ring {
-            transition: stroke-dashoffset 1s linear, stroke 0.5s ease;
-            transform: rotate(-90deg); transform-origin: 50% 50%;
-            stroke-linecap: round;
-        }
-        .timer-display {
-            position: absolute; inset: 0;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-        }
-        .timer-value {
-            font-family: 'Google Sans', var(--font-main); font-size: 56px; font-weight: 300;
-            letter-spacing: -2px; line-height: 1;
-            color: var(--on-surface);
-        }
-        body.ios-mode .timer-value { font-weight: 200; letter-spacing: -3px; }
-        .timer-label {
-            font-size: 12px; font-weight: 600; opacity: 0.7;
-            text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px;
-            color: var(--on-surface);
-        }
+  .progress-border{position:absolute;inset:-3px;border-radius:31px;opacity:0;pointer-events:none;transition:.5s}
+  .progress-border.active{opacity:1}
+  .progress-border::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:2px;background:conic-gradient(from var(--border-angle),transparent 0%,var(--accent) 8%,var(--accent2) 18%,transparent 28%,transparent 48%,var(--accent3) 58%,var(--accent) 68%,transparent 78%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:borderSpin 2.2s linear infinite;filter:drop-shadow(0 0 6px var(--accent-glow))}
+  .progress-border::after{content:'';position:absolute;inset:-4px;border-radius:35px;padding:3px;background:conic-gradient(from calc(var(--border-angle) + 140deg),transparent 0%,var(--accent-glow) 10%,transparent 22%,transparent 54%,var(--accent-glow) 62%,transparent 78%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:borderSpin 2.2s linear infinite,borderPulse 1.3s ease-in-out infinite;filter:blur(6px);opacity:var(--glow-opacity)}
+  @keyframes borderSpin{to{--border-angle:360deg}}
+  @keyframes borderPulse{0%,100%{--glow-opacity:.25}50%{--glow-opacity:.85}}
+  .progress-track{position:absolute;inset:0;border-radius:inherit;padding:2px;background:conic-gradient(from -90deg,var(--accent) 0%,var(--accent2) var(--progress,0%),transparent var(--progress,0%),transparent 100%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.5}
+  .energy-dot{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--accent-light);box-shadow:0 0 10px var(--accent),0 0 20px var(--accent-glow)}
+  .progress-border.active .energy-dot:nth-child(1){animation:dot1 3.4s linear infinite}
+  .progress-border.active .energy-dot:nth-child(2){animation:dot2 4.2s linear infinite}
+  @keyframes dot1{0%{top:0;left:18%}25%{top:0;left:82%}50%{top:82%;left:100%}75%{top:100%;left:18%}100%{top:0;left:18%}}
+  @keyframes dot2{0%{top:100%;left:75%}25%{top:20%;left:100%}50%{top:0;left:40%}75%{top:20%;left:0}100%{top:100%;left:75%}}
 
-        .preset-chips {
-            display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none;
-            padding: 4px 4px 12px; margin: 0 -20px; padding-left: 20px; padding-right: 20px;
-        }
-        .preset-chips::-webkit-scrollbar { display: none; }
-        .preset-chip {
-            padding: 8px 16px; border-radius: 99px;
-            background: var(--surface); border: 1px solid var(--outline);
-            font-size: 13px; font-weight: 500; white-space: nowrap;
-            cursor: pointer; transition: all 0.2s; color: var(--on-surface);
-        }
-        body.ios-mode .preset-chip {
-            background: rgba(255,255,255,0.1); border: none;
-        }
-        .preset-chip.active {
-            background: var(--primary-container);
-            border-color: transparent; color: var(--on-primary-container);
-        }
-        body.ios-mode .preset-chip.active {
-            background: rgba(255,255,255,0.25);
-        }
+  /* Header - Handwritten Brand Only */
+  .header{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;position:relative;z-index:2;padding-bottom:4px}
+  .brand{position:relative;display:flex;flex-direction:column;align-items:center;gap:0}
+  .brand-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:120px;height:50px;background:radial-gradient(ellipse,var(--accent-glow) 0%,transparent 70%);filter:blur(20px);opacity:.5;animation:brandPulse 3s ease-in-out infinite;pointer-events:none}
+  @keyframes brandPulse{0%,100%{opacity:.35;transform:translate(-50%,-50%) scale(1)}50%{opacity:.65;transform:translate(-50%,-50%) scale(1.15)}}
+  .brand-name{font-family:var(--font-script);font-size:44px;color:var(--text-primary);line-height:1;position:relative;z-index:1;text-shadow:0 2px 20px var(--accent-dim)}
+  .brand-name span{color:var(--accent)}
+  .brand-tagline{font-size:11px;font-weight:400;letter-spacing:2px;color:var(--text-muted);text-transform:lowercase}
+  .header-row{display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:6px}
+  .cycle-badge{padding:4px 10px;border-radius:6px;background:var(--glass-bg);border:1px solid var(--glass-border);font-size:10px;font-weight:500;color:var(--text-muted);letter-spacing:.5px}
+  .session-label{font-size:10px;font-weight:500;color:var(--text-secondary);letter-spacing:.5px;text-transform:uppercase}
 
-        .stats-card {
-            background: var(--surface-variant);
-            border-radius: var(--radius-card); padding: 16px;
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
-            text-align: center; margin-bottom: 20px;
-        }
-        body.ios-mode .stats-card {
-            background: rgba(255,255,255,0.05);
-        }
-        .stat-value { font-family: 'Google Sans', var(--font-main); font-size: 18px; font-weight: 600; color: var(--primary); }
-        .stat-label { font-size: 10px; opacity: 0.7; text-transform: uppercase; color: var(--on-surface); }
+  .mode-selector{width:100%;display:flex;flex-direction:column;gap:10px;position:relative;z-index:2}
+  .mode-tabs{display:flex;background:var(--glass-bg);border-radius:12px;padding:3px;border:1px solid var(--glass-border)}
+  .mode-tab{flex:1;padding:8px 12px;border-radius:9px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);background:transparent;border:none;cursor:pointer;transition:.25s;display:flex;align-items:center;justify-content:center;gap:6px}
+  .mode-tab.active{background:linear-gradient(135deg,var(--accent-dim),rgba(255,255,255,.05));color:var(--accent-light);box-shadow:0 2px 10px var(--accent-dim)}
+  .mode-tab svg{width:14px;height:14px}
 
-        .sound-card {
-            background: var(--surface); border-radius: var(--radius-card);
-            padding: 14px; margin-bottom: 10px; transition: all 0.25s;
-            border: 1px solid transparent;
-        }
-        body.ios-mode .sound-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .sound-card.active {
-            background: var(--primary-container);
-            border-color: var(--primary);
-        }
-        .sound-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .sound-info { display: flex; align-items: center; gap: 10px; }
-        .sound-icon {
-            width: 36px; height: 36px; border-radius: 12px;
-            background: var(--surface-variant);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--on-surface);
-        }
-        body.ios-mode .sound-icon { background: rgba(255,255,255,0.15); }
-        
-        .sound-toggle {
-            padding: 6px 14px; border-radius: 99px;
-            background: var(--surface-variant); border: none;
-            color: var(--on-surface); font-size: 12px; font-weight: 600;
-            display: flex; align-items: center; gap: 4px; cursor: pointer;
-        }
-        body.ios-mode .sound-toggle { background: rgba(255,255,255,0.15); }
-        
-        .sound-card.active .sound-toggle {
-            background: var(--on-primary-container); color: var(--primary-container);
-        }
-        .volume-slider {
-            width: 100%; height: 4px; background: var(--outline);
-            border-radius: 99px; appearance: none; cursor: pointer;
-        }
-        .volume-slider::-webkit-slider-thumb {
-            appearance: none; width: 16px; height: 16px; border-radius: 50%;
-            background: var(--primary); border: 2px solid var(--surface);
-        }
+  .duration-row{display:flex;align-items:center;gap:8px;justify-content:center}
+  .duration-label{font-size:10px;font-weight:500;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
+  .duration-pills{display:flex;gap:6px}
+  .pill{padding:7px 14px;border-radius:20px;border:1px solid var(--glass-border);background:var(--card-bg);color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;transition:.25s}
+  .pill.active{background:linear-gradient(135deg,var(--accent-dim),rgba(255,255,255,.03));color:var(--accent-light);border-color:var(--accent);box-shadow:0 0 12px var(--accent-dim)}
+  .pill:hover:not(.active){background:var(--glass-bg);color:var(--text-primary)}
 
-        .nav-bar {
-            padding: 12px 24px 20px;
-            display: flex; align-items: center; justify-content: space-between;
-            background: var(--surface);
-            border-top: 1px solid var(--outline);
-        }
-        body.ios-mode .nav-bar {
-            background: transparent; border-top: none;
-            backdrop-filter: blur(10px);
-        }
-        .nav-btn {
-            width: 52px; height: 52px; border-radius: var(--radius-btn);
-            background: var(--surface-variant);
-            display: flex; align-items: center; justify-content: center;
-            border: none; color: var(--on-surface); cursor: pointer;
-        }
-        body.ios-mode .nav-btn { background: rgba(255,255,255,0.15); }
-        
-        .fab-main {
-            width: 72px; height: 72px; border-radius: 24px;
-            background: var(--primary-container);
-            color: var(--on-primary-container);
-            display: flex; align-items: center; justify-content: center;
-            border: none; cursor: pointer; transition: transform 0.3s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        body.ios-mode .fab-main {
-            border-radius: 28px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-        }
-        .fab-main:active { transform: var(--btn-transform); }
+  .long-break-row{display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 12px;border-radius:10px;background:var(--glass-bg);border:1px solid var(--glass-border)}
+  .long-break-row span{font-size:11px;font-weight:400;color:var(--text-secondary)}
+  .mini-toggle{position:relative;width:36px;height:20px;flex-shrink:0}
+  .mini-toggle input{display:none}
+  .mini-toggle .toggle-track{position:absolute;inset:0;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)}
+  .mini-toggle .toggle-thumb{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:8px;background:var(--text-secondary);transition:.3s}
+  .mini-toggle input:checked + .toggle-track{background:var(--accent-dim);border-color:var(--accent)}
+  .mini-toggle input:checked ~ .toggle-thumb{left:18px;background:var(--accent)}
 
-        /* Zen Mode */
-        .zen-mode .hide-on-zen { display: none !important; }
-        .zen-mode .timer-container { padding: 60px 0; flex: 1; justify-content: center; }
-        .zen-mode .timer-value { font-size: 80px; }
-        .zen-mode .nav-bar { background: transparent; border: none; padding-bottom: 40px; }
-        .zen-exit-btn {
-            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
-            padding: 8px 20px; border-radius: 20px; font-size: 12px;
-            color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.1);
-            cursor: pointer; display: none; z-index: 100;
-        }
-        .zen-mode .zen-exit-btn { display: block; }
+  .timer-display{display:flex;align-items:center;gap:4px;width:100%;justify-content:center;position:relative;z-index:2}
+  .time-segment{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;max-width:90px}
+  .time-value{position:relative;width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;border-radius:16px;background:linear-gradient(160deg,var(--glass-bg-heavy),var(--card-bg));backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--glass-border);box-shadow:0 4px 16px var(--glass-shadow),inset 0 1px 0 var(--glass-highlight);overflow:hidden}
+  .time-value::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent 0%,rgba(255,255,255,.03) 10%,transparent 20%,transparent 50%,rgba(255,255,255,.02) 60%,transparent 70%);animation:shimmerRotate 8s linear infinite}
+  @keyframes shimmerRotate{to{transform:rotate(360deg)}}
+  .liquid-fill{position:absolute;left:0;right:0;bottom:0;height:0%;background:linear-gradient(to top,var(--accent-dim),rgba(255,255,255,.02),transparent);transition:height 1s;border-radius:0 0 16px 16px}
+  .liquid-fill::before{content:'';position:absolute;top:-4px;left:0;right:0;height:8px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath d='M0,60 C200,120 400,0 600,60 C800,120 1000,0 1200,60 L1200,120 L0,120Z' fill='rgba(139,92,246,.25)'/%3E%3C/svg%3E") repeat-x;background-size:80px 8px;animation:waveMove 2s linear infinite}
+  @keyframes waveMove{to{background-position-x:80px}}
+  .time-value span{font-size:clamp(28px,8vw,42px);font-weight:300;color:var(--text-primary);position:relative;z-index:2;font-variant-numeric:tabular-nums}
+  .time-label{font-size:9px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted)}
+  .separator{font-size:clamp(22px,6vw,32px);font-weight:300;color:var(--text-muted);padding-bottom:16px;animation:blink 1.5s ease-in-out infinite}
+  .separator.paused{animation:none;opacity:.3}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-        /* Bottom Sheet */
-        .bottom-sheet {
-            position: fixed; bottom: -100%; left: 0; right: 0;
-            max-width: 390px; margin: 0 auto;
-            background: var(--surface);
-            border-radius: 24px 24px 0 0;
-            padding: 20px; z-index: 100;
-            transition: bottom 0.35s cubic-bezier(0.2, 0, 0, 1);
-            max-height: 85vh; overflow-y: auto;
-            border: 1px solid var(--outline);
-        }
-        body.ios-mode .bottom-sheet {
-            background: rgba(30, 30, 35, 0.85);
-            backdrop-filter: blur(40px);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        body.light-mode.ios-mode .bottom-sheet {
-            background: rgba(255, 255, 255, 0.85);
-        }
-        
-        .bottom-sheet.active { bottom: 0; }
-        .sheet-handle {
-            width: 40px; height: 4px; background: var(--outline);
-            border-radius: 99px; margin: 0 auto 20px; opacity: 0.5;
-        }
-        .setting-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 0; border-bottom: 1px solid var(--outline);
-        }
-        .color-options { display: flex; gap: 12px; margin-top: 10px; }
-        .color-dot {
-            width: 32px; height: 32px; border-radius: 50%;
-            cursor: pointer; border: 2px solid transparent;
-        }
-        .color-dot.selected { border-color: var(--on-surface); }
+  .status{font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);display:flex;align-items:center;gap:6px;position:relative;z-index:2}
+  .status-dot{width:5px;height:5px;border-radius:50%;background:var(--text-muted)}
+  .status.running .status-dot{background:#34d399;box-shadow:0 0 6px rgba(52,211,153,.5);animation:pulse 1.5s infinite}
+  .status.paused .status-dot{background:#fbbf24}
+  .status.finished .status-dot{background:#f87171}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-        .danger-zone {
-            margin-top: 24px;
-            padding-top: 16px;
-            border-top: 1px solid var(--outline);
-        }
-        .danger-btn {
-            width: 100%;
-            padding: 12px;
-            background: rgba(255, 59, 48, 0.15);
-            color: #ff3b30;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .danger-btn:active { opacity: 0.8; }
+  .controls{display:flex;gap:8px;width:100%;position:relative;z-index:2}
+  .btn{position:relative;flex:1;padding:12px 16px;border-radius:12px;font-family:var(--font-sans);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;border:1px solid var(--glass-border);cursor:pointer;overflow:hidden;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);min-height:44px;transition:.25s}
+  .btn-start{background:linear-gradient(135deg,var(--accent-dim),rgba(255,255,255,.03));color:var(--accent-light);box-shadow:0 4px 16px var(--accent-dim)}
+  .btn-start:hover{box-shadow:0 6px 24px var(--accent-glow);transform:translateY(-1px)}
+  .btn-pause{background:linear-gradient(135deg,rgba(245,158,11,.25),rgba(251,191,36,.12));color:#fde68a}
+  .btn-reset{background:var(--glass-bg);color:var(--text-secondary);flex:.6}
+  .btn-reset:hover{background:var(--glass-bg-heavy);color:var(--text-primary)}
+  .btn .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.2);transform:scale(0);animation:ripple .6s ease-out}
+  @keyframes ripple{to{transform:scale(4);opacity:0}}
 
-        .completion-overlay {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.4s;
-        }
-        .completion-overlay.active { opacity: 1; pointer-events: all; }
-    </style>
+  .completion-overlay{position:fixed;inset:0;z-index:80;background:radial-gradient(circle,var(--accent-glow),transparent 70%);opacity:0;pointer-events:none}
+  .completion-overlay.active{animation:flash 2s ease-out}
+  @keyframes flash{0%{opacity:1}100%{opacity:0}}
+  .hidden{display:none!important}
+
+  /* SEO Hidden Content */
+  .seo-content{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+  @media(max-width:400px){
+    .glass-container{padding:20px 16px 18px;gap:12px;border-radius:24px}
+    .progress-border{border-radius:27px}
+    .brand-name{font-size:36px}
+    .brand-tagline{font-size:10px;letter-spacing:1.5px}
+    .time-value{border-radius:14px}
+    .time-value span{font-size:28px!important}
+    .separator{font-size:20px!important;padding-bottom:12px}
+    .btn{padding:10px 12px;font-size:10px;min-height:40px;border-radius:10px}
+    .pill{padding:6px 10px;font-size:11px}
+    .mode-tab{padding:6px 8px;font-size:10px}
+    .cycle-badge{padding:3px 8px;font-size:9px}
+  }
+  @media(max-height:600px){
+    .glass-container{gap:10px;padding:18px 16px 16px}
+    .time-segment{max-width:70px}
+    .time-value span{font-size:26px!important}
+    .separator{padding-bottom:10px}
+    .brand-name{font-size:32px}
+  }
+</style>
 </head>
-<body class="dark-mode">
+<body>
+  <!-- SEO Hidden Content for Search Engines -->
+  <div class="seo-content">
+    <h1>FlowCus - Free Pomodoro Timer App for Focus and Productivity</h1>
+    <p>FlowCus is a free, beautiful Pomodoro timer application designed to help you stay focused and boost your productivity. Using the proven Pomodoro Technique, FlowCus offers 25 and 50 minute focus sessions followed by 5 or 15 minute breaks.</p>
+    <h2>Features of FlowCus Pomodoro Timer</h2>
+    <ul>
+      <li>25 minute and 50 minute focus sessions</li>
+      <li>5 minute short breaks and 15 minute long breaks</li>
+      <li>Automatic break reminders after 4 focus cycles</li>
+      <li>Beautiful liquid glass UI design</li>
+      <li>Multiple color themes: Dark, Light, Midnight, Sunset, Ocean</li>
+      <li>Customizable accent colors</li>
+      <li>Sound notifications when timer completes</li>
+      <li>Works offline - no internet required</li>
+      <li>No account or signup needed</li>
+      <li>Completely free with no ads</li>
+    </ul>
+    <h2>What is the Pomodoro Technique?</h2>
+    <p>The Pomodoro Technique is a time management method developed by Francesco Cirillo. It uses a timer to break work into intervals, traditionally 25 minutes in length, separated by short breaks. FlowCus implements this technique with customizable focus and break durations.</p>
+    <h2>How to Use FlowCus</h2>
+    <p>Select your focus duration (25 or 50 minutes), click Start, and begin your focused work session. When the timer ends, take a short 5-minute break. After completing 4 focus sessions, enjoy a longer 15-minute break. FlowCus tracks your cycles automatically.</p>
+  </div>
 
-    <div id="app-shell" class="android-shell">
-        <!-- Status Bar -->
-        <div class="status-bar hide-on-zen">
-            <span id="sys-time">12:00</span>
-            <div style="display:flex; gap:6px;">
-                <span class="material-symbols-rounded">signal_wifi_4_bar</span>
-                <span class="material-symbols-rounded">battery_full_alt</span>
-            </div>
-        </div>
+  <div class="bg-layer">
+    <div class="blob"></div><div class="blob"></div><div class="blob"></div><div class="blob"></div><div class="blob"></div>
+  </div>
+  <div class="particles" id="particles"></div>
+  <div class="completion-overlay" id="completionOverlay"></div>
 
-        <!-- App Bar / Sidebar -->
-        <div class="app-bar hide-on-zen">
-            <!-- Top Section -->
-            <div style="display:flex; flex-direction:column; align-items:center; gap:10px; width:100%;">
-                <div class="app-title">Focus</div>
-                <!-- Settings Button (Top in Desktop, Hidden in Mobile Nav) -->
-                <button class="icon-btn hide-on-zen" onclick="openSettings()" title="Settings" style="display:none;">
-                    <span class="material-symbols-rounded">settings</span>
-                </button>
-            </div>
+  <div class="top-actions">
+    <a class="top-action insta-btn" href="https://instagram.com/adichitodi" target="_blank" rel="noopener noreferrer" aria-label="Follow FlowCus on Instagram @adichitodi" title="@adichitodi">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+        <circle cx="12" cy="12" r="5"></circle>
+        <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"></circle>
+      </svg>
+    </a>
+    <button class="top-action" id="settingsToggle" aria-label="Open Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
+  </div>
 
-            <!-- Desktop Only: Bottom Actions (Empty now as Delete is in settings) -->
-            <div class="app-actions" style="display:none;">
-                <!-- Placeholder for future desktop-only actions if needed -->
-            </div>
-        </div>
+  <div class="settings-overlay" id="settingsOverlay"></div>
+  <aside class="settings-panel" id="settingsPanel" aria-label="Settings Panel">
+    <div class="settings-header">
+      <span class="settings-title">Settings</span>
+      <button class="settings-close" id="settingsClose" aria-label="Close Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"></path></svg></button>
+    </div>
+    <div class="settings-section">
+      <span class="section-label">Theme</span>
+      <div class="theme-grid" role="radiogroup" aria-label="Theme Selection">
+        <div class="theme-option active" data-set-theme="dark" role="radio" aria-checked="true" tabindex="0"><div class="theme-preview tp-dark"></div><span class="theme-name">Dark</span></div>
+        <div class="theme-option" data-set-theme="light" role="radio" aria-checked="false" tabindex="0"><div class="theme-preview tp-light"></div><span class="theme-name">Light</span></div>
+        <div class="theme-option" data-set-theme="midnight" role="radio" aria-checked="false" tabindex="0"><div class="theme-preview tp-midnight"></div><span class="theme-name">Mid</span></div>
+        <div class="theme-option" data-set-theme="sunset" role="radio" aria-checked="false" tabindex="0"><div class="theme-preview tp-sunset"></div><span class="theme-name">Sun</span></div>
+        <div class="theme-option" data-set-theme="ocean" role="radio" aria-checked="false" tabindex="0"><div class="theme-preview tp-ocean"></div><span class="theme-name">Sea</span></div>
+      </div>
+    </div>
+    <div class="settings-section">
+      <span class="section-label">Accent</span>
+      <div class="color-grid" role="radiogroup" aria-label="Accent Color Selection">
+        <div class="color-option co-violet active" data-set-accent="violet" role="radio" aria-checked="true" tabindex="0" aria-label="Violet"></div>
+        <div class="color-option co-blue" data-set-accent="blue" role="radio" aria-checked="false" tabindex="0" aria-label="Blue"></div>
+        <div class="color-option co-cyan" data-set-accent="cyan" role="radio" aria-checked="false" tabindex="0" aria-label="Cyan"></div>
+        <div class="color-option co-emerald" data-set-accent="emerald" role="radio" aria-checked="false" tabindex="0" aria-label="Emerald"></div>
+        <div class="color-option co-rose" data-set-accent="rose" role="radio" aria-checked="false" tabindex="0" aria-label="Rose"></div>
+        <div class="color-option co-amber" data-set-accent="amber" role="radio" aria-checked="false" tabindex="0" aria-label="Amber"></div>
+        <div class="color-option co-pink" data-set-accent="pink" role="radio" aria-checked="false" tabindex="0" aria-label="Pink"></div>
+        <div class="color-option co-white" data-set-accent="white" role="radio" aria-checked="false" tabindex="0" aria-label="White"></div>
+      </div>
+    </div>
+    <div class="settings-section">
+      <span class="section-label">Effects</span>
+      <div class="toggle-row"><span class="toggle-label">Glass Blur</span><label class="toggle-switch"><input type="checkbox" id="toggleGlass" checked aria-label="Toggle Glass Blur Effect"><span class="toggle-track"></span><span class="toggle-thumb"></span></label></div>
+      <div class="toggle-row"><span class="toggle-label">Animations</span><label class="toggle-switch"><input type="checkbox" id="toggleAnimations" checked aria-label="Toggle Animations"><span class="toggle-track"></span><span class="toggle-thumb"></span></label></div>
+      <div class="toggle-row"><span class="toggle-label">Sound</span><label class="toggle-switch"><input type="checkbox" id="toggleSound" checked aria-label="Toggle Sound Notifications"><span class="toggle-track"></span><span class="toggle-thumb"></span></label></div>
+    </div>
+    <div class="settings-footer">FlowCus — Focus Beautifully</div>
+  </aside>
 
-        <div class="scroll-container">
-            
-            <!-- Focus/Break Toggle -->
-            <div class="mode-toggle hide-on-zen">
-                <div class="mode-indicator" id="mode-indicator"></div>
-                <div class="mode-option active" onclick="setMode('focus')" id="opt-focus">Focus</div>
-                <div class="mode-option" onclick="setMode('break')" id="opt-break">Break</div>
-            </div>
-
-            <!-- Timer -->
-            <div class="timer-container">
-                <div class="progress-ring-wrapper">
-                    <svg width="240" height="240" viewBox="0 0 240 240">
-                        <circle cx="120" cy="120" r="105" stroke="var(--outline)" stroke-width="5" fill="none" opacity="0.3"/>
-                        <circle id="progress-circle" class="progress-ring" cx="120" cy="120" r="105" stroke="var(--primary)" stroke-width="6" fill="none" stroke-dasharray="660" stroke-dashoffset="0" />
-                    </svg>
-                    <div class="timer-display">
-                        <div id="timer" class="timer-value">25:00</div>
-                        <div class="timer-label" id="timer-status">Focus Session</div>
-                    </div>
-                </div>
-
-                <!-- Scrollable Time Presets -->
-                <div class="preset-chips hide-on-zen">
-                    <button class="preset-chip" onclick="setDuration(15)">15m</button>
-                    <button class="preset-chip active" onclick="setDuration(25)">25m</button>
-                    <button class="preset-chip" onclick="setDuration(45)">45m</button>
-                    <button class="preset-chip" onclick="setDuration(60)">60m</button>
-                    <button class="preset-chip" onclick="setDuration(90)">90m</button>
-                </div>
-            </div>
-
-            <!-- Stats -->
-            <div class="stats-card hide-on-zen">
-                <div class="stat-item">
-                    <div class="stat-value" id="stat-sessions">0</div>
-                    <div class="stat-label">Sessions</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="stat-minutes">0h</div>
-                    <div class="stat-label">Total Time</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="stat-streak">0🔥</div>
-                    <div class="stat-label">Streak</div>
-                </div>
-            </div>
-
-            <!-- Sounds -->
-            <div class="section-title hide-on-zen" style="font-size:11px; opacity:0.5; text-transform:uppercase; margin-bottom:8px; width:100%;">Ambient Sound</div>
-            
-            <div id="node-brown" class="sound-card">
-                <div class="sound-header">
-                    <div class="sound-info">
-                        <div class="sound-icon"><span class="material-symbols-rounded">waves</span></div>
-                        <div><div style="font-size:14px; font-weight:500;">Brown Noise</div><div style="font-size:11px; opacity:0.6;">Deep rumble</div></div>
-                    </div>
-                    <button onclick="toggleNode('brown')" class="sound-toggle"><span class="material-symbols-rounded text-base">play_arrow</span> Start</button>
-                </div>
-                <input type="range" class="volume-slider" min="0" max="1" step="0.01" value="0.5" oninput="updateVolume('brown', this.value)">
-            </div>
-
-            <div id="node-binaural" class="sound-card">
-                <div class="sound-header">
-                    <div class="sound-info">
-                        <div class="sound-icon"><span class="material-symbols-rounded">graphic_eq</span></div>
-                        <div><div style="font-size:14px; font-weight:500;">Binaural</div><div style="font-size:11px; opacity:0.6;">Alpha waves</div></div>
-                    </div>
-                    <button onclick="toggleNode('binaural')" class="sound-toggle"><span class="material-symbols-rounded text-base">play_arrow</span> Start</button>
-                </div>
-                <input type="range" class="volume-slider" min="0" max="1" step="0.01" value="0.3" oninput="updateVolume('binaural', this.value)">
-            </div>
-        </div>
-
-        <!-- Navigation (Mobile Only) -->
-        <div class="nav-bar hide-on-zen">
-            <!-- Settings Button (Bottom Left in Mobile) -->
-            <button class="nav-btn" onclick="openSettings()" title="Settings">
-                <span class="material-symbols-rounded">settings</span>
-            </button>
-            
-            <button id="play-pause" class="fab-main">
-                <span class="material-symbols-rounded text-4xl" id="play-icon">play_arrow</span>
-            </button>
-
-            <!-- Reset Timer Button -->
-            <button class="nav-btn" onclick="resetTimerOnly()" title="Reset Timer">
-                <span class="material-symbols-rounded">refresh</span>
-            </button>
-        </div>
-
-        <!-- Zen Exit Button -->
-        <button class="zen-exit-btn" onclick="toggleZen()">
-            <span class="material-symbols-rounded" style="vertical-align:middle; font-size:16px; margin-right:4px;">fullscreen_exit</span>
-            Exit Zen
-        </button>
-
-        <!-- Completion Overlay -->
-        <div class="completion-overlay" id="completion-overlay">
-            <div style="width:80px; height:80px; background:var(--primary-container); border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:20px; box-shadow: 0 0 30px var(--primary);">
-                <span class="material-symbols-rounded" style="font-size:40px; color:var(--on-primary-container)">check</span>
-            </div>
-            <h2 style="font-family:'Google Sans'; margin:0 0 8px; color:var(--on-surface)">Session Complete</h2>
-            <p style="opacity:0.7; margin:0 0 30px; text-align:center; max-width:200px; color:var(--on-surface)">Great job staying focused!</p>
-            <button class="fab-main" style="width:160px; border-radius:99px;" onclick="closeCompletion()">
-                <span class="material-symbols-rounded" style="margin-right:8px;">refresh</span> Restart
-            </button>
-        </div>
-
-        <!-- Settings Sheet -->
-        <div class="bottom-sheet" id="settings-sheet">
-            <div class="sheet-handle"></div>
-            <h3 style="font-family:'Google Sans'; margin:0 0 20px; color:var(--on-surface)">Settings</h3>
-            
-            <!-- Theme Mode -->
-            <div class="setting-row">
-                <div>
-                    <div style="font-size:14px; font-weight:500; color:var(--on-surface)">Appearance</div>
-                    <div style="font-size:12px; opacity:0.6; color:var(--on-surface)">Choose your interface style</div>
-                </div>
-                <div style="display:flex; gap:8px;">
-                    <button class="preset-chip" id="btn-android" onclick="setThemeMode('android')">Android</button>
-                    <button class="preset-chip" id="btn-ios" onclick="setThemeMode('ios')">iOS</button>
-                </div>
-            </div>
-
-            <!-- Light/Dark Toggle -->
-            <div class="setting-row">
-                <div>
-                    <div style="font-size:14px; font-weight:500; color:var(--on-surface)">Color Scheme</div>
-                    <div style="font-size:12px; opacity:0.6; color:var(--on-surface)">Light or Dark mode</div>
-                </div>
-                <button class="icon-btn" onclick="toggleLightDark()" style="width:40px; height:40px;">
-                    <span class="material-symbols-rounded" id="theme-icon">light_mode</span>
-                </button>
-            </div>
-
-            <!-- Device Mode -->
-            <div class="setting-row">
-                <div>
-                    <div style="font-size:14px; font-weight:500; color:var(--on-surface)">Layout</div>
-                    <div style="font-size:12px; opacity:0.6; color:var(--on-surface)">Mobile or Computer view</div>
-                </div>
-                <button class="icon-btn" onclick="toggleDeviceMode()" style="width:40px; height:40px;">
-                    <span class="material-symbols-rounded" id="device-icon">phone_android</span>
-                </button>
-            </div>
-            
-            <!-- Accent Color -->
-            <div style="padding-top:16px; border-top:1px solid var(--outline); margin-top:16px;">
-                <div style="font-size:13px; font-weight:500; margin-bottom:8px; color:var(--on-surface)">Accent Color</div>
-                <div class="color-options">
-                    <div class="color-dot selected" style="background:#90C9FF" onclick="setAccent('#90C9FF', '#00497D', '#D1E4FF', this)"></div>
-                    <div class="color-dot" style="background:#FFB3AB" onclick="setAccent('#FFB3AB', '#690005', '#FFDAD6', this)"></div>
-                    <div class="color-dot" style="background:#C5E6A6" onclick="setAccent('#C5E6A6', '#1D3500', '#E0F0C0', this)"></div>
-                    <div class="color-dot" style="background:#D0BCFF" onclick="setAccent('#D0BCFF', '#381E72', '#EADDFF', this)"></div>
-                    <div class="color-dot" style="background:#FCC2D6" onclick="setAccent('#FCC2D6', '#63103B', '#FFD8E4', this)"></div>
-                </div>
-            </div>
-
-            <!-- Danger Zone: Delete Stats -->
-            <div class="danger-zone">
-                <button class="danger-btn" onclick="resetStats()">
-                    <span class="material-symbols-rounded">delete_forever</span>
-                    Reset All Statistics
-                </button>
-            </div>
-        </div>
+  <main class="glass-container" role="main" aria-label="Pomodoro Timer">
+    <div class="progress-border" id="progressBorder" aria-hidden="true">
+      <div class="energy-dot"></div>
+      <div class="energy-dot"></div>
+      <div class="progress-track" id="progressTrack"></div>
     </div>
 
-    <script>
-        // ===== State Management =====
-        let state = {
-            timeLeft: 1500,
-            totalTime: 1500,
-            isRunning: false,
-            mode: 'focus',
-            stats: { sessions: 0, minutes: 0, streak: 0, lastDate: null },
-            theme: 'android', // 'android', 'ios'
-            lightMode: false,
-            deviceMode: 'mobile' // 'mobile', 'computer'
-        };
+    <!-- Header with Handwritten Brand -->
+    <header class="header">
+      <div class="brand">
+        <div class="brand-glow" aria-hidden="true"></div>
+        <h1 class="brand-name">Flow<span>Cus</span></h1>
+        <p class="brand-tagline">focus beautifully</p>
+      </div>
+      <div class="header-row">
+        <span class="session-label" id="sessionLabel">Focus Session</span>
+        <div class="cycle-badge" id="cycleBadge" aria-live="polite">Cycle 1 of 4</div>
+      </div>
+    </header>
 
-        let timerInterval = null;
-        let audioCtx = null;
-        let nodes = {
-            brown: { active: false, source: null, gain: null },
-            binaural: { active: false, sourceL: null, sourceR: null, gain: null }
-        };
+    <!-- Mode Selector -->
+    <nav class="mode-selector" aria-label="Timer Mode Selection">
+      <div class="mode-tabs" role="tablist">
+        <button class="mode-tab active" id="focusTab" data-mode="focus" role="tab" aria-selected="true" aria-controls="focusDurations">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Focus
+        </button>
+        <button class="mode-tab" id="breakTab" data-mode="break" role="tab" aria-selected="false" aria-controls="breakDurations">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18.36 6.64A9 9 0 1 1 5.64 6.64"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+          Break
+        </button>
+      </div>
 
-        // ===== Initialization =====
-        function init() {
-            loadSettings();
-            loadStats();
-            updateStatsUI();
-            updateTime();
-            setInterval(updateTime, 1000);
-            updateUI();
-            applySettings();
-        }
+      <div class="duration-row" id="focusDurations" role="tabpanel" aria-label="Focus Duration Options">
+        <span class="duration-label">Duration</span>
+        <div class="duration-pills" role="radiogroup" aria-label="Focus Duration">
+          <button class="pill active" data-focus="25" role="radio" aria-checked="true">25m</button>
+          <button class="pill" data-focus="50" role="radio" aria-checked="false">50m</button>
+        </div>
+      </div>
+      <div class="duration-row hidden" id="breakDurations" role="tabpanel" aria-label="Break Duration Options">
+        <span class="duration-label">Duration</span>
+        <div class="duration-pills" role="radiogroup" aria-label="Break Duration">
+          <button class="pill active" data-break="5" role="radio" aria-checked="true">5m</button>
+          <button class="pill" data-break="15" role="radio" aria-checked="false">15m</button>
+        </div>
+      </div>
 
-        function loadSettings() {
-            const saved = localStorage.getItem('focus_settings');
-            if (saved) {
-                const s = JSON.parse(saved);
-                state.theme = s.theme || 'android';
-                state.lightMode = s.lightMode || false;
-                state.deviceMode = s.deviceMode || 'mobile';
-                if(s.accent) setAccent(s.accent.primary, s.accent.container, s.accent.onContainer, null);
-            }
-        }
+      <div class="long-break-row">
+        <span>15m break every 4 cycles</span>
+        <label class="mini-toggle">
+          <input type="checkbox" id="longBreakToggle" checked aria-label="Enable Long Break Mode">
+          <span class="toggle-track"></span>
+          <span class="toggle-thumb"></span>
+        </label>
+      </div>
+    </nav>
 
-        function saveSettings() {
-            localStorage.setItem('focus_settings', JSON.stringify({
-                theme: state.theme,
-                lightMode: state.lightMode,
-                deviceMode: state.deviceMode
-            }));
-        }
+    <!-- Timer Display -->
+    <section class="timer-display" id="timerDisplay" aria-label="Timer Display" aria-live="polite">
+      <div class="time-segment">
+        <div class="time-value"><div class="liquid-fill" id="hoursFill" aria-hidden="true"></div><span id="hours" aria-label="Hours">00</span></div>
+        <span class="time-label">Hours</span>
+      </div>
+      <span class="separator" id="sep1" aria-hidden="true">:</span>
+      <div class="time-segment">
+        <div class="time-value"><div class="liquid-fill" id="minutesFill" aria-hidden="true"></div><span id="minutes" aria-label="Minutes">25</span></div>
+        <span class="time-label">Minutes</span>
+      </div>
+      <span class="separator" id="sep2" aria-hidden="true">:</span>
+      <div class="time-segment">
+        <div class="time-value"><div class="liquid-fill" id="secondsFill" aria-hidden="true"></div><span id="seconds" aria-label="Seconds">00</span></div>
+        <span class="time-label">Seconds</span>
+      </div>
+    </section>
 
-        function applySettings() {
-            const body = document.body;
-            const btnAndroid = document.getElementById('btn-android');
-            const btnIos = document.getElementById('btn-ios');
-            const themeIcon = document.getElementById('theme-icon');
-            const deviceIcon = document.getElementById('device-icon');
-            const appActions = document.querySelector('.app-actions');
-            const settingsBtnMobile = document.querySelector('.nav-bar .nav-btn:first-child');
-            const settingsBtnDesktop = document.querySelector('.app-bar .icon-btn');
+    <!-- Status -->
+    <div class="status" id="status" aria-live="polite">
+      <div class="status-dot" aria-hidden="true"></div>
+      <span id="statusText">Ready to Focus</span>
+    </div>
 
-            // Theme Mode
-            if (state.theme === 'ios') {
-                body.classList.add('ios-mode');
-                body.classList.remove('android-mode');
-                btnIos.classList.add('active');
-                btnAndroid.classList.remove('active');
-            } else {
-                body.classList.remove('ios-mode');
-                body.classList.add('android-mode');
-                btnAndroid.classList.add('active');
-                btnIos.classList.remove('active');
-            }
+    <!-- Controls -->
+    <div class="controls" role="group" aria-label="Timer Controls">
+      <button class="btn btn-start" id="startBtn" aria-label="Start Timer">Start</button>
+      <button class="btn btn-pause hidden" id="pauseBtn" aria-label="Pause Timer">Pause</button>
+      <button class="btn btn-reset" id="resetBtn" aria-label="Reset Timer">Reset</button>
+    </div>
+  </main>
 
-            // Light/Dark
-            if (state.lightMode) {
-                body.classList.add('light-mode');
-                themeIcon.innerText = 'dark_mode';
-            } else {
-                body.classList.remove('light-mode');
-                themeIcon.innerText = 'light_mode';
-            }
+<script>
+(function(){
+  'use strict';
 
-            // Device Mode
-            if (state.deviceMode === 'computer') {
-                body.classList.add('computer-mode');
-                deviceIcon.innerText = 'desktop_windows';
-                if(appActions) appActions.style.display = 'flex';
-                if(settingsBtnDesktop) settingsBtnDesktop.style.display = 'flex';
-                if(settingsBtnMobile) settingsBtnMobile.style.display = 'none';
-            } else {
-                body.classList.remove('computer-mode');
-                deviceIcon.innerText = 'phone_android';
-                if(appActions) appActions.style.display = 'none';
-                if(settingsBtnDesktop) settingsBtnDesktop.style.display = 'none';
-                if(settingsBtnMobile) settingsBtnMobile.style.display = 'flex';
-            }
-        }
+  let totalSeconds = 25 * 60;
+  let remainingSeconds = totalSeconds;
+  let timerInterval = null;
+  let isRunning = false;
+  let isPaused = false;
+  let soundEnabled = true;
 
-        function setThemeMode(mode) {
-            state.theme = mode;
-            saveSettings();
-            applySettings();
-        }
+  let focusMinutes = 25;
+  let shortBreakMinutes = 5;
+  let longBreakMinutes = 15;
+  let longBreakEnabled = true;
+  let currentMode = 'focus';
+  let completedFocusCycles = 0;
 
-        function toggleLightDark() {
-            state.lightMode = !state.lightMode;
-            saveSettings();
-            applySettings();
-        }
+  const html = document.documentElement;
+  const $ = id => document.getElementById(id);
+  const hoursEl = $('hours'), minutesEl = $('minutes'), secondsEl = $('seconds');
+  const hoursFill = $('hoursFill'), minutesFill = $('minutesFill'), secondsFill = $('secondsFill');
+  const progressBorder = $('progressBorder'), progressTrack = $('progressTrack');
+  const startBtn = $('startBtn'), pauseBtn = $('pauseBtn'), resetBtn = $('resetBtn');
+  const sep1 = $('sep1'), sep2 = $('sep2');
+  const statusEl = $('status'), statusText = $('statusText');
+  const completionOvl = $('completionOverlay');
+  const cycleBadge = $('cycleBadge'), sessionLabel = $('sessionLabel');
+  const longBreakToggle = $('longBreakToggle');
+  const focusTab = $('focusTab'), breakTab = $('breakTab');
+  const focusDurations = $('focusDurations'), breakDurations = $('breakDurations');
+  const settingsToggle = $('settingsToggle'), settingsOverlay = $('settingsOverlay');
+  const settingsPanel = $('settingsPanel'), settingsClose = $('settingsClose');
+  const toggleGlass = $('toggleGlass'), toggleAnimations = $('toggleAnimations'), toggleSound = $('toggleSound');
 
-        function toggleDeviceMode() {
-            state.deviceMode = state.deviceMode === 'mobile' ? 'computer' : 'mobile';
-            saveSettings();
-            applySettings();
-        }
+  // Create particles
+  (function(){
+    const c = $('particles');
+    for(let i=0;i<20;i++){
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random()*100+'%';
+      const s = 1+Math.random()*2;
+      p.style.width = p.style.height = s+'px';
+      p.style.animationDuration = (12+Math.random()*20)+'s';
+      p.style.animationDelay = (Math.random()*20)+'s';
+      c.appendChild(p);
+    }
+  })();
 
-        function setAccent(primary, container, onContainer, element) {
-            const root = document.documentElement;
-            root.style.setProperty('--primary', primary);
-            root.style.setProperty('--primary-container', container);
-            root.style.setProperty('--on-primary-container', onContainer);
-            
-            localStorage.setItem('focus_accent', JSON.stringify({ primary, container, onContainer }));
+  const pad = n => String(n).padStart(2,'0');
 
-            if(element) {
-                document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
-                element.classList.add('selected');
-            }
-        }
+  function setStatus(state,text){
+    statusEl.className = 'status '+state;
+    statusText.textContent = text;
+  }
 
-        // Load saved accent
-        const savedAccent = localStorage.getItem('focus_accent');
-        if(savedAccent) {
-            const a = JSON.parse(savedAccent);
-            setAccent(a.primary, a.container, a.onContainer, null);
-        }
+  function getBreakDuration(){
+    if(longBreakEnabled && completedFocusCycles > 0 && completedFocusCycles % 4 === 0) return longBreakMinutes;
+    return shortBreakMinutes;
+  }
 
-        // ===== Stats & Persistence =====
-        function loadStats() {
-            const saved = localStorage.getItem('focus_stats');
-            if (saved) {
-                state.stats = JSON.parse(saved);
-                const today = new Date().toDateString();
-                if (state.stats.lastDate !== today) {
-                    const yesterday = new Date();
-                    yesterday.setDate(yesterday.getDate() - 1);
-                    if (state.stats.lastDate !== yesterday.toDateString()) {
-                        state.stats.streak = 0;
-                    }
-                }
-            }
-        }
+  function updateCycleBadge(){
+    const cycle = (completedFocusCycles % 4) + 1;
+    cycleBadge.textContent = `Cycle ${Math.min(cycle, 4)} of 4`;
+  }
 
-        function saveStats() {
-            localStorage.setItem('focus_stats', JSON.stringify(state.stats));
-            updateStatsUI();
-        }
+  function syncTabs(){
+    focusTab.classList.toggle('active', currentMode === 'focus');
+    breakTab.classList.toggle('active', currentMode === 'break');
+    focusTab.setAttribute('aria-selected', currentMode === 'focus');
+    breakTab.setAttribute('aria-selected', currentMode === 'break');
+    focusDurations.classList.toggle('hidden', currentMode !== 'focus');
+    breakDurations.classList.toggle('hidden', currentMode !== 'break');
+    sessionLabel.textContent = currentMode === 'focus' ? 'Focus Session' : 'Break Time';
+  }
 
-        function updateStatsUI() {
-            document.getElementById('stat-sessions').innerText = state.stats.sessions;
-            const hours = (state.stats.minutes / 60).toFixed(1);
-            document.getElementById('stat-minutes').innerText = hours + 'h';
-            document.getElementById('stat-streak').innerText = state.stats.streak + '🔥';
-        }
+  function setMode(mode, resetTime = true){
+    currentMode = mode;
+    syncTabs();
+    if(resetTime){
+      totalSeconds = (mode === 'focus' ? focusMinutes : getBreakDuration()) * 60;
+      remainingSeconds = totalSeconds;
+      updateDisplay();
+    }
+    setStatus('', mode === 'focus' ? 'Ready to Focus' : 'Time to Rest');
+    updateCycleBadge();
+  }
 
-        function recordSession() {
-            const today = new Date().toDateString();
-            if (state.stats.lastDate !== today) {
-                state.stats.streak++;
-                state.stats.lastDate = today;
-            }
-            state.stats.sessions++;
-            state.stats.minutes += (state.totalTime / 60);
-            saveStats();
-        }
+  function updateDisplay(){
+    const h = Math.floor(remainingSeconds / 3600);
+    const m = Math.floor((remainingSeconds % 3600) / 60);
+    const s = remainingSeconds % 60;
+    hoursEl.textContent = pad(h);
+    minutesEl.textContent = pad(m);
+    secondsEl.textContent = pad(s);
+    const progress = totalSeconds > 0 ? 1 - (remainingSeconds / totalSeconds) : 0;
+    const maxH = Math.floor(totalSeconds / 3600);
+    hoursFill.style.height = maxH > 0 ? ((1 - h / maxH) * 100)+'%' : '0%';
+    minutesFill.style.height = ((60 - m) / 60 * 100)+'%';
+    secondsFill.style.height = ((60 - s) / 60 * 100)+'%';
+    progressTrack.style.setProperty('--progress', (progress * 100)+'%');
+    document.title = `FlowCus : Aesthetic Pomodoro Timer - ${pad(m)};
+  }
 
-        function resetStats() {
-            if(confirm("Are you sure you want to delete all statistics? This cannot be undone.")) {
-                state.stats = { sessions: 0, minutes: 0, streak: 0, lastDate: null };
-                saveStats();
-                // Close settings sheet after action
-                document.getElementById('settings-sheet').classList.remove('active');
-            }
-        }
+  function playSound(){
+    if(!soundEnabled) return;
+    try{
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      [523.25,659.25,783.99,1046.5].forEach((f,i)=>{
+        const osc = ctx.createOscillator(), gain = ctx.createGain();
+        osc.type='sine'; osc.frequency.value=f;
+        gain.gain.setValueAtTime(.1, ctx.currentTime+i*.18);
+        gain.gain.exponentialRampToValueAtTime(.001, ctx.currentTime+i*.18+.5);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(ctx.currentTime+i*.18);
+        osc.stop(ctx.currentTime+i*.18+.5);
+      });
+    }catch(e){}
+  }
 
-        // ===== Timer Logic =====
-        function setMode(mode) {
-            state.mode = mode;
-            const indicator = document.getElementById('mode-indicator');
-            const optFocus = document.getElementById('opt-focus');
-            const optBreak = document.getElementById('opt-break');
-            const statusLabel = document.getElementById('timer-status');
+  function onComplete(){
+    clearInterval(timerInterval); timerInterval = null;
+    isRunning = false; isPaused = false;
+    pauseBtn.classList.add('hidden');
+    startBtn.classList.remove('hidden');
+    startBtn.textContent = 'Start';
+    sep1.classList.remove('paused'); sep2.classList.remove('paused');
+    progressBorder.classList.remove('active');
+    completionOvl.classList.add('active');
+    setTimeout(()=>completionOvl.classList.remove('active'),2000);
+    playSound();
+    if(navigator.vibrate) navigator.vibrate([200,100,200]);
 
-            if (mode === 'focus') {
-                indicator.style.transform = 'translateX(0)';
-                optFocus.classList.add('active');
-                optBreak.classList.remove('active');
-                statusLabel.innerText = "Focus Session";
-                if(!state.isRunning) setDuration(25);
-            } else {
-                indicator.style.transform = 'translateX(100%)';
-                optFocus.classList.remove('active');
-                optBreak.classList.add('active');
-                statusLabel.innerText = "Break Time";
-                if(!state.isRunning) setDuration(5);
-            }
-        }
+    if(currentMode === 'focus'){
+      completedFocusCycles++;
+      setStatus('finished', 'Great Work!');
+      setTimeout(()=>setMode('break', true), 800);
+    } else {
+      setStatus('finished', 'Break Complete!');
+      setTimeout(()=>setMode('focus', true), 800);
+    }
+  }
 
-        function setDuration(mins) {
-            if (state.isRunning) return;
-            document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
-            event.target.classList.add('active');
-            state.totalTime = mins * 60;
-            state.timeLeft = state.totalTime;
-            updateUI();
-        }
+  function tick(){
+    if(remainingSeconds <= 0){ onComplete(); return; }
+    remainingSeconds--;
+    updateDisplay();
+    if(remainingSeconds <= 0) onComplete();
+  }
 
-        function updateUI() {
-            const m = Math.floor(state.timeLeft / 60);
-            const s = state.timeLeft % 60;
-            document.getElementById('timer').innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-            
-            const circumference = 2 * Math.PI * 105;
-            const offset = circumference - (state.timeLeft / state.totalTime) * circumference;
-            document.getElementById('progress-circle').style.strokeDashoffset = offset;
+  [focusTab, breakTab].forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      if(isRunning) return;
+      setMode(tab.dataset.mode, true);
+    });
+  });
 
-            if (state.timeLeft < 60 && state.isRunning) {
-                document.getElementById('progress-circle').style.stroke = '#FF6B6B';
-            } else {
-                document.getElementById('progress-circle').style.stroke = 'var(--primary)';
-            }
-        }
+  document.querySelectorAll('[data-focus]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(isRunning) return;
+      document.querySelectorAll('[data-focus]').forEach(b=>{
+        b.classList.remove('active');
+        b.setAttribute('aria-checked','false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-checked','true');
+      focusMinutes = parseInt(btn.dataset.focus,10);
+      if(currentMode === 'focus'){
+        totalSeconds = focusMinutes * 60;
+        remainingSeconds = totalSeconds;
+        updateDisplay();
+      }
+    });
+  });
 
-        function toggleTimer() {
-            state.isRunning = !state.isRunning;
-            const icon = document.getElementById('play-icon');
-            
-            if (state.isRunning) {
-                icon.innerText = 'pause';
-                timerInterval = setInterval(() => {
-                    if (state.timeLeft > 0) {
-                        state.timeLeft--;
-                        updateUI();
-                    } else {
-                        completeSession();
-                    }
-                }, 1000);
-            } else {
-                icon.innerText = 'play_arrow';
-                clearInterval(timerInterval);
-            }
-        }
+  document.querySelectorAll('[data-break]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(isRunning) return;
+      document.querySelectorAll('[data-break]').forEach(b=>{
+        b.classList.remove('active');
+        b.setAttribute('aria-checked','false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-checked','true');
+      shortBreakMinutes = parseInt(btn.dataset.break,10);
+      if(currentMode === 'break'){
+        totalSeconds = getBreakDuration() * 60;
+        remainingSeconds = totalSeconds;
+        updateDisplay();
+      }
+    });
+  });
 
-        // New Function: Reset Timer Only (Does not reset stats)
-        function resetTimerOnly() {
-            state.isRunning = false;
-            clearInterval(timerInterval);
-            document.getElementById('play-icon').innerText = 'play_arrow';
-            state.timeLeft = state.totalTime;
-            updateUI();
-        }
+  longBreakToggle.addEventListener('change', ()=>{
+    longBreakEnabled = longBreakToggle.checked;
+    if(currentMode === 'break' && !isRunning){
+      totalSeconds = getBreakDuration() * 60;
+      remainingSeconds = totalSeconds;
+      updateDisplay();
+    }
+  });
 
-        function completeSession() {
-            resetTimerOnly();
-            if (state.mode === 'focus') {
-                recordSession();
-                document.getElementById('completion-overlay').classList.add('active');
-            } else {
-                alert("Break over! Ready to focus?");
-                setMode('focus');
-            }
-        }
+  startBtn.addEventListener('click', ()=>{
+    if(isPaused){
+      isPaused = false; isRunning = true;
+      timerInterval = setInterval(tick, 1000);
+      startBtn.classList.add('hidden');
+      pauseBtn.classList.remove('hidden');
+      progressBorder.classList.add('active');
+      setStatus('running', currentMode === 'focus' ? 'Stay Focused...' : 'Relax...');
+      return;
+    }
+    isRunning = true;
+    timerInterval = setInterval(tick, 1000);
+    startBtn.classList.add('hidden');
+    pauseBtn.classList.remove('hidden');
+    progressBorder.classList.add('active');
+    setStatus('running', currentMode === 'focus' ? 'Stay Focused...' : 'Relax...');
+  });
 
-        function closeCompletion() {
-            document.getElementById('completion-overlay').classList.remove('active');
-        }
+  pauseBtn.addEventListener('click', ()=>{
+    clearInterval(timerInterval); timerInterval = null;
+    isRunning = false; isPaused = true;
+    pauseBtn.classList.add('hidden');
+    startBtn.classList.remove('hidden');
+    startBtn.textContent = 'Resume';
+    sep1.classList.add('paused'); sep2.classList.add('paused');
+    setStatus('paused', 'Paused');
+  });
 
-        document.getElementById('play-pause').onclick = toggleTimer;
+  resetBtn.addEventListener('click', ()=>{
+    clearInterval(timerInterval); timerInterval = null;
+    isRunning = false; isPaused = false;
+    completedFocusCycles = 0;
+    sep1.classList.remove('paused'); sep2.classList.remove('paused');
+    pauseBtn.classList.add('hidden');
+    startBtn.classList.remove('hidden');
+    startBtn.textContent = 'Start';
+    progressBorder.classList.remove('active');
+    setMode('focus', true);
+  });
 
-        // ===== Audio Engine =====
-        async function initAudio() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') await audioCtx.resume();
-        }
+  document.querySelectorAll('.btn').forEach(btn=>{
+    btn.addEventListener('click', function(e){
+      const r = document.createElement('span');
+      r.className = 'ripple';
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      r.style.width = r.style.height = size+'px';
+      r.style.left = (e.clientX - rect.left - size/2)+'px';
+      r.style.top = (e.clientY - rect.top - size/2)+'px';
+      this.appendChild(r);
+      setTimeout(()=>r.remove(), 600);
+    });
+  });
 
-        async function toggleNode(id) {
-            await initAudio();
-            const node = nodes[id];
-            const card = document.getElementById(`node-${id}`);
-            const btn = card.querySelector('.sound-toggle');
+  function openSettings(){ settingsPanel.classList.add('active'); settingsOverlay.classList.add('active'); }
+  function closeSettings(){ settingsPanel.classList.remove('active'); settingsOverlay.classList.remove('active'); }
+  settingsToggle.addEventListener('click', ()=> settingsPanel.classList.contains('active') ? closeSettings() : openSettings());
+  settingsOverlay.addEventListener('click', closeSettings);
+  settingsClose.addEventListener('click', closeSettings);
 
-            if (node.active) {
-                if(node.source) { node.source.stop(); node.source = null; }
-                if(node.sourceL) { node.sourceL.stop(); node.sourceR.stop(); node.sourceL = null; node.sourceR = null; }
-                node.active = false;
-                card.classList.remove('active');
-                btn.innerHTML = `<span class="material-symbols-rounded text-base">play_arrow</span> Start`;
-            } else {
-                createNode(id);
-                node.active = true;
-                card.classList.add('active');
-                btn.innerHTML = `<span class="material-symbols-rounded text-base">stop</span> Stop`;
-            }
-        }
+  function savePrefs(){
+    localStorage.setItem('flowcus-prefs', JSON.stringify({
+      theme: html.dataset.theme, accent: html.dataset.accent,
+      glass: toggleGlass.checked, animations: toggleAnimations.checked, sound: toggleSound.checked,
+      focusMinutes, shortBreakMinutes, longBreakEnabled
+    }));
+  }
 
-        function createNode(id) {
-            const node = nodes[id];
-            node.gain = audioCtx.createGain();
-            node.gain.gain.value = 0.15;
-            node.gain.connect(audioCtx.destination);
+  function setTheme(t){
+    html.dataset.theme = t;
+    document.querySelectorAll('.theme-option').forEach(el=>{
+      const isActive = el.dataset.setTheme===t;
+      el.classList.toggle('active', isActive);
+      el.setAttribute('aria-checked', isActive);
+    });
+    document.querySelector('meta[name="theme-color"]').content = ({dark:'#0a0a1a',light:'#f0f0f8',midnight:'#020617',sunset:'#1a0a0a',ocean:'#042f2e'})[t] || '#0a0a1a';
+    savePrefs();
+  }
 
-            if (id === 'brown') {
-                const bufferSize = 2 * audioCtx.sampleRate;
-                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-                const data = buffer.getChannelData(0);
-                let lastOut = 0.0;
-                for (let i = 0; i < bufferSize; i++) {
-                    const white = Math.random() * 2 - 1;
-                    data[i] = (lastOut + (0.02 * white)) / 1.02;
-                    lastOut = data[i];
-                    data[i] *= 3.5;
-                }
-                node.source = audioCtx.createBufferSource();
-                node.source.buffer = buffer;
-                node.source.loop = true;
-                node.source.connect(node.gain);
-                node.source.start();
-            } else if (id === 'binaural') {
-                const oscL = audioCtx.createOscillator();
-                const oscR = audioCtx.createOscillator();
-                const pannerL = audioCtx.createStereoPanner();
-                const pannerR = audioCtx.createStereoPanner();
-                oscL.frequency.value = 100; oscR.frequency.value = 106;
-                pannerL.pan.value = -1; pannerR.pan.value = 1;
-                oscL.connect(pannerL).connect(node.gain);
-                oscR.connect(pannerR).connect(node.gain);
-                oscL.start(); oscR.start();
-                node.sourceL = oscL; node.sourceR = oscR;
-            }
-        }
+  function setAccent(a){
+    html.dataset.accent = a;
+    document.querySelectorAll('.color-option').forEach(el=>{
+      const isActive = el.dataset.setAccent===a;
+      el.classList.toggle('active', isActive);
+      el.setAttribute('aria-checked', isActive);
+    });
+    savePrefs();
+  }
 
-        function updateVolume(id, val) {
-            if (nodes[id].gain) nodes[id].gain.gain.setTargetAtTime(val * 0.2, audioCtx.currentTime, 0.1);
-        }
+  document.querySelectorAll('.theme-option').forEach(el=>el.addEventListener('click',()=>setTheme(el.dataset.setTheme)));
+  document.querySelectorAll('.color-option').forEach(el=>el.addEventListener('click',()=>setAccent(el.dataset.setAccent)));
 
-        // ===== UI Interactions =====
-        function toggleZen() {
-            const shell = document.getElementById('app-shell');
-            shell.classList.toggle('zen-mode');
-        }
+  toggleGlass.addEventListener('change',()=>{html.dataset.glass=toggleGlass.checked?'on':'off';savePrefs()});
+  toggleAnimations.addEventListener('change',()=>{html.dataset.animations=toggleAnimations.checked?'on':'off';savePrefs()});
+  toggleSound.addEventListener('change',()=>{soundEnabled=toggleSound.checked;savePrefs()});
 
-        function openSettings() {
-            document.getElementById('settings-sheet').classList.add('active');
-        }
+  function loadPrefs(){
+    const p = JSON.parse(localStorage.getItem('flowcus-prefs') || '{}');
+    if(p.theme) setTheme(p.theme);
+    if(p.accent) setAccent(p.accent);
+    if(p.glass !== undefined){ toggleGlass.checked = p.glass; html.dataset.glass = p.glass ? 'on' : 'off'; }
+    if(p.animations !== undefined){ toggleAnimations.checked = p.animations; html.dataset.animations = p.animations ? 'on' : 'off'; }
+    if(p.sound !== undefined){ toggleSound.checked = p.sound; soundEnabled = p.sound; }
+    if(p.focusMinutes){
+      focusMinutes = p.focusMinutes;
+      document.querySelectorAll('[data-focus]').forEach(b=>{
+        const isActive = parseInt(b.dataset.focus,10) === focusMinutes;
+        b.classList.toggle('active', isActive);
+        b.setAttribute('aria-checked', isActive);
+      });
+    }
+    if(p.shortBreakMinutes){
+      shortBreakMinutes = p.shortBreakMinutes;
+      document.querySelectorAll('[data-break]').forEach(b=>{
+        const isActive = parseInt(b.dataset.break,10) === shortBreakMinutes;
+        b.classList.toggle('active', isActive);
+        b.setAttribute('aria-checked', isActive);
+      });
+    }
+    if(p.longBreakEnabled !== undefined){
+      longBreakEnabled = p.longBreakEnabled;
+      longBreakToggle.checked = longBreakEnabled;
+    }
+  }
 
-        document.addEventListener('click', (e) => {
-            const sheet = document.getElementById('settings-sheet');
-            if (sheet.classList.contains('active') && !sheet.contains(e.target) && !e.target.closest('.icon-btn')) {
-                sheet.classList.remove('active');
-            }
-        });
+  loadPrefs();
+  setMode('focus', true);
 
-        function updateTime() {
-            const now = new Date();
-            document.getElementById('sys-time').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12:false});
-        }
-
-        init();
-    </script>
+  // Keyboard shortcuts
+  document.addEventListener('keydown', e=>{
+    if(e.code === 'Space' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'BUTTON'){
+      e.preventDefault();
+      if(isRunning) pauseBtn.click(); else startBtn.click();
+    }
+    if(e.code === 'Escape' && settingsPanel.classList.contains('active')) closeSettings();
+  });
+})();
+</script>
 </body>
 </html>
-
