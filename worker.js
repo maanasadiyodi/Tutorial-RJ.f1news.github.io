@@ -14,7 +14,7 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
-    // GET /images
+    // --- API: GET /images ---
     if (url.pathname === '/images' && request.method === 'GET') {
       try {
         const list = await env.ASSETS.list();
@@ -30,7 +30,7 @@ export default {
       }
     }
 
-    // POST /upload
+    // --- API: POST /upload ---
     if (url.pathname === '/upload' && request.method === 'POST') {
       const formData = await request.formData();
       const file = formData.get('image');
@@ -43,6 +43,7 @@ export default {
       const blob = new Blob([arrayBuffer], { type: file.type });
 
       try {
+        // Save to Cloudflare Assets
         await env.ASSETS.put(file.name, blob);
         return new Response(JSON.stringify({ message: 'Uploaded', url: `/uploads/${file.name}` }), { 
           headers: { 'Content-Type': 'application/json', ...corsHeaders } 
@@ -52,7 +53,7 @@ export default {
       }
     }
 
-    // DELETE /delete/:filename
+    // --- API: DELETE /delete/:filename ---
     if (url.pathname.startsWith('/delete/') && request.method === 'DELETE') {
       const filename = decodeURIComponent(url.pathname.replace('/delete/', ''));
       try {
@@ -63,8 +64,8 @@ export default {
       }
     }
 
-    // Fallback: Serve static files from ASSETS (Frontend)
-    // This allows pages.dev to serve index.html
+    // --- Fallback: Serve Static Files (Frontend) ---
+    // This serves index.html from the 'public' folder
     return env.ASSETS.fetch(request);
   }
 };
