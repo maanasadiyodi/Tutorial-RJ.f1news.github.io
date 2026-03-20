@@ -1,8 +1,10 @@
 {
-  "name": "wedding-gallery",
+  "name": "zgallery",
   "version": "1.0.0",
-  "dependencies": {
-    "express": "^4.18.2",
-    "multer": "^1.4.5-lts.1"
-  }
+  "description": "Wedding Gallery",
+  "main": "worker.js",
+  "scripts": {
+    "start": "node worker.js"
+  },
+  "dependencies": {}
 }
