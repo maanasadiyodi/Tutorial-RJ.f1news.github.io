@@ -1,27 +1,8 @@
-# wrangler.toml
-name = 'zgallery'
+name = "zgallery"
 main = "worker.js"
 compatibility_date = "2024-01-01"
-compatibility_flags = ["nodejs_compat"]
 
-# Bind the static assets (your public/index.html, CSS, JS)
+# This binds the 'public' folder to the 'ASSETS' variable in worker.js
 [[assets]]
 directory = "./public"
 binding = "ASSETS"
-
-# Route the API requests to the worker script
-[[routes]]
-pattern = "/images"
-script = "worker.js"
-
-[[routes]]
-pattern = "/upload*"
-script = "worker.js"
-
-[[routes]]
-pattern = "/delete/*"
-script = "worker.js"
-
-# Environment variables (if needed later)
-[vars]
-NODE_ENV = "production"
