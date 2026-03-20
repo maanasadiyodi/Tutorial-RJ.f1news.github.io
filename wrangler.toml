@@ -1,40 +1,26 @@
 name = "wedding-gallery"
+main = "worker.js"
 compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
 
-# Define the main entry point for the worker
-main = "index.js"
+# Bind the static assets (your public/index.html, CSS, JS)
+[[assets]]
+directory = "./public"
+binding = "ASSETS"
 
-# Define build settings
-[build]
-command = "npm install"
-publish = "."
-
-# Route static assets from the 'public' folder
-[[routes]]
-pattern = "/assets/*"
-custom_domain = false
-script = "worker"
-
-[[routes]]
-pattern = "/uploads/*"
-custom_domain = false
-script = "worker"
-
+# Route the API requests to the worker script
 [[routes]]
 pattern = "/images"
-custom_domain = false
-script = "worker"
+script = "worker.js"
 
 [[routes]]
-pattern = "/upload-chunk"
-custom_domain = false
-script = "worker"
+pattern = "/upload*"
+script = "worker.js"
 
 [[routes]]
 pattern = "/delete/*"
-custom_domain = false
-script = "worker"
+script = "worker.js"
 
-# Environment variables
+# Environment variables (if needed later)
 [vars]
 NODE_ENV = "production"
