@@ -1,0 +1,40 @@
+name = "wedding-gallery"
+compatibility_date = "2024-01-01"
+
+# Define the main entry point for the worker
+main = "index.js"
+
+# Define build settings
+[build]
+command = "npm install"
+publish = "."
+
+# Route static assets from the 'public' folder
+[[routes]]
+pattern = "/assets/*"
+custom_domain = false
+script = "worker"
+
+[[routes]]
+pattern = "/uploads/*"
+custom_domain = false
+script = "worker"
+
+[[routes]]
+pattern = "/images"
+custom_domain = false
+script = "worker"
+
+[[routes]]
+pattern = "/upload-chunk"
+custom_domain = false
+script = "worker"
+
+[[routes]]
+pattern = "/delete/*"
+custom_domain = false
+script = "worker"
+
+# Environment variables
+[vars]
+NODE_ENV = "production"
