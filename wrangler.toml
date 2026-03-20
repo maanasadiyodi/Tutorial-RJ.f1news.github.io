@@ -1,8 +1,0 @@
-name = "zgallery"
-main = "worker.js"
-compatibility_date = "2024-01-01"
-
-# This binds the 'public' folder to the 'ASSETS' variable in worker.js
-[[assets]]
-directory = "./public"
-binding = "ASSETS"
