@@ -1,49 +1,66 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Gallery</title>
     <style>
-        :root { --bg-color: #1a1a2e; --surface-color: #16213e; --border-color: #0f3460; --text-primary: #e94560; --text-secondary: #8d99ae; --accent: #e94560; --select-blue: #533483; }
-        [data-theme="light"] { --bg-color: #f5f5f5; --surface-color: #ffffff; --border-color: #ddd; --text-primary: #333; --text-secondary: #666; --accent: #007bff; --select-blue: #6c757d; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-        body { background: var(--bg-color); color: var(--text-primary); min-height: 100vh; }
+        body { background: #1a1a2e; color: #fff; min-height: 100vh; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
-        h1 { font-size: 24px; }
-        .insta-link { color: var(--accent); text-decoration: none; margin-left: 10px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #333; margin-bottom: 30px; }
+        h1 { font-size: 28px; }
+        .insta-link { color: #e94560; text-decoration: none; margin-left: 15px; font-size: 14px; }
         
-        .top-bar { display: flex; gap: 10px; align-items: center; }
-        button { padding: 8px 16px; border: none; cursor: pointer; border-radius: 4px; }
-        .btn-login { background: var(--surface-color); color: var(--text-primary); border: 1px solid var(--border-color); }
-        .btn-primary { background: var(--accent); color: white; }
+        .btn { padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px; font-size: 14px; font-weight: 600; }
+        .btn-login { background: #16213e; color: #fff; border: 1px solid #0f3460; }
+        .btn-primary { background: #e94560; color: #fff; }
+        .btn-danger { background: #dc3545; color: #fff; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         
-        #admin-panel { background: var(--surface-color); padding: 20px; border-radius: 8px; margin-bottom: 20px; display: none; }
-        #admin-panel.visible { display: block; }
-        input[type="file"] { padding: 10px; margin-right: 10px; }
+        #admin-panel { background: #16213e; padding: 25px; border-radius: 10px; margin-bottom: 30px; display: none; }
+        #admin-panel.show { display: block; }
+        #admin-panel h2 { margin-bottom: 15px; font-size: 20px; }
+        .upload-row { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        input[type="file"] { padding: 10px; background: #1a1a2e; border: 1px solid #0f3460; border-radius: 5px; color: #fff; }
+        #progress-bar { height: 4px; background: #0f3460; margin-top: 15px; border-radius: 2px; display: none; }
+        #progress-fill { height: 100%; background: #e94560; width: 0%; border-radius: 2px; transition: width 0.3s; }
         
-        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
-        .card { position: relative; border-radius: 8px; overflow: hidden; background: var(--surface-color); border: 1px solid var(--border-color); }
-        .card img { width: 100%; height: auto; display: block; }
-        .card.selected { border: 3px solid var(--select-blue); }
-        .delete-btn { position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; display: none; }
-        .card:hover .delete-btn { display: block; }
-        .checkbox { position: absolute; top: 10px; left: 10px; width: 20px; height: 20px; border: 2px solid var(--accent); border-radius: 50%; cursor: pointer; }
-        .checkbox.checked { background: var(--accent); }
+        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { position: relative; background: #16213e; border-radius: 10px; overflow: hidden; border: 2px solid transparent; transition: all 0.3s; }
+        .card:hover { transform: translateY(-5px); border-color: #e94560; }
+        .card.selected { border-color: #533483; }
+        .card img { width: 100%; height: 250px; object-fit: cover; display: block; }
         
-        #upload-progress { height: 5px; background: var(--border-color); margin-top: 10px; display: none; }
-        #upload-bar { height: 100%; background: var(--accent); width: 0%; }
+        .card-actions { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; opacity: 0; transition: opacity 0.3s; }
+        .card:hover .card-actions { opacity: 1; }
+        .checkbox { width: 28px; height: 28px; background: rgba(0,0,0,0.7); border: 2px solid #e94560; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .checkbox.checked { background: #e94560; }
+        .checkbox svg { width: 16px; height: 16px; fill: #fff; display: none; }
+        .checkbox.checked svg { display: block; }
         
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--surface-color); padding: 10px 20px; border-radius: 4px; opacity: 0; transition: opacity 0.3s; z-index: 1000; }
-        .toast.show { opacity: 1; }
+        .delete-btn { width: 32px; height: 32px; background: #dc3545; border: none; border-radius: 50%; color: #fff; cursor: pointer; font-size: 18px; font-weight: bold; }
+        .delete-btn:hover { background: #c82333; }
         
-        .empty { text-align: center; padding: 50px; color: var(--text-secondary); }
+        .empty-state { text-align: center; padding: 60px 20px; color: #8d99ae; }
+        .empty-state h3 { font-size: 20px; margin-bottom: 10px; }
+        
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #16213e; padding: 15px 30px; border-radius: 8px; opacity: 0; transition: all 0.4s; z-index: 1000; border: 1px solid #0f3460; }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        #toast.success { border-color: #28a745; }
+        #toast.error { border-color: #dc3545; }
+        #toast.warning { border-color: #ffc107; }
+        
+        .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        .lightbox.show { display: flex; }
+        .lightbox img { max-width: 90%; max-height: 90vh; border-radius: 8px; }
+        .lightbox-close { position: absolute; top: 20px; right: 20px; background: #16213e; border: none; color: #fff; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 24px; }
         
         @media (max-width: 600px) {
-            header { flex-direction: column; gap: 10px; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
             .gallery { grid-template-columns: 1fr; }
+            .upload-row { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
@@ -51,37 +68,47 @@
     <div class="container">
         <header>
             <h1>The Gallery <a href="https://instagram.com/adichitodi" target="_blank" class="insta-link">@adichitodi</a></h1>
-            <div class="top-bar">
-                <button id="login-btn" class="btn-login">Login</button>
-            </div>
+            <button id="login-btn" class="btn btn-login">🔒 Login</button>
         </header>
 
         <div id="admin-panel">
-            <h2>Upload Images</h2>
-            <p style="color:var(--text-secondary); margin: 10px 0;">Select images to add to gallery</p>
-            <input type="file" id="file-input" accept="image/*" multiple>
-            <button id="upload-btn" class="btn-primary">Upload</button>
-            <div id="upload-progress"><div id="upload-bar"></div></div>
+            <h2>📤 Upload Images</h2>
+            <div class="upload-row">
+                <input type="file" id="file-input" accept="image/*" multiple>
+                <button id="upload-btn" class="btn btn-primary">Upload Now</button>
+            </div>
+            <div id="progress-bar"><div id="progress-fill"></div></div>
         </div>
-
-        <div id="toast" class="toast"></div>
 
         <div id="gallery" class="gallery">
-            <div class="empty">No images yet. Login to upload!</div>
+            <div class="empty-state">
+                <h3>No images yet</h3>
+                <p>Login to upload your first photo!</p>
+            </div>
         </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <div id="lightbox" class="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()">×</button>
+        <img id="lightbox-img" src="" alt="">
     </div>
 
     <script>
         const state = { isLoggedIn: false, selectedImages: [], isLoading: false };
+        
         const els = {
             loginBtn: document.getElementById('login-btn'),
             adminPanel: document.getElementById('admin-panel'),
             fileInput: document.getElementById('file-input'),
             uploadBtn: document.getElementById('upload-btn'),
-            uploadProgress: document.getElementById('upload-progress'),
-            uploadBar: document.getElementById('upload-bar'),
+            progressBar: document.getElementById('progress-bar'),
+            progressFill: document.getElementById('progress-fill'),
             gallery: document.getElementById('gallery'),
-            toast: document.getElementById('toast')
+            toast: document.getElementById('toast'),
+            lightbox: document.getElementById('lightbox'),
+            lightboxImg: document.getElementById('lightbox-img')
         };
 
         async function checkAuth() {
@@ -90,35 +117,36 @@
                 const data = await res.json();
                 state.isLoggedIn = data.isLoggedIn;
                 updateUI();
-            } catch (e) { showToast('Connection error', 'error'); }
+            } catch (e) {
+                state.isLoggedIn = false;
+                updateUI();
+            }
         }
 
         function updateUI() {
             if (state.isLoggedIn) {
-                els.loginBtn.textContent = 'Logout';
-                els.loginBtn.classList.add('btn-primary');
-                els.loginBtn.classList.remove('btn-login');
-                els.adminPanel.classList.add('visible');
+                els.loginBtn.innerHTML = '🔓 Logout';
+                els.loginBtn.className = 'btn btn-danger';
+                els.adminPanel.classList.add('show');
             } else {
-                els.loginBtn.textContent = 'Login';
-                els.loginBtn.classList.remove('btn-primary');
-                els.loginBtn.classList.add('btn-login');
-                els.adminPanel.classList.remove('visible');
+                els.loginBtn.innerHTML = '🔒 Login';
+                els.loginBtn.className = 'btn btn-login';
+                els.adminPanel.classList.remove('show');
+                state.selectedImages = [];
             }
-            if (!state.isLoading) loadImageList();
+            if (!state.isLoading) loadGallery();
         }
 
         els.loginBtn.addEventListener('click', () => {
             if (state.isLoggedIn) {
                 logout();
             } else {
-                const password = prompt('Enter password:');
-                if (!password) return;
-                loginUser(password);
+                const password = prompt('Enter admin password:');
+                if (password) login(password);
             }
         });
 
-        async function loginUser(password) {
+        async function login(password) {
             try {
                 const res = await fetch('/api/login', {
                     method: 'POST',
@@ -130,11 +158,13 @@
                 if (data.success) {
                     state.isLoggedIn = true;
                     updateUI();
-                    showToast('Logged in successfully!', 'success');
+                    showToast('✓ Logged in successfully', 'success');
                 } else {
-                    showToast('Invalid password', 'error');
+                    showToast('✗ Wrong password', 'error');
                 }
-            } catch (e) { showToast('Connection error', 'error'); }
+            } catch (e) {
+                showToast('✗ Connection error', 'error');
+            }
         }
 
         async function logout() {
@@ -143,23 +173,24 @@
                 state.isLoggedIn = false;
                 state.selectedImages = [];
                 updateUI();
-                showToast('Logged out', 'info');
-            } catch (e) { showToast('Error', 'error'); }
+                showToast('✓ Logged out', 'success');
+            } catch (e) {
+                showToast('✗ Error', 'error');
+            }
         }
 
-        async function loadImageList() {
+        async function loadGallery() {
             if (state.isLoading) return;
             state.isLoading = true;
             
             try {
-                const res = await fetch('/images', { credentials: 'include' });
-                if (!res.ok) throw new Error('Failed to load');
+                const res = await fetch('/images');
                 const images = await res.json();
                 
                 els.gallery.innerHTML = '';
                 
                 if (images.length === 0) {
-                    els.gallery.innerHTML = '<div class="empty">No images yet. Login to upload!</div>';
+                    els.gallery.innerHTML = '<div class="empty-state"><h3>No images yet</h3><p>Login to upload your first photo!</p></div>';
                     return;
                 }
 
@@ -167,49 +198,47 @@
                     const card = document.createElement('div');
                     card.className = 'card' + (state.selectedImages.includes(img.name) ? ' selected' : '');
                     
+                    const actions = document.createElement('div');
+                    actions.className = 'card-actions';
+                    
                     const checkbox = document.createElement('div');
                     checkbox.className = 'checkbox' + (state.selectedImages.includes(img.name) ? ' checked' : '');
-                    checkbox.style.pointerEvents = 'auto';
-                    checkbox.addEventListener('click', () => toggleSelection(img.name));
+                    checkbox.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+                    checkbox.onclick = (e) => { e.stopPropagation(); toggleSelect(img.name); };
+                    
+                    actions.appendChild(checkbox);
+                    
+                    if (state.isLoggedIn) {
+                        const delBtn = document.createElement('button');
+                        delBtn.className = 'delete-btn';
+                        delBtn.innerHTML = '×';
+                        delBtn.onclick = (e) => { e.stopPropagation(); deleteImage(img.name); };
+                        actions.appendChild(delBtn);
+                    }
                     
                     const imgEl = document.createElement('img');
                     imgEl.src = img.url;
                     imgEl.alt = img.name;
+                    imgEl.onclick = () => openLightbox(img.url);
                     
-                    const delBtn = document.createElement('button');
-                    delBtn.className = 'delete-btn';
-                    delBtn.textContent = '×';
-                    delBtn.onclick = () => deleteImage(img.name);
-                    
-                    card.appendChild(checkbox);
+                    card.appendChild(actions);
                     card.appendChild(imgEl);
-                    card.appendChild(delBtn);
-                    card.ondblclick = () => window.open(img.url, '_blank');
-                    card.onclick = (e) => {
-                        if (e.target !== checkbox && e.target !== delBtn) {
-                            window.open(img.url, '_blank');
-                        }
-                    };
-                    
                     els.gallery.appendChild(card);
                 });
-                
-                showToast(`Loaded ${images.length} image(s)`, 'info');
             } catch (e) {
-                els.gallery.innerHTML = '<div class="empty">Failed to load images. Please refresh.</div>';
-                showToast('Could not load gallery', 'error');
+                els.gallery.innerHTML = '<div class="empty-state"><h3>Failed to load</h3><p>Refresh the page</p></div>';
             } finally {
                 state.isLoading = false;
             }
         }
 
-        function toggleSelection(name) {
+        function toggleSelect(name) {
             if (state.selectedImages.includes(name)) {
                 state.selectedImages = state.selectedImages.filter(n => n !== name);
             } else {
                 state.selectedImages.push(name);
             }
-            loadImageList();
+            loadGallery();
         }
 
         async function deleteImage(filename) {
@@ -220,57 +249,70 @@
                 });
                 if (res.ok) {
                     state.selectedImages = state.selectedImages.filter(n => n !== filename);
-                    loadImageList();
-                    showToast('Deleted successfully', 'success');
+                    loadGallery();
+                    showToast('✓ Deleted', 'success');
                 } else {
-                    showToast('Delete failed', 'error');
+                    showToast('✗ Delete failed', 'error');
                 }
-            } catch (e) { showToast('Delete error', 'error'); }
+            } catch (e) {
+                showToast('✗ Error', 'error');
+            }
         }
 
         els.uploadBtn.addEventListener('click', async () => {
             const files = Array.from(els.fileInput.files);
-            if (files.length === 0) return showToast('Please select files first', 'warning');
+            if (files.length === 0) {
+                showToast('⚠ Select files first', 'warning');
+                return;
+            }
 
             els.uploadBtn.disabled = true;
-            els.uploadProgress.style.display = 'block';
+            els.progressBar.style.display = 'block';
 
             for (let i = 0; i < files.length; i++) {
                 const formData = new FormData();
                 formData.append('image', files[i]);
                 
                 try {
-                    const res = await fetch('/upload', { method: 'POST', body: formData, credentials: 'include' });
-                    if (!res.ok) throw new Error('Upload failed');
+                    await fetch('/upload', { method: 'POST', body: formData, credentials: 'include' });
                 } catch (e) {
                     console.error('Upload error:', e);
-                    break;
                 }
                 
-                els.uploadBar.style.width = `${((i + 1) / files.length) * 100}%`;
+                els.progressFill.style.width = `${((i + 1) / files.length) * 100}%`;
             }
 
             els.uploadBtn.disabled = false;
-            els.uploadProgress.style.display = 'none';
-            els.uploadBar.style.width = '0%';
+            els.progressBar.style.display = 'none';
+            els.progressFill.style.width = '0%';
             els.fileInput.value = '';
-            loadImageList();
-            showToast(`Uploaded ${files.length} image(s)!`, 'success');
+            loadGallery();
+            showToast(`✓ Uploaded ${files.length} image(s)`, 'success');
         });
 
-        function showToast(message, type = 'info') {
+        function openLightbox(url) {
+            els.lightboxImg.src = url;
+            els.lightbox.classList.add('show');
+        }
+
+        function closeLightbox() {
+            els.lightbox.classList.remove('show');
+            els.lightboxImg.src = '';
+        }
+
+        els.lightbox.addEventListener('click', (e) => {
+            if (e.target === els.lightbox) closeLightbox();
+        });
+
+        function showToast(message, type = 'success') {
             els.toast.textContent = message;
-            els.toast.style.backgroundColor = 
-                type === 'error' ? '#dc3545' : 
-                type === 'success' ? '#28a745' : 
-                type === 'warning' ? '#ffc107' : getComputedStyle(document.documentElement).getPropertyValue('--surface-color');
+            els.toast.className = type;
             els.toast.classList.add('show');
             setTimeout(() => els.toast.classList.remove('show'), 3000);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             checkAuth();
-            setInterval(loadImageList, 30000); // Auto-refresh every 30s
         });
     </script>
 </body>
