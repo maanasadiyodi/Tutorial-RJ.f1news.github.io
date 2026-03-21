@@ -30,75 +30,7 @@
             overflow-x: hidden;
         }
 
-        /* --- Views Management --- */
-        .view { 
-            display: none; 
-            width: 100%; 
-            min-height: 100vh; 
-            animation: fadeIn 0.4s ease; 
-        }
-        /* Force Login View by default if JS fails or before check completes */
-        #login-view { display: flex; } 
-        
-        .view.active { display: flex; }
-        #gallery-view.active { display: flex; flex-direction: column; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- Login View --- */
-        #login-view {
-            justify-content: center;
-            align-items: center;
-            background: radial-gradient(circle at top right, #1e293b 0%, #0f172a 60%);
-        }
-
-        .login-card {
-            background: var(--surface-dark);
-            padding: 2.5rem;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .login-card h1 { margin-bottom: 0.5rem; font-size: 1.8rem; }
-        .login-card p { color: var(--text-muted); margin-bottom: 2rem; }
-
-        .input-group { margin-bottom: 1.5rem; text-align: left; }
-        .input-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted); }
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            background: var(--bg-dark);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .input-group input:focus { border-color: var(--primary); }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 1rem;
-        }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-danger:hover { background: #dc2626; }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
-        .btn-outline:hover { border-color: var(--text-main); color: var(--text-main); }
-
-        /* --- Gallery View --- */
+        /* --- Header --- */
         header {
             display: flex;
             justify-content: space-between;
@@ -109,23 +41,41 @@
             backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
-            z-index: 10;
+            z-index: 50;
         }
 
+        .logo-area { display: flex; align-items: center; gap: 10px; }
         .logo { font-size: 1.5rem; font-weight: 700; background: linear-gradient(to right, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .insta-link { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; margin-left: 10px; transition: color 0.2s; }
+        .insta-link { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
         .insta-link:hover { color: var(--primary); }
 
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-outline:hover { border-color: var(--text-main); background: rgba(255,255,255,0.05); }
+
+        /* --- Main Container --- */
         .container { max-width: 1400px; margin: 0 auto; padding: 2rem; width: 100%; flex: 1; }
 
-        /* HIDDEN BY DEFAULT - Only shown via JS when logged in */
+        /* --- Admin Panel (Hidden by default) --- */
         .admin-panel {
             background: var(--surface-dark);
             padding: 1.5rem;
             border-radius: var(--radius);
             border: 1px solid var(--border);
             margin-bottom: 2rem;
-            display: none; 
+            display: none; /* Hidden unless logged in */
             animation: slideDown 0.3s ease;
         }
         .admin-panel.visible { display: block; }
@@ -140,6 +90,7 @@
         .progress-container { height: 4px; background: var(--bg-dark); border-radius: 2px; margin-top: 1rem; overflow: hidden; display: none; }
         .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s ease; }
 
+        /* --- Gallery Grid --- */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -225,12 +176,54 @@
             font-size: 1.5rem;
         }
 
+        /* --- Login Modal Overlay --- */
+        .login-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 200;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+        .login-overlay.active { display: flex; }
+        
+        .login-card {
+            background: var(--surface-dark);
+            padding: 2.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.3s;
+        }
+        .login-overlay.active .login-card { transform: scale(1); }
+
+        .input-group { margin-bottom: 1.5rem; text-align: left; }
+        .input-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted); }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+        .input-group input:focus { border-color: var(--primary); }
+
         /* --- Toast Notifications --- */
         .toast-container {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            z-index: 200;
+            z-index: 300;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -265,52 +258,36 @@
 </head>
 <body>
 
-    <!-- LOGIN VIEW (Default Visible) -->
-    <div id="login-view" class="view active">
-        <div class="login-card">
-            <h1>Admin Access</h1>
-            <p>Please log in to view the gallery</p>
-            <form id="login-form">
-                <div class="input-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter password" required autofocus>
-                </div>
-                <button type="submit" class="btn btn-primary">Sign In</button>
-            </form>
-            <p style="margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-muted);">
-                Hint: Password is <strong>124</strong>
-            </p>
+    <!-- Header (Always Visible) -->
+    <header>
+        <div class="logo-area">
+            <span class="logo">The Gallery</span>
+            <a href="https://instagram.com/adichitodi" target="_blank" class="insta-link">@adichitodi</a>
         </div>
-    </div>
+        <button id="auth-btn" class="btn btn-outline">Login</button>
+    </header>
 
-    <!-- GALLERY VIEW (Hidden by Default) -->
-    <div id="gallery-view" class="view">
-        <header>
-            <div style="display:flex; align-items:center;">
-                <span class="logo">The Gallery</span>
-                <a href="https://instagram.com/adichitodi" target="_blank" class="insta-link">@adichitodi</a>
-            </div>
-            <button id="logout-btn" class="btn btn-outline" style="width: auto; padding: 8px 16px;">Logout</button>
-        </header>
-
-        <div class="container">
-            <!-- Admin Panel: ONLY visible when logged in -->
-            <div id="admin-panel" class="admin-panel">
-                <h3 style="margin-bottom: 1rem;">Upload New Memories</h3>
-                <div class="upload-area">
-                    <div class="file-input-wrapper">
-                        <button class="btn-file">📁 Choose Images</button>
-                        <input type="file" id="file-input" accept="image/*" multiple>
-                    </div>
-                    <button id="upload-btn" class="btn btn-primary" style="width: auto;">Upload Now</button>
+    <div class="container">
+        <!-- Admin Panel (Only Visible When Logged In) -->
+        <div id="admin-panel" class="admin-panel">
+            <h3 style="margin-bottom: 1rem;">Upload New Memories</h3>
+            <div class="upload-area">
+                <div class="file-input-wrapper">
+                    <button class="btn-file">📁 Choose Images</button>
+                    <input type="file" id="file-input" accept="image/*" multiple>
                 </div>
-                <div class="progress-container" id="progress-container">
-                    <div class="progress-bar" id="progress-bar"></div>
-                </div>
+                <button id="upload-btn" class="btn btn-primary" style="width: auto;">Upload Now</button>
             </div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
 
-            <div id="gallery-grid" class="gallery-grid">
-                <!-- Images injected here -->
+        <!-- Gallery Grid (Always Visible) -->
+        <div id="gallery-grid" class="gallery-grid">
+            <div class="empty-state">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <h3>Loading gallery...</h3>
             </div>
         </div>
     </div>
@@ -321,6 +298,22 @@
         <img id="lightbox-img" src="" alt="Full view">
     </div>
 
+    <!-- Login Modal Overlay -->
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-card">
+            <h2 style="margin-bottom: 0.5rem;">Admin Access</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Enter password to upload or delete</p>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••" required autofocus>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
+            </form>
+            <button id="close-login" class="btn btn-outline" style="width: 100%; margin-top: 1rem; border: none;">Cancel</button>
+        </div>
+    </div>
+
     <!-- Toast Container -->
     <div class="toast-container" id="toast-container"></div>
 
@@ -329,14 +322,8 @@
         const state = { isLoggedIn: false, isLoading: false };
         
         // Elements
-        const views = {
-            login: document.getElementById('login-view'),
-            gallery: document.getElementById('gallery-view')
-        };
         const els = {
-            loginForm: document.getElementById('login-form'),
-            passwordInput: document.getElementById('password'),
-            logoutBtn: document.getElementById('logout-btn'),
+            authBtn: document.getElementById('auth-btn'),
             adminPanel: document.getElementById('admin-panel'),
             fileInput: document.getElementById('file-input'),
             uploadBtn: document.getElementById('upload-btn'),
@@ -345,41 +332,60 @@
             galleryGrid: document.getElementById('gallery-grid'),
             lightbox: document.getElementById('lightbox'),
             lightboxImg: document.getElementById('lightbox-img'),
-            toastContainer: document.getElementById('toast-container')
+            toastContainer: document.getElementById('toast-container'),
+            loginOverlay: document.getElementById('login-overlay'),
+            loginForm: document.getElementById('login-form'),
+            passwordInput: document.getElementById('password'),
+            closeLoginBtn: document.getElementById('close-login')
         };
 
-        // --- Navigation & Auth ---
-        function switchView(viewName) {
-            Object.values(views).forEach(el => el.classList.remove('active'));
-            views[viewName].classList.add('active');
-            
-            // Security: Ensure admin panel is hidden if switching to login
-            if (viewName === 'login') {
-                els.adminPanel.classList.remove('visible');
-            }
-        }
-
+        // --- Auth Logic ---
         async function checkAuth() {
             try {
                 const res = await fetch('/api/auth-status', { credentials: 'include' });
                 const data = await res.json();
-                
-                if (data.isLoggedIn) {
-                    state.isLoggedIn = true;
-                    // Show Gallery AND Upload Panel
-                    els.adminPanel.classList.add('visible');
-                    switchView('gallery');
-                    loadGallery();
-                } else {
-                    state.isLoggedIn = false;
-                    // Force Login View
-                    switchView('login');
-                }
+                state.isLoggedIn = data.isLoggedIn;
+                updateUI();
             } catch (e) {
                 state.isLoggedIn = false;
-                switchView('login');
+                updateUI();
             }
         }
+
+        function updateUI() {
+            if (state.isLoggedIn) {
+                els.authBtn.textContent = 'Logout';
+                els.authBtn.className = 'btn btn-danger';
+                els.adminPanel.classList.add('visible');
+            } else {
+                els.authBtn.textContent = 'Login';
+                els.authBtn.className = 'btn btn-outline';
+                els.adminPanel.classList.remove('visible');
+            }
+        }
+
+        function toggleLoginModal(show) {
+            if (show) {
+                els.loginOverlay.classList.add('active');
+                setTimeout(() => els.passwordInput.focus(), 100);
+            } else {
+                els.loginOverlay.classList.remove('active');
+                els.passwordInput.value = '';
+            }
+        }
+
+        els.authBtn.addEventListener('click', () => {
+            if (state.isLoggedIn) {
+                logout();
+            } else {
+                toggleLoginModal(true);
+            }
+        });
+
+        els.closeLoginBtn.addEventListener('click', () => toggleLoginModal(false));
+        els.loginOverlay.addEventListener('click', (e) => {
+            if (e.target === els.loginOverlay) toggleLoginModal(false);
+        });
 
         els.loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -396,33 +402,27 @@
                 
                 if (data.success) {
                     state.isLoggedIn = true;
-                    els.passwordInput.value = '';
-                    // Reveal Upload Panel
-                    els.adminPanel.classList.add('visible');
-                    showToast('Access granted', 'success');
-                    switchView('gallery');
-                    loadGallery();
+                    updateUI();
+                    toggleLoginModal(false);
+                    showToast('Access granted!', 'success');
                 } else {
                     showToast('Incorrect password', 'error');
-                    els.passwordInput.focus();
                 }
             } catch (e) {
                 showToast('Connection error', 'error');
             }
         });
 
-        els.logoutBtn.addEventListener('click', async () => {
+        async function logout() {
             try {
                 await fetch('/api/logout', { method: 'POST', credentials: 'include' });
                 state.isLoggedIn = false;
-                // Hide Upload Panel immediately
-                els.adminPanel.classList.remove('visible');
+                updateUI();
                 showToast('Logged out successfully', 'success');
-                switchView('login');
             } catch (e) {
                 showToast('Error logging out', 'error');
             }
-        });
+        }
 
         // --- Gallery Logic ---
         async function loadGallery() {
@@ -440,7 +440,7 @@
                         <div class="empty-state">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                             <h3>No images yet</h3>
-                            <p>Upload your first photo to get started!</p>
+                            <p>${state.isLoggedIn ? 'Upload your first photo!' : 'Login to upload photos.'}</p>
                         </div>
                     `;
                     return;
@@ -451,16 +451,21 @@
                     card.className = 'card';
                     card.onclick = () => openLightbox(img.url);
                     
+                    let deleteBtn = '';
+                    if (state.isLoggedIn) {
+                        deleteBtn = `
+                            <button class="action-btn delete" onclick="event.stopPropagation(); deleteImage('${img.name}')">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        `;
+                    }
+
                     card.innerHTML = `
                         <img src="${img.url}" alt="${img.name}" loading="lazy">
                         <div class="card-overlay">
                             <div class="card-actions">
                                 <span style="font-size:0.8rem; opacity:0.8">${img.name}</span>
-                                ${state.isLoggedIn ? `
-                                    <button class="action-btn delete" onclick="event.stopPropagation(); deleteImage('${img.name}')">
-                                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                    </button>
-                                ` : ''}
+                                ${deleteBtn}
                             </div>
                         </div>
                     `;
@@ -474,8 +479,7 @@
         }
 
         async function deleteImage(filename) {
-            if(!confirm('Are you sure you want to delete this image?')) return;
-            
+            // Simple confirmation via toast logic could be added, but keeping it simple for now
             try {
                 const res = await fetch(`/delete/${encodeURIComponent(filename)}`, {
                     method: 'DELETE',
@@ -570,8 +574,11 @@
             }, 3000);
         }
 
-        // Init: Force check on load
-        document.addEventListener('DOMContentLoaded', checkAuth);
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            loadGallery(); // Always load gallery immediately
+        });
     </script>
 </body>
 </html>
