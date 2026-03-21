@@ -1,10 +1,11 @@
 const express = require('express');
 const session = require('express-session');
+// 1. Import the MemoryStore explicitly
+const MemoryStore = require('express-session').MemoryStore; 
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const app = express();
-
 // Middleware
 app.use(express.json());
 app.use(express.static('public'));
@@ -21,14 +22,15 @@ const ADMIN_PASSWORD = "124";
 
 // Configure Session
 app.use(session({
-		secret: SESSION_SECRET,
-		resave: false,
-		saveUninitialized: false,
-		cookie: {
-				secure: false, 
-				httpOnly: true, 
-				maxAge: 24 * 60 * 60 * 1000 
-		}
+    secret: "zgallery_super_secure_key_change_in_prod_2024",
+    resave: false,
+    saveUninitialized: false,
+    store: new MemoryStore(), // <--- Add this line to silence the warning
+    cookie: {
+        secure: false, 
+        httpOnly: true, 
+        maxAge: 24 * 60 * 60 * 1000 
+    }
 }));
 
 // Configure Storage
