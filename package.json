@@ -1,7 +1,6 @@
 {
   "name": "zgallery",
-  "version": "2.0.0",
-  "description": "Minimalist image gallery with admin upload",
+  "version": "2.1.0",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
