@@ -1,4 +1,5 @@
 const express = require('express');
+const session = require('express-session');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -11,9 +12,24 @@ app.use('/uploads', express.static('assets'));
 
 // Ensure assets folder exists
 if (!fs.existsSync('./assets')) {
-		console.log("Creating assets folder...");
 		fs.mkdirSync('./assets');
 }
+
+// --- SECURITY CONFIGURATION ---
+const SESSION_SECRET = "zgallery_super_secure_key_change_in_prod_2024"; 
+const ADMIN_PASSWORD = "124"; 
+
+// Configure Session
+app.use(session({
+		secret: SESSION_SECRET,
+		resave: false,
+		saveUninitialized: false,
+		cookie: {
+				secure: false, 
+				httpOnly: true, 
+				maxAge: 24 * 60 * 60 * 1000 
+		}
+}));
 
 // Configure Storage
 const storage = multer.diskStorage({
@@ -26,46 +42,9 @@ const storage = multer.diskStorage({
 		}
 });
 
-const upload = multer({ 
-		storage: storage,
-		limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit
-		fileFilter: function (req, file, cb) {
-				checkFileType(file, cb);
-		}
-});
+const upload = multer({ storage });
 
-function checkFileType(file, cb) {
-		const allowedExt = /jpeg|jpg|png|gif|bmp/;
-		const extname = allowedExt.test(path.extname(file.originalname).toLowerCase());
-		const mimetype = allowedExt.test(path.extname(file.originalname).toLowerCase()) || 
-										 /image\/(jpeg|jpg|png|gif|bmp)/.test(file.mimetype);
-
-		if (mimetype && extname) {
-				return cb(null, true);
-		} else {
-				cb(new Error('Only images are allowed!'));
-		}
-}
-
-// --- SIMPLE UPLOAD ROUTE (No Chunks) ---
-app.post('/upload', upload.single('image'), (req, res) => {
-		try {
-				if (!req.file) {
-						return res.status(400).json({ error: 'No file uploaded' });
-				}
-
-				console.log(`File uploaded: ${req.file.filename}`);
-				res.json({ 
-						message: 'File uploaded successfully', 
-						url: '/uploads/' + req.file.filename 
-				});
-		} catch (err) {
-				console.error('Upload Error:', err);
-				res.status(500).json({ error: 'Server error during upload' });
-		}
-});
-
-// --- GET IMAGES ---
+// --- API: GET /images ---
 app.get('/images', (req, res) => {
 		fs.readdir('./assets', (err, files) => {
 				if (err) return res.status(500).json({ error: 'Scan failed' });
@@ -76,49 +55,62 @@ app.get('/images', (req, res) => {
 		});
 });
 
-// --- SINGLE DELETE ---
-app.delete('/delete/:filename', (req, res) => {
-		const fileName = decodeURIComponent(req.params.filename);
-		const filePath = path.join(__dirname, 'assets', fileName);
-		const tempPath = path.join(__dirname, 'assets', fileName + '.tmp');
+// --- API: POST /upload ---
+app.post('/upload', upload.single('image'), (req, res) => {
+		if (!req.file) return res.status(400).json({ error: 'No file' });
+		res.json({ message: 'Uploaded', url: '/uploads/' + req.file.filename });
+});
 
-		if (fs.existsSync(filePath)) {
-				fs.unlink(filePath, (err) => {
-						if (err) return res.status(500).json({ error: 'Error' });
-						res.json({ success: true });
-				});
-		} else if (fs.existsSync(tempPath)) {
-				fs.unlink(tempPath, (err) => {
-						if (err) return res.status(500).json({ error: 'Error' });
+// --- SECURE LOGIN ROUTE ---
+app.post('/api/login', (req, res) => {
+		const { password } = req.body;
+
+		if (password === ADMIN_PASSWORD) {
+				req.session.isLoggedIn = true;
+				req.session.admin = true;
+				req.session.save((err) => {
+						if (err) return res.status(500).json({ error: 'Session error' });
 						res.json({ success: true });
 				});
 		} else {
-				res.json({ success: true }); 
+				res.status(401).json({ error: 'Invalid password' });
 		}
 });
 
-// --- BULK DELETE ---
-app.post('/delete-multiple', (req, res) => {
-		const { filenames } = req.body;
-		if (!Array.isArray(filenames)) return res.status(400).json({ error: 'Invalid input' });
-
-		let successCount = 0;
-
-		filenames.forEach(fileName => {
-				const filePath = path.join(__dirname, 'assets', fileName);
-				const tempPath = path.join(__dirname, 'assets', fileName + '.tmp');
-
-				if (fs.existsSync(filePath)) {
-						fs.unlinkSync(filePath);
-						successCount++;
-				} else if (fs.existsSync(tempPath)) {
-						fs.unlinkSync(tempPath);
-						successCount++;
-				}
+// --- SECURE LOGOUT ROUTE ---
+app.post('/api/logout', (req, res) => {
+		req.session.destroy((err) => {
+				if (err) return res.status(500).json({ error: 'Logout error' });
+				res.clearCookie('connect.sid');
+				res.json({ success: true });
 		});
+});
 
-		res.json({ success: true, message: `${successCount} deleted` });
+// --- CHECK AUTH STATUS ---
+app.get('/api/auth-status', (req, res) => {
+		res.json({ 
+				isLoggedIn: !!(req.session.isLoggedIn && req.session.admin) 
+		});
+});
+
+// --- SECURE DELETE ROUTE ---
+app.delete('/delete/:filename', (req, res) => {
+		if (!req.session.isLoggedIn || !req.session.admin) {
+				return res.status(403).json({ error: 'Unauthorized: Login required.' });
+		}
+
+		const fileName = decodeURIComponent(req.params.filename);
+		const filePath = path.join(__dirname, 'assets', fileName);
+
+		if (fs.existsSync(filePath)) {
+				fs.unlink(filePath, (err) => {
+						if (err) return res.status(500).json({ error: 'Error deleting' });
+						res.json({ success: true });
+				});
+		} else {
+				res.status(404).json({ error: 'File not found' });
+		}
 });
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
