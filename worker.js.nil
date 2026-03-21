@@ -64,7 +64,7 @@ export default {
       }
     }
 
-    // --- Fallback: Serve Static Files (Frontend) ---
+    // --- Fallback: Serve Static Files (Frontend) ---'''
     // This serves index.html from the 'public' folder
     return env.ASSETS.fetch(request);
   }
