@@ -4,450 +4,998 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Gallery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #35364e; --surface-color: rgba(40, 42, 60, 0.7); --border-color: rgba(60, 65, 90, 0.6);
-            --text-primary: #f0f0f0; --text-secondary: #b0b3c5; --accent-gold: #c8534d; --selection-blue: #3b82f6;
-            --radius-md: 4px; --radius-lg: 12px;
+            --bg-color: #35364e; 
+            --surface-color: rgba(40, 42, 60, 0.85); 
+            --border-color: rgba(60, 65, 90, 0.6);
+            --text-primary: #f0f0f0; 
+            --text-secondary: #b0b3c5; 
+            --accent-gold: #c8534d; 
+            --accent-gold-hover: #b0443e;
+            --selection-blue: #3b82f6;
+            --error-red: #ef4444;
+            --success-green: #238636;
+            --warning-orange: #d97706;
+            --radius-md: 4px; 
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+            --transition: all 0.2s ease;
         }
         [data-theme="light"] {
-            --bg-color: #f0f2f5; --surface-color: rgba(255, 255, 255, 0.8); --border-color: rgba(200, 200, 210, 0.6);
-            --text-primary: #1f2328; --text-secondary: #656d76; --selection-blue: #2563eb;
+            --bg-color: #f0f2f5; 
+            --surface-color: rgba(255, 255, 255, 0.9); 
+            --border-color: rgba(200, 200, 210, 0.6);
+            --text-primary: #1f2328; 
+            --text-secondary: #656d76; 
+            --selection-blue: #2563eb;
         }
-        * { box-sizing: border-box; }
-        body { margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-primary); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-primary); 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
         
-        /* Noise Gradient Overlay */
-        .ambient-bg { position: fixed; inset: 0; z-index: -2; background: var(--bg-color); }
-        .gradient-blob { position: absolute; top: -10%; left: -10%; width: 60vw; height: 60vw; border-radius: 50%; filter: blur(100px); opacity: 0.3; animation: float 25s infinite alternate; background: radial-gradient(circle, var(--accent-gold), transparent); }
-        .blob-2 { bottom: -10%; right: -10%; left: auto; top: auto; background: radial-gradient(circle, #6c5ce7, transparent); animation-delay: -12s; }
-        @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(50px, 50px) scale(1.1); } }
+        /* Ambient Background */
+        .ambient-bg { 
+            position: fixed; inset: 0; z-index: -2; 
+            background: var(--bg-color); 
+            pointer-events: none;
+        }
+        .gradient-blob { 
+            position: absolute; 
+            width: 60vw; height: 60vw; 
+            border-radius: 50%; 
+            filter: blur(100px); 
+            opacity: 0.25; 
+            animation: float 25s infinite alternate; 
+        }
+        .gradient-blob:first-child {
+            top: -10%; left: -10%;
+            background: radial-gradient(circle, var(--accent-gold), transparent);
+        }
+        .gradient-blob:last-child {
+            bottom: -10%; right: -10%;
+            background: radial-gradient(circle, #6c5ce7, transparent);
+            animation-delay: -12s;
+        }
+        @keyframes float { 
+            0% { transform: translate(0, 0) scale(1); } 
+            100% { transform: translate(50px, 50px) scale(1.1); } 
+        }
         
-        /* App Container */
-        .app-container { width: 100%; max-width: 100vw; display: flex; flex-direction: column; align-items: center; padding: 0; position: relative; z-index: 1; }
+        /* App Layout */
+        .app-container { 
+            width: 100%; max-width: 100vw; 
+            display: flex; flex-direction: column; 
+            align-items: center; 
+            position: relative; z-index: 1; 
+            min-height: 100vh;
+        }
         
         /* Header */
-        header { width: 100%; background: var(--bg-color); border-bottom: 1px solid var(--border-color); padding: 1rem 2rem; position: sticky; top: 0; z-index: 10; backdrop-filter: blur(12px); display: flex; justify-content: space-between; align-items: center; }
-        h1 { margin: 0; font-size: 1.8rem; font-weight: 600; color: var(--text-primary); }
-        .insta-link { color: var(--accent-gold); text-decoration: none; font-style: italic; }
-        .controls { display: flex; gap: 1rem; align-items: center; }
+        header { 
+            width: 100%; 
+            background: var(--bg-color); 
+            border-bottom: 1px solid var(--border-color); 
+            padding: 1rem 2rem; 
+            position: sticky; top: 0; z-index: 10; 
+            backdrop-filter: blur(12px); 
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: var(--shadow-sm);
+        }
+        .header-left { display: flex; align-items: center; gap: 1rem; }
+        h1 { 
+            font-size: 1.8rem; font-weight: 600; 
+            font-family: 'Playfair Display', serif;
+            letter-spacing: -0.02em;
+        }
+        .insta-link { 
+            color: var(--accent-gold); text-decoration: none; 
+            font-style: italic; font-size: 0.95rem;
+            transition: var(--transition);
+        }
+        .insta-link:hover { opacity: 0.8; }
+        .controls { display: flex; gap: 0.75rem; align-items: center; }
         
-        /* Bulk Actions */
-        .bulk-actions { display: none; background: var(--surface-color); border: 1px solid var(--selection-blue); padding: 0.5rem 1rem; border-radius: var(--radius-md); margin-right: 1rem; }
-        .bulk-actions.active { display: flex; align-items: center; gap: 10px; }
-        .btn-delete-all { background: var(--selection-blue); color: white; border: none; padding: 6px 12px; border-radius: var(--radius-md); cursor: pointer; }
-        .btn-delete-all.confirm-mode { background: #dc2626; animation: pulse 1s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        /* Bulk Actions Bar */
+        .bulk-actions { 
+            display: none; 
+            background: var(--surface-color); 
+            border: 1px solid var(--selection-blue); 
+            padding: 0.5rem 1rem; 
+            border-radius: var(--radius-md); 
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+            align-items: center; gap: 0.5rem;
+        }
+        .bulk-actions.active { display: flex; }
+        .btn-delete-all { 
+            background: var(--selection-blue); color: white; 
+            border: none; padding: 6px 12px; 
+            border-radius: var(--radius-md); cursor: pointer;
+            display: flex; align-items: center; gap: 4px;
+            transition: var(--transition);
+        }
+        .btn-delete-all:hover { filter: brightness(0.95); }
+        .btn-delete-all.confirm-mode { 
+            background: var(--error-red); 
+            animation: pulse 1s infinite; 
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.75; } }
         
-        /* Buttons & Switches */
-        button { cursor: pointer; border: 1px solid transparent; border-radius: var(--radius-md); padding: 6px 14px; transition: 0.2s; font-family: inherit; font-size: 0.85rem; text-transform: uppercase; }
-        .btn-login { background-color: var(--btn-bg); border-color: var(--btn-border); color: var(--text-primary); }
-        .btn-login:hover { background-color: var(--surface-color); }
-        .btn-primary { background-color: var(--accent-gold); color: white; border: none; }
+        /* Buttons */
+        button { 
+            cursor: pointer; border: 1px solid transparent; 
+            border-radius: var(--radius-md); padding: 6px 14px; 
+            transition: var(--transition); 
+            font-family: inherit; font-size: 0.85rem; 
+            font-weight: 500; text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-login { 
+            background: var(--surface-color); 
+            border-color: var(--border-color); 
+            color: var(--text-primary);
+        }
+        .btn-login:hover { background: var(--border-color); }
+        .btn-primary { 
+            background: var(--accent-gold); color: white; border: none;
+        }
+        .btn-primary:hover { background: var(--accent-gold-hover); }
+        
+        /* Theme Toggle */
         .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; inset: 0; background-color: var(--border-color); transition: 0.2s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: 0.2s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--accent-gold); }
+        .slider { 
+            position: absolute; cursor: pointer; inset: 0; 
+            background: var(--border-color); 
+            transition: var(--transition); border-radius: 24px; 
+        }
+        .slider:before { 
+            position: absolute; content: ""; height: 16px; width: 16px; 
+            left: 4px; bottom: 4px; background: white; 
+            transition: var(--transition); border-radius: 50%; 
+        }
+        input:checked + .slider { background: var(--accent-gold); }
         input:checked + .slider:before { transform: translateX(20px); }
         
         /* Admin Panel */
-        .admin-panel { width: 100%; max-width: 700px; background: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2rem; margin: 3rem auto; display: none; animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .admin-panel { 
+            width: 100%; max-width: 700px; 
+            background: var(--surface-color); 
+            border: 1px solid var(--border-color); 
+            border-radius: var(--radius-lg); 
+            padding: 2rem; margin: 2rem auto; 
+            display: none; 
+            animation: slideUp 0.4s ease-out;
+            box-shadow: var(--shadow-md);
+        }
+        @keyframes slideUp { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
         .panel-header { text-align: center; margin-bottom: 1.5rem; }
-        .upload-area { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-        input[type="file"] { background: var(--bg-color); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 14px; color: var(--text-primary); outline: none; }
+        .panel-header h2 { font-family: 'Playfair Display', serif; margin-bottom: 0.5rem; }
+        .panel-header p { color: var(--text-secondary); }
+        .upload-area { 
+            display: flex; gap: 1rem; justify-content: center; 
+            flex-wrap: wrap; align-items: center;
+        }
+        input[type="file"] { 
+            background: var(--bg-color); 
+            border: 1px solid var(--border-color); 
+            border-radius: var(--radius-md); 
+            padding: 8px 14px; color: var(--text-primary); 
+            outline: none; cursor: pointer;
+        }
         input[type="file"]:focus { border-color: var(--accent-gold); }
-        .progress-container { width: 100%; height: 2px; background: var(--border-color); margin-top: 1.5rem; border-radius: 2px; overflow: hidden; display: none; }
-        .progress-bar { height: 100%; background: var(--accent-gold); width: 0%; transition: width 0.3s; }
+        .progress-container { 
+            width: 100%; height: 3px; background: var(--border-color); 
+            margin-top: 1.5rem; border-radius: 2px; overflow: hidden; 
+            display: none; 
+        }
+        .progress-bar { 
+            height: 100%; background: var(--accent-gold); 
+            width: 0%; transition: width 0.3s ease; 
+        }
         
-        /* Gallery Grid */
-        .gallery-container { width: 100%; max-width: 100%; margin: 0; padding: 1rem; column-count: 5; column-gap: 2rem; }
+        /* Gallery Grid - Masonry with CSS Columns */
+        .gallery-container { 
+            width: 100%; max-width: 1400px; 
+            margin: 0 auto; padding: 1rem 2rem; 
+            column-count: 5; column-gap: 1.5rem; 
+        }
         @media (max-width: 1200px) { .gallery-container { column-count: 4; } }
-        @media (max-width: 900px) { .gallery-container { column-count: 3; } }
+        @media (max-width: 900px) { .gallery-container { column-count: 3; padding: 1rem; } }
         @media (max-width: 600px) { .gallery-container { column-count: 2; } }
         @media (max-width: 400px) { .gallery-container { column-count: 1; } }
 
-        .card { background: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; break-inside: avoid; margin: 0 auto 2rem auto; cursor: zoom-in; }
-        .card.selected { border: 3px solid var(--selection-blue); }
-        .card img { width: 100%; height: auto; display: block; opacity: 0; transition: opacity 0.6s ease; }
+        .card { 
+            background: var(--surface-color); 
+            border: 1px solid var(--border-color); 
+            border-radius: var(--radius-lg); 
+            overflow: hidden; 
+            break-inside: avoid; 
+            margin: 0 auto 1.5rem auto; 
+            cursor: zoom-in; 
+            transition: var(--transition);
+            position: relative;
+        }
+        .card:hover { 
+            transform: translateY(-4px); 
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent-gold);
+        }
+        .card.selected { 
+            border: 2px solid var(--selection-blue); 
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        .card img { 
+            width: 100%; height: auto; display: block; 
+            opacity: 0; transition: opacity 0.4s ease; 
+        }
         .card img.loaded { opacity: 1; }
-        .card:hover { transform: translateY(-6px); }
         
-        .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; align-items: flex-end; justify-content: flex-end; padding: 1.5rem; opacity: 0; transition: opacity 0.3s; }
+        /* Card Overlay Actions */
+        .overlay { 
+            position: absolute; inset: 0; 
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); 
+            display: flex; align-items: flex-end; justify-content: flex-end; 
+            padding: 1rem; opacity: 0; transition: var(--transition); 
+            pointer-events: none;
+        }
         .card:hover .overlay { opacity: 1; }
-        .actions { display: flex; gap: 0.8rem; }
-        .btn-action { background: var(--accent-gold); border: none; color: white; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.2s; }
-        .btn-action:hover { background: var(--accent-gold-hover); }
-        .btn-delete { background: rgba(218, 54, 51, 0.9); display: none; }
-        .btn-delete.confirm-mode { background: #ffffff; color: #dc2626; animation: pulse 1s infinite; }
+        .actions { display: flex; gap: 0.5rem; pointer-events: auto; }
+        .btn-action { 
+            background: var(--accent-gold); border: none; color: white; 
+            width: 40px; height: 40px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 1rem; transition: var(--transition);
+        }
+        .btn-action:hover { background: var(--accent-gold-hover); transform: scale(1.05); }
+        .btn-delete { background: rgba(218, 54, 51, 0.95); display: none; }
+        .btn-delete.confirm-mode { 
+            background: white; color: var(--error-red); 
+            animation: pulse 1s infinite; 
+        }
 
-        .checkbox-overlay { position: absolute; top: 10px; left: 10px; width: 32px; height: 32px; background: rgba(0,0,0,0.6); border: 2px solid var(--selection-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; z-index: 10; }
-        .card:hover .checkbox-overlay, .card.selected .checkbox-overlay { opacity: 1; }
-        .card.selected .checkbox-overlay { background: var(--selection-blue); }
-        .checkbox-icon { color: white; display: none; }
+        /* Selection Checkbox */
+        .checkbox-overlay { 
+            position: absolute; top: 12px; left: 12px; 
+            width: 28px; height: 28px; 
+            background: rgba(0,0,0,0.5); 
+            border: 2px solid var(--selection-blue); 
+            border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; opacity: 0; z-index: 10;
+            transition: var(--transition);
+            pointer-events: auto;
+        }
+        .card:hover .checkbox-overlay, 
+        .card.selected .checkbox-overlay { opacity: 1; }
+        .card.selected .checkbox-overlay { 
+            background: var(--selection-blue); 
+            border-color: white; 
+        }
+        
+        /* SVG Icons */
+        .icon { width: 16px; height: 16px; fill: currentColor; }
+        .checkbox-icon { display: none; color: white; }
         .card.selected .checkbox-icon { display: block; }
 
-        /* Lightbox & Modal */
-        .lightbox { position: fixed; inset: 0; background: rgba(10, 14, 23, 0.95); z-index: 1000; display: none; justify-content: center; align-items: center; }
-        .lightbox.active { display: flex; }
-        .lightbox-content { max-width: 90%; max-height: 90vh; border: 1px solid var(--border-color); border-radius: var(--radius-lg); }
-        .lightbox-close { position: absolute; top: 2rem; right: 2rem; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-primary); width: 48px; height: 48px; border-radius: 50%; cursor: pointer; }
+        /* Lightbox */
+        .lightbox { 
+            position: fixed; inset: 0; 
+            background: rgba(10, 14, 23, 0.95); 
+            z-index: 1000; display: none; 
+            justify-content: center; align-items: center;
+            padding: 2rem;
+        }
+        .lightbox.active { display: flex; animation: fadeIn 0.2s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .lightbox-content { 
+            max-width: 100%; max-height: 90vh; 
+            border-radius: var(--radius-lg); 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .lightbox-close { 
+            position: absolute; top: 1.5rem; right: 1.5rem; 
+            background: var(--surface-color); 
+            border: 1px solid var(--border-color); 
+            color: var(--text-primary); 
+            width: 44px; height: 44px; border-radius: 50%; 
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: var(--transition);
+        }
+        .lightbox-close:hover { background: var(--border-color); }
         
-        .login-overlay { position: fixed; inset: 0; background: rgba(53, 54, 78, 0.8); backdrop-filter: blur(10px); z-index: 2000; display: none; justify-content: center; align-items: center; }
-        .login-modal { background: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 3rem 2.5rem; width: 90%; max-width: 400px; text-align: center; animation: slideUp 0.4s forwards; }
-        .login-input { width: 100%; padding: 12px; margin: 1rem 0; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); outline: none; }
-        .login-btn-submit { width: 100%; background: var(--accent-gold); color: white; border: none; padding: 12px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; }
-        .error-msg { color: #ef4444; margin-top: 1rem; opacity: 0; }
+        /* Login Modal */
+        .login-overlay { 
+            position: fixed; inset: 0; 
+            background: rgba(53, 54, 78, 0.85); 
+            backdrop-filter: blur(10px); 
+            z-index: 2000; display: none; 
+            justify-content: center; align-items: center;
+            padding: 1rem;
+        }
+        .login-overlay.active { display: flex; animation: fadeIn 0.2s; }
+        .login-modal { 
+            background: var(--surface-color); 
+            border: 1px solid var(--border-color); 
+            border-radius: var(--radius-lg); 
+            padding: 2.5rem 2rem; width: 100%; max-width: 400px; 
+            text-align: center; 
+            animation: slideUp 0.4s forwards;
+            box-shadow: var(--shadow-md);
+        }
+        .login-modal.shake { animation: shake 0.5s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        .login-modal h2 { 
+            font-family: 'Playfair Display', serif; 
+            margin-bottom: 0.5rem; 
+        }
+        .login-modal p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+        .login-input { 
+            width: 100%; padding: 12px 14px; margin: 0.5rem 0 1.5rem; 
+            background: var(--bg-color); 
+            border: 1px solid var(--border-color); 
+            border-radius: var(--radius-md); 
+            color: var(--text-primary); 
+            outline: none; font-size: 1rem;
+        }
+        .login-input:focus { border-color: var(--accent-gold); }
+        .login-btn-submit { 
+            width: 100%; background: var(--accent-gold); color: white; 
+            border: none; padding: 12px; border-radius: var(--radius-md); 
+            font-weight: 600; cursor: pointer; font-size: 1rem;
+        }
+        .login-btn-submit:hover { background: var(--accent-gold-hover); }
+        .error-msg { 
+            color: var(--error-red); margin-top: 1rem; 
+            font-size: 0.9rem; min-height: 1.2em;
+        }
         
-        /* Toast */
-        .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface-color); border: 1px solid var(--border-color); padding: 1rem 2rem; border-radius: var(--radius-lg); z-index: 3000; display: flex; align-items: center; gap: 1rem; opacity: 0; transition: all 0.5s; }
+        /* Toast Notification */
+        .toast { 
+            position: fixed; bottom: 2rem; left: 50%; 
+            transform: translateX(-50%) translateY(100px); 
+            background: var(--surface-color); 
+            border: 1px solid var(--border-color); 
+            padding: 1rem 1.5rem; border-radius: var(--radius-lg); 
+            z-index: 3000; display: flex; align-items: center; gap: 0.75rem; 
+            opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: var(--shadow-md);
+            max-width: 90vw;
+        }
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        .empty-state { grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-secondary); font-style: italic; }
+        .toast-icon { flex-shrink: 0; }
+        
+        /* Empty State */
+        .empty-state { 
+            grid-column: 1/-1; text-align: center; 
+            padding: 4rem 2rem; color: var(--text-secondary); 
+            font-style: italic; font-size: 1.1rem;
+        }
+        
+        /* Loading Skeleton */
+        .skeleton { 
+            background: linear-gradient(90deg, var(--surface-color) 25%, var(--border-color) 50%, var(--surface-color) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: var(--radius-lg);
+        }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        
+        /* Responsive tweaks */
+        @media (max-width: 600px) {
+            header { padding: 0.75rem 1rem; }
+            h1 { font-size: 1.4rem; }
+            .controls { gap: 0.5rem; }
+            .bulk-actions { padding: 0.4rem 0.75rem; font-size: 0.85rem; }
+            .admin-panel { margin: 1.5rem; padding: 1.5rem; }
+            .upload-area { flex-direction: column; }
+            .btn-primary { width: 100%; }
+        }
     </style>
 </head>
 <body>
-    <!-- Removed External Resources -->
-    <div class="ambient-bg"><div class="gradient-blob"></div><div class="gradient-blob blob-2"></div></div>
+    <!-- Ambient Background -->
+    <div class="ambient-bg">
+        <div class="gradient-blob"></div>
+        <div class="gradient-blob"></div>
+    </div>
 
     <!-- Login Modal -->
     <div id="login-overlay" class="login-overlay">
         <div class="login-modal">
             <h2>Admin Access</h2>
-            <p style="color:var(--text-secondary)">Enter password</p>
-            <form id="login-form" onsubmit="handleLogin(event)">
-                <input type="password" id="login-password" class="login-input" placeholder="Password" required autocomplete="off">
-                <button type="submit" class="login-btn-submit">Unlock</button>
+            <p>Enter your password to manage the gallery</p>
+            <form id="login-form">
+                <input type="password" id="login-password" class="login-input" placeholder="Password" required autocomplete="current-password">
+                <button type="submit" class="login-btn-submit">Unlock Gallery</button>
             </form>
-            <div id="login-error" class="error-msg">Incorrect password</div>
+            <div id="login-error" class="error-msg"></div>
         </div>
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast-container" class="toast">
-        <i id="toast-icon" class="fas fa-info-circle"></i> 
-        <span id="toast-message">Message</span>
+    <div id="toast" class="toast">
+        <span class="toast-icon" id="toast-icon"></span>
+        <span id="toast-message">Notification</span>
     </div>
 
     <div class="app-container">
+        <!-- Header -->
         <header>
             <div class="header-left">
                 <h1>The Gallery</h1>
-                <a href="https://instagram.com/adichitodi" target="_blank" class="insta-link">@adichitodi</a>
+                <a href="https://instagram.com/adichitodi" target="_blank" rel="noopener" class="insta-link">@adichitodi</a>
             </div>
             <div class="controls">
                 <div id="bulk-actions" class="bulk-actions">
                     <span id="selected-count">0</span> selected
-                    <button id="btn-delete-all" class="btn-delete-all" onclick="handleBulkDeleteClick()">Delete</button>
+                    <button id="btn-delete-all" class="btn-delete-all">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        Delete
+                    </button>
                 </div>
-                <label class="switch"><input type="checkbox" id="theme-toggle" onchange="toggleTheme()"><span class="slider"></span></label>
-                <button id="login-btn" class="btn-login" onclick="attemptLogin()">🔒 Login</button>
+                <label class="switch" title="Toggle theme">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider"></span>
+                </label>
+                <button id="login-btn" class="btn-login">🔒 Login</button>
             </div>
         </header>
 
+        <!-- Admin Upload Panel -->
         <div id="admin-panel" class="admin-panel">
             <div class="panel-header">
                 <h2>Upload Memories</h2>
-                <p>Select images to upload</p>
+                <p>Select one or more images to add to your gallery</p>
             </div>
             <div class="upload-area">
                 <input type="file" id="fileInput" accept="image/*" multiple>
-                <button class="btn-primary" onclick="startUpload()">Upload Now</button>
+                <button class="btn-primary" id="upload-btn">Upload</button>
             </div>
-            <div class="progress-container" id="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
         </div>
 
+        <!-- Gallery Grid -->
         <div class="gallery-container" id="gallery-container">
-            <div class="empty-state">No memories yet</div>
+            <div class="empty-state">No memories yet — upload your first photo!</div>
         </div>
     </div>
 
+    <!-- Lightbox -->
     <div id="lightbox" class="lightbox">
-        <button class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
-        <img id="lightbox-img" src="" alt="">
+        <button class="lightbox-close" id="lightbox-close" title="Close">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+        <img id="lightbox-img" class="lightbox-content" src="" alt="Full view">
     </div>
 
     <script>
-        let isLoggedIn = false;
-        let selectedFiles = new Set();
-        let deleteConfirmActive = false;
+        // State
+        const state = {
+            isLoggedIn: false,
+            selectedFiles: new Set(),
+            deleteConfirmActive: false,
+            isLoading: false
+        };
 
+        // DOM Elements
+        const els = {
+            themeToggle: document.getElementById('theme-toggle'),
+            loginBtn: document.getElementById('login-btn'),
+            loginOverlay: document.getElementById('login-overlay'),
+            loginForm: document.getElementById('login-form'),
+            loginPassword: document.getElementById('login-password'),
+            loginError: document.getElementById('login-error'),
+            adminPanel: document.getElementById('admin-panel'),
+            fileInput: document.getElementById('fileInput'),
+            uploadBtn: document.getElementById('upload-btn'),
+            progressBar: document.getElementById('progress-bar'),
+            progressContainer: document.getElementById('progress-container'),
+            gallery: document.getElementById('gallery-container'),
+            bulkActions: document.getElementById('bulk-actions'),
+            selectedCount: document.getElementById('selected-count'),
+            btnDeleteAll: document.getElementById('btn-delete-all'),
+            toast: document.getElementById('toast'),
+            toastIcon: document.getElementById('toast-icon'),
+            toastMessage: document.getElementById('toast-message'),
+            lightbox: document.getElementById('lightbox'),
+            lightboxImg: document.getElementById('lightbox-img'),
+            lightboxClose: document.getElementById('lightbox-close')
+        };
+
+        // SVG Icons (inline, no external dependencies)
+        const icons = {
+            check: '<svg class="icon checkbox-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>',
+            download: '<svg class="icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>',
+            delete: '<svg class="icon" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>',
+            warning: '<svg class="icon" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>',
+            success: '<svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>',
+            info: '<svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>'
+        };
+
+        // Init
         document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            document.getElementById('theme-toggle').checked = savedTheme === 'light';
+            initTheme();
+            initEventListeners();
             checkAuthStatus();
             loadImages();
-            showToast("Welcome", "info");
+            showToast('Welcome to The Gallery', 'info');
         });
 
-        function toggleTheme() {
-            const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
+        function initTheme() {
+            const saved = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+            els.themeToggle.checked = saved === 'light';
         }
 
-        async function checkAuthStatus() {
-            try {
-                const res = await fetch('/api/auth-status');
-                const data = await res.json();
-                isLoggedIn = false; // Force logout on refresh
-                updateUI();
-            } catch (e) {
-                isLoggedIn = false;
-                updateUI();
-            }
-        }
+        function initEventListeners() {
+            // Theme toggle
+            els.themeToggle.addEventListener('change', () => {
+                const theme = els.themeToggle.checked ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+            });
 
-        function attemptLogin() {
-            if (isLoggedIn) { logout(); return; }
-            document.getElementById('login-overlay').style.display = 'flex';
-            setTimeout(() => document.getElementById('login-password').focus(), 100);
-        }
-
-        function closeLoginModal() { document.getElementById('login-overlay').style.display = 'none'; }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const pwd = document.getElementById('login-password').value;
-            
-            fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password: pwd })
-            })
-            .then(r => r.json())
-            .then(d => {
-                if (d.success) {
-                    isLoggedIn = true;
-                    closeLoginModal();
-                    updateUI();
-                    showToast("Access Granted", "success");
+            // Login button
+            els.loginBtn.addEventListener('click', () => {
+                if (state.isLoggedIn) {
+                    logout();
                 } else {
-                    document.querySelector('.login-modal').classList.add('shake');
-                    setTimeout(() => document.querySelector('.login-modal').classList.remove('shake'), 500);
-                    showToast("Wrong Password", "error");
+                    els.loginOverlay.classList.add('active');
+                    setTimeout(() => els.loginPassword.focus(), 100);
                 }
+            });
+
+            // Login form
+            els.loginForm.addEventListener('submit', handleLogin);
+
+            // Close login modal on backdrop click
+            els.loginOverlay.addEventListener('click', (e) => {
+                if (e.target === els.loginOverlay) closeLoginModal();
+            });
+
+            // Escape key closes modals
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeLoginModal();
+                    closeLightbox();
+                }
+            });
+
+            // Upload button
+            els.uploadBtn.addEventListener('click', startUpload);
+
+            // Bulk delete
+            els.btnDeleteAll.addEventListener('click', handleBulkDelete);
+
+            // Lightbox
+            els.lightboxClose.addEventListener('click', closeLightbox);
+            els.lightbox.addEventListener('click', (e) => {
+                if (e.target === els.lightbox) closeLightbox();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') navigateLightbox(-1);
+                if (e.key === 'ArrowRight') navigateLightbox(1);
             });
         }
 
-        async function logout() {
-            await fetch('/api/logout', { method: 'POST' });
-            isLoggedIn = false;
-            updateUI();
-            showToast("Logged Out", "info");
-        }
-
-        function updateUI() {
-            const btn = document.getElementById('login-btn');
-            const panel = document.getElementById('admin-panel');
-            const bulkBar = document.getElementById('bulk-actions');
-            
-            if (isLoggedIn) {
-                btn.innerText = "🔓 Logout";
-                btn.style.background = "var(--accent-gold)";
-                btn.style.color = "white";
-                panel.style.display = "block";
-                bulkBar.classList.toggle('active', selectedFiles.size > 0);
-            } else {
-                btn.innerText = "🔒 Login";
-                btn.style.background = "";
-                btn.style.color = "";
-                panel.style.display = "none";
-                bulkBar.classList.remove('active');
-                selectedFiles.clear();
-                updateBulkActions();
+        // Auth Functions
+        async function checkAuthStatus() {
+            try {
+                const res = await fetch('/api/auth-status', { credentials: 'include' });
+                const data = await res.json();
+                state.isLoggedIn = data.isLoggedIn;
+                updateUI();
+            } catch (err) {
+                console.warn('Auth check failed:', err);
+                state.isLoggedIn = false;
+                updateUI();
             }
-            loadImages();
         }
 
+        function handleLogin(e) {
+            e.preventDefault();
+            const password = els.loginPassword.value.trim();
+            if (!password) return;
+
+            els.loginBtn.disabled = true;
+            els.loginError.textContent = '';
+
+            fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password }),
+                credentials: 'include'
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    state.isLoggedIn = true;
+                    closeLoginModal();
+                    updateUI();
+                    showToast('Access granted ✓', 'success');
+                    els.loginPassword.value = '';
+                } else {
+                    els.loginError.textContent = 'Incorrect password';
+                    els.loginForm.querySelector('.login-modal')?.classList.add('shake');
+                    setTimeout(() => els.loginForm.querySelector('.login-modal')?.classList.remove('shake'), 500);
+                    showToast('Invalid password', 'error');
+                }
+            })
+            .catch(err => {
+                console.error('Login error:', err);
+                els.loginError.textContent = 'Connection error';
+                showToast('Network error', 'error');
+            })
+            .finally(() => {
+                els.loginBtn.disabled = false;
+            });
+        }
+
+        function closeLoginModal() {
+            els.loginOverlay.classList.remove('active');
+            els.loginPassword.value = '';
+            els.loginError.textContent = '';
+        }
+
+        async function logout() {
+            try {
+                await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+                state.isLoggedIn = false;
+                state.selectedFiles.clear();
+                updateUI();
+                showToast('Logged out', 'info');
+            } catch (err) {
+                console.error('Logout error:', err);
+                showToast('Logout failed', 'error');
+            }
+        }
+
+        // UI Updates
+        function updateUI() {
+            // Login button
+            els.loginBtn.innerHTML = state.isLoggedIn ? '🔓 Logout' : '🔒 Login';
+            els.loginBtn.classList.toggle('btn-primary', state.isLoggedIn);
+            
+            // Admin panel
+            els.adminPanel.style.display = state.isLoggedIn ? 'block' : 'none';
+            
+            // Bulk actions
+            updateBulkActions();
+            
+            // Reload gallery if logged in state changed
+            if (!state.isLoading) loadImages();
+        }
+
+        function updateBulkActions() {
+            const count = state.selectedFiles.size;
+            els.selectedCount.textContent = count;
+            
+            if (state.isLoggedIn && count > 0) {
+                els.bulkActions.classList.add('active');
+                if (!state.deleteConfirmActive) {
+                    els.btnDeleteAll.innerHTML = `${icons.delete} Delete`;
+                    els.btnDeleteAll.classList.remove('confirm-mode');
+                }
+            } else {
+                els.bulkActions.classList.remove('active');
+            }
+        }
+
+        // Gallery Functions
         async function loadImages() {
-            const container = document.getElementById('gallery-container');
+            if (state.isLoading) return;
+            state.isLoading = true;
+            
             try {
                 const res = await fetch('/images');
+                if (!res.ok) throw new Error('Failed to fetch');
                 const images = await res.json();
                 
-                if (images.length === 0) {
-                    container.innerHTML = '<div class="empty-state">No memories yet</div>';
-                    return;
-                }
-
-                container.innerHTML = '';
-                images.forEach(img => {
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    if (selectedFiles.has(img.name)) card.classList.add('selected');
-
-                    const cb = document.createElement('div');
-                    cb.className = 'checkbox-overlay';
-                    cb.onclick = (e) => { e.stopPropagation(); toggleSelection(img.name, card); };
-                    cb.innerHTML = '<i class="fas fa-check checkbox-icon"></i>';
-
-                    const imgEl = document.createElement('img');
-                    imgEl.src = img.url;
-                    imgEl.onload = () => imgEl.classList.add('loaded');
-                    imgEl.onclick = () => openLightbox(img.url);
-
-                    const overlay = document.createElement('div');
-                    overlay.className = 'overlay';
-                    const actions = document.createElement('div');
-                    actions.className = 'actions';
-
-                    const dlBtn = document.createElement('button');
-                    dlBtn.className = 'btn-action';
-                    dlBtn.innerHTML = '<i class="fas fa-download"></i>';
-                    dlBtn.onclick = (e) => { e.stopPropagation(); window.open(img.url, '_blank'); };
-
-                    const delBtn = document.createElement('button');
-                    delBtn.className = 'btn-action btn-delete';
-                    delBtn.innerHTML = '<i class="fas fa-trash"></i>';
-                    
-                    if (isLoggedIn) {
-                        delBtn.style.display = 'block';
-                        delBtn.onclick = (e) => { e.stopPropagation(); handleDeleteClick(img.name, delBtn); };
-                        actions.appendChild(delBtn);
-                    }
-
-                    actions.appendChild(dlBtn);
-                    overlay.appendChild(actions);
-                    card.appendChild(cb);
-                    card.appendChild(imgEl);
-                    card.appendChild(overlay);
-                    container.appendChild(card);
-                });
-            } catch (e) { console.error("Load failed", e); }
+                renderGallery(images);
+            } catch (err) {
+                console.error('Load error:', err);
+                els.gallery.innerHTML = '<div class="empty-state">Failed to load gallery</div>';
+                showToast('Could not load images', 'error');
+            } finally {
+                state.isLoading = false;
+            }
         }
 
-        function toggleSelection(name, card) {
-            if (selectedFiles.has(name)) {
-                selectedFiles.delete(name);
+        function renderGallery(images) {
+            if (images.length === 0) {
+                els.gallery.innerHTML = '<div class="empty-state">No memories yet — upload your first photo!</div>';
+                return;
+            }
+
+            els.gallery.innerHTML = '';
+            
+            images.forEach(img => {
+                const card = document.createElement('div');
+                card.className = `card${state.selectedFiles.has(img.name) ? ' selected' : ''}`;
+                card.dataset.filename = img.name;
+
+                // Selection checkbox
+                const checkbox = document.createElement('div');
+                checkbox.className = 'checkbox-overlay';
+                checkbox.innerHTML = icons.check;
+                checkbox.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleSelection(img.name, card);
+                });
+
+                // Image
+                const image = document.createElement('img');
+                image.src = img.url;
+                image.alt = img.name;
+                image.loading = 'lazy';
+                image.addEventListener('load', () => image.classList.add('loaded'));
+                image.addEventListener('click', () => openLightbox(img.url));
+
+                // Actions overlay
+                const overlay = document.createElement('div');
+                overlay.className = 'overlay';
+                
+                const actions = document.createElement('div');
+                actions.className = 'actions';
+
+                // Download button
+                const dlBtn = document.createElement('button');
+                dlBtn.className = 'btn-action';
+                dlBtn.title = 'Download';
+                dlBtn.innerHTML = icons.download;
+                dlBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    window.open(img.url, '_blank', 'noopener');
+                    showToast('Downloading...', 'info');
+                });
+
+                // Delete button (admin only)
+                if (state.isLoggedIn) {
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'btn-action btn-delete';
+                    delBtn.title = 'Delete';
+                    delBtn.innerHTML = icons.delete;
+                    delBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        handleDeleteClick(img.name, delBtn);
+                    });
+                    actions.appendChild(delBtn);
+                }
+
+                actions.appendChild(dlBtn);
+                overlay.appendChild(actions);
+                
+                card.appendChild(checkbox);
+                card.appendChild(image);
+                card.appendChild(overlay);
+                els.gallery.appendChild(card);
+            });
+        }
+
+        function toggleSelection(filename, card) {
+            if (state.selectedFiles.has(filename)) {
+                state.selectedFiles.delete(filename);
                 card.classList.remove('selected');
             } else {
-                selectedFiles.add(name);
+                state.selectedFiles.add(filename);
                 card.classList.add('selected');
             }
             updateBulkActions();
         }
 
-        function updateBulkActions() {
-            document.getElementById('selected-count').innerText = selectedFiles.size;
-            const btn = document.getElementById('btn-delete-all');
-            
-            if (isLoggedIn && selectedFiles.size > 0) {
-                document.getElementById('bulk-actions').classList.add('active');
-                deleteConfirmActive = false;
-                btn.classList.remove('confirm-mode');
-                btn.innerHTML = '<i class="fas fa-trash"></i> Delete';
-            } else {
-                document.getElementById('bulk-actions').classList.remove('active');
-            }
-        }
-
+        // Delete Functions
         function handleDeleteClick(filename, btnElement) {
-            if (deleteConfirmActive) {
+            if (state.deleteConfirmActive) {
                 deleteImage(filename);
-                resetDeleteButtons();
+                resetDeleteConfirm();
             } else {
-                deleteConfirmActive = true;
+                state.deleteConfirmActive = true;
                 btnElement.classList.add('confirm-mode');
-                btnElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
-                showToast("Click again to confirm", "warning");
-                setTimeout(() => { if(deleteConfirmActive) resetDeleteButtons(); }, 3000);
+                btnElement.innerHTML = icons.warning;
+                btnElement.title = 'Click again to confirm';
+                showToast('Click again to confirm', 'warning');
+                
+                setTimeout(() => {
+                    if (state.deleteConfirmActive) resetDeleteConfirm();
+                }, 4000);
             }
         }
 
-        function resetDeleteButtons() {
-            deleteConfirmActive = false;
-            document.querySelectorAll('.btn-delete').forEach(b => {
-                b.classList.remove('confirm-mode');
-                b.innerHTML = '<i class="fas fa-trash"></i>';
-            });
-        }
-
-        function handleBulkDeleteClick() {
-            if (deleteConfirmActive) {
+        function handleBulkDelete() {
+            if (state.selectedFiles.size === 0) return;
+            
+            if (state.deleteConfirmActive) {
                 deleteSelected();
-                deleteConfirmActive = false;
-                resetDeleteButtons();
+                resetDeleteConfirm();
             } else {
-                deleteConfirmActive = true;
-                const btn = document.getElementById('btn-delete-all');
-                btn.classList.add('confirm-mode');
-                btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Sure?';
-                showToast("Click again to delete all", "warning");
-                setTimeout(() => { if(deleteConfirmActive) { resetDeleteButtons(); btn.innerHTML = '<i class="fas fa-trash"></i> Delete'; } }, 3000);
+                state.deleteConfirmActive = true;
+                els.btnDeleteAll.classList.add('confirm-mode');
+                els.btnDeleteAll.innerHTML = `${icons.warning} Confirm?`;
+                showToast('Click again to delete all', 'warning');
+                
+                setTimeout(() => {
+                    if (state.deleteConfirmActive) resetDeleteConfirm();
+                }, 4000);
             }
         }
 
-        async function startUpload() {
-            const input = document.getElementById('fileInput');
-            const files = Array.from(input.files);
-            if (!files.length) return showToast("Select files first", "error");
-
-            const bar = document.getElementById('progress-bar');
-            const cont = document.getElementById('progress-container');
-
-            cont.style.display = 'block';
-            for (let i = 0; i < files.length; i++) {
-                const fd = new FormData();
-                fd.append('image', files[i]);
-                await fetch('/upload', { method: 'POST', body: fd });
-                bar.style.width = `${((i + 1) / files.length) * 100}%`;
+        function resetDeleteConfirm() {
+            state.deleteConfirmActive = false;
+            document.querySelectorAll('.btn-delete.confirm-mode').forEach(btn => {
+                btn.classList.remove('confirm-mode');
+                btn.innerHTML = icons.delete;
+                btn.title = 'Delete';
+            });
+            if (els.btnDeleteAll.classList.contains('confirm-mode')) {
+                els.btnDeleteAll.classList.remove('confirm-mode');
+                els.btnDeleteAll.innerHTML = `${icons.delete} Delete`;
             }
-            cont.style.display = 'none';
-            input.value = '';
-            loadImages();
-            showToast(`Uploaded ${files.length}`, "success");
         }
 
         async function deleteImage(filename) {
             try {
-                const res = await fetch(`/delete/${filename}`, { method: 'DELETE' });
+                const res = await fetch(`/delete/${encodeURIComponent(filename)}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                
                 if (res.ok) {
-                    selectedFiles.delete(decodeURIComponent(filename));
+                    state.selectedFiles.delete(filename);
                     updateBulkActions();
                     loadImages();
-                    showToast("Deleted", "success");
+                    showToast('Deleted', 'success');
                 } else {
-                    showToast("Failed to delete", "error");
+                    const data = await res.json().catch(() => ({}));
+                    showToast(data.error || 'Delete failed', 'error');
                 }
-            } catch (e) { showToast("Error", "error"); }
+            } catch (err) {
+                console.error('Delete error:', err);
+                showToast('Network error', 'error');
+            }
         }
 
         async function deleteSelected() {
-            let count = 0;
-            for (const name of selectedFiles) {
-                const res = await fetch(`/delete/${encodeURIComponent(name)}`, { method: 'DELETE' });
-                if (res.ok) count++;
+            const filenames = Array.from(state.selectedFiles);
+            let successCount = 0;
+            
+            for (const filename of filenames) {
+                try {
+                    const res = await fetch(`/delete/${encodeURIComponent(filename)}`, {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
+                    if (res.ok) successCount++;
+                } catch (err) {
+                    console.warn('Failed to delete', filename, err);
+                }
             }
-            selectedFiles.clear();
+            
+            state.selectedFiles.clear();
             updateBulkActions();
             loadImages();
-            showToast(`Deleted ${count}`, "success");
+            showToast(`Deleted ${successCount} image${successCount !== 1 ? 's' : ''}`, 'success');
         }
+
+        // Upload Function
+        async function startUpload() {
+            const files = Array.from(els.fileInput.files);
+            if (files.length === 0) {
+                showToast('Select images first', 'warning');
+                return;
+            }
+
+            els.uploadBtn.disabled = true;
+            els.progressContainer.style.display = 'block';
+            els.progressBar.style.width = '0%';
+
+            try {
+                for (let i = 0; i < files.length; i++) {
+                    const formData = new FormData();
+                    formData.append('image', files[i]);
+                    
+                    const res = await fetch('/upload', {
+                        method: 'POST',
+                        body: formData,
+                        credentials: 'include'
+                    });
+                    
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || 'Upload failed');
+                    
+                    // Update progress
+                    const progress = ((i + 1) / files.length) * 100;
+                    els.progressBar.style.width = `${progress}%`;
+                }
+                
+                showToast(`Uploaded ${files.length} image${files.length !== 1 ? 's' : ''} ✓`, 'success');
+                els.fileInput.value = '';
+                loadImages();
+            } catch (err) {
+                console.error('Upload error:', err);
+                showToast(err.message || 'Upload failed', 'error');
+            } finally {
+                els.uploadBtn.disabled = false;
+                els.progressContainer.style.display = 'none';
+                els.progressBar.style.width = '0%';
+            }
+        }
+
+        // Lightbox Functions
+        let lightboxImages = [];
+        let currentLightboxIndex = 0;
 
         function openLightbox(url) {
-            document.getElementById('lightbox-img').src = url;
-            document.getElementById('lightbox').classList.add('active');
+            // Get all image URLs for navigation
+            lightboxImages = Array.from(document.querySelectorAll('.card img')).map(img => img.src);
+            currentLightboxIndex = lightboxImages.indexOf(url);
+            
+            els.lightboxImg.src = url;
+            els.lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
-        function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
-        document.getElementById('lightbox').onclick = (e) => { if(e.target===e.currentTarget) closeLightbox(); };
 
-        function showToast(msg, type = "info") {
-            const t = document.getElementById('toast-container');
-            const icon = document.getElementById('toast-icon');
-            const text = document.getElementById('toast-message');
+        function closeLightbox() {
+            els.lightbox.classList.remove('active');
+            els.lightboxImg.src = '';
+            document.body.style.overflow = '';
+        }
+
+        function navigateLightbox(direction) {
+            if (lightboxImages.length === 0) return;
             
-            text.innerText = msg;
+            currentLightboxIndex += direction;
+            if (currentLightboxIndex < 0) currentLightboxIndex = lightboxImages.length - 1;
+            if (currentLightboxIndex >= lightboxImages.length) currentLightboxIndex = 0;
             
-            if (type === "success") { icon.className = "fas fa-check-circle"; icon.style.color = "#238636"; }
-            else if (type === "error") { icon.className = "fas fa-exclamation-circle"; icon.style.color = "#da3633"; }
-            else if (type === "warning") { icon.className = "fas fa-exclamation-triangle"; icon.style.color = "#d97706"; }
-            else { icon.className = "fas fa-info-circle"; icon.style.color = "var(--accent-gold)"; }
+            els.lightboxImg.style.opacity = '0';
+            setTimeout(() => {
+                els.lightboxImg.src = lightboxImages[currentLightboxIndex];
+                els.lightboxImg.style.opacity = '1';
+            }, 150);
+        }
+
+        // Toast Notifications
+        function showToast(message, type = 'info') {
+            els.toastMessage.textContent = message;
             
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3000);
+            // Set icon and color based on type
+            const config = {
+                success: { icon: icons.success, color: 'var(--success-green)' },
+                error: { icon: icons.warning, color: 'var(--error-red)' },
+                warning: { icon: icons.warning, color: 'var(--warning-orange)' },
+                info: { icon: icons.info, color: 'var(--accent-gold)' }
+            }[type] || { icon: icons.info, color: 'var(--accent-gold)' };
+            
+            els.toastIcon.innerHTML = config.icon;
+            els.toastIcon.style.color = config.color;
+            
+            // Show toast
+            els.toast.classList.add('show');
+            
+            // Auto-hide
+            clearTimeout(els.toast._timeout);
+            els.toast._timeout = setTimeout(() => {
+                els.toast.classList.remove('show');
+            }, 3500);
         }
     </script>
 </body>
