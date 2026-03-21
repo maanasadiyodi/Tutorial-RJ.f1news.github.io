@@ -31,8 +31,17 @@
         }
 
         /* --- Views Management --- */
-        .view { display: none; width: 100%; min-height: 100vh; animation: fadeIn 0.4s ease; }
-        .view.active { display: flex; flex-direction: column; }
+        .view { 
+            display: none; 
+            width: 100%; 
+            min-height: 100vh; 
+            animation: fadeIn 0.4s ease; 
+        }
+        /* Force Login View by default if JS fails or before check completes */
+        #login-view { display: flex; } 
+        
+        .view.active { display: flex; }
+        #gallery-view.active { display: flex; flex-direction: column; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -109,16 +118,18 @@
 
         .container { max-width: 1400px; margin: 0 auto; padding: 2rem; width: 100%; flex: 1; }
 
+        /* HIDDEN BY DEFAULT - Only shown via JS when logged in */
         .admin-panel {
             background: var(--surface-dark);
             padding: 1.5rem;
             border-radius: var(--radius);
             border: 1px solid var(--border);
             margin-bottom: 2rem;
-            display: none;
+            display: none; 
             animation: slideDown 0.3s ease;
         }
         .admin-panel.visible { display: block; }
+        
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
         .upload-area { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
@@ -254,25 +265,25 @@
 </head>
 <body>
 
-    <!-- LOGIN VIEW -->
+    <!-- LOGIN VIEW (Default Visible) -->
     <div id="login-view" class="view active">
         <div class="login-card">
-            <h1>Welcome Back</h1>
-            <p>Enter your password to access the gallery</p>
+            <h1>Admin Access</h1>
+            <p>Please log in to view the gallery</p>
             <form id="login-form">
                 <div class="input-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="••••••" required autofocus>
+                    <input type="password" id="password" placeholder="Enter password" required autofocus>
                 </div>
                 <button type="submit" class="btn btn-primary">Sign In</button>
             </form>
             <p style="margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-muted);">
-                Hint: The password is <strong>124</strong>
+                Hint: Password is <strong>124</strong>
             </p>
         </div>
     </div>
 
-    <!-- GALLERY VIEW -->
+    <!-- GALLERY VIEW (Hidden by Default) -->
     <div id="gallery-view" class="view">
         <header>
             <div style="display:flex; align-items:center;">
@@ -283,7 +294,7 @@
         </header>
 
         <div class="container">
-            <!-- Admin Panel (Hidden if not logged in, but logic handles visibility) -->
+            <!-- Admin Panel: ONLY visible when logged in -->
             <div id="admin-panel" class="admin-panel">
                 <h3 style="margin-bottom: 1rem;">Upload New Memories</h3>
                 <div class="upload-area">
@@ -341,20 +352,31 @@
         function switchView(viewName) {
             Object.values(views).forEach(el => el.classList.remove('active'));
             views[viewName].classList.add('active');
+            
+            // Security: Ensure admin panel is hidden if switching to login
+            if (viewName === 'login') {
+                els.adminPanel.classList.remove('visible');
+            }
         }
 
         async function checkAuth() {
             try {
                 const res = await fetch('/api/auth-status', { credentials: 'include' });
                 const data = await res.json();
-                state.isLoggedIn = data.isLoggedIn;
-                if (state.isLoggedIn) {
+                
+                if (data.isLoggedIn) {
+                    state.isLoggedIn = true;
+                    // Show Gallery AND Upload Panel
+                    els.adminPanel.classList.add('visible');
                     switchView('gallery');
                     loadGallery();
                 } else {
+                    state.isLoggedIn = false;
+                    // Force Login View
                     switchView('login');
                 }
             } catch (e) {
+                state.isLoggedIn = false;
                 switchView('login');
             }
         }
@@ -375,7 +397,9 @@
                 if (data.success) {
                     state.isLoggedIn = true;
                     els.passwordInput.value = '';
-                    showToast('Welcome back!', 'success');
+                    // Reveal Upload Panel
+                    els.adminPanel.classList.add('visible');
+                    showToast('Access granted', 'success');
                     switchView('gallery');
                     loadGallery();
                 } else {
@@ -391,6 +415,8 @@
             try {
                 await fetch('/api/logout', { method: 'POST', credentials: 'include' });
                 state.isLoggedIn = false;
+                // Hide Upload Panel immediately
+                els.adminPanel.classList.remove('visible');
                 showToast('Logged out successfully', 'success');
                 switchView('login');
             } catch (e) {
@@ -448,7 +474,7 @@
         }
 
         async function deleteImage(filename) {
-            if(!confirm('Are you sure you want to delete this image?')) return; // Simple confirm for safety, can be replaced with toast logic if preferred
+            if(!confirm('Are you sure you want to delete this image?')) return;
             
             try {
                 const res = await fetch(`/delete/${encodeURIComponent(filename)}`, {
@@ -534,7 +560,6 @@
             
             els.toastContainer.appendChild(toast);
             
-            // Trigger animation
             requestAnimationFrame(() => {
                 toast.classList.add('show');
             });
@@ -545,7 +570,7 @@
             }, 3000);
         }
 
-        // Init
+        // Init: Force check on load
         document.addEventListener('DOMContentLoaded', checkAuth);
     </script>
 </body>
