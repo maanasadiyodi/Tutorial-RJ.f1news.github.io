@@ -10,234 +10,143 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #35364e;
-            --surface-color: rgba(40, 42, 60, 0.7);
-            --border-color: rgba(60, 65, 90, 0.6);
-            --text-primary: #f0f0f0;
-            --text-secondary: #b0b3c5;
-            --accent-gold: #c8534d;
-            --accent-gold-hover: #a8423d;
-            --btn-bg: rgba(50, 52, 70, 0.7);
-            --btn-border: rgba(60, 65, 90, 0.6);
-            --selection-blue: #3b82f6;
-            --radius-md: 4px;
-            --radius-lg: 12px;
+            --bg-color: #35364e; --surface-color: rgba(40, 42, 60, 0.7); --border-color: rgba(60, 65, 90, 0.6);
+            --text-primary: #f0f0f0; --text-secondary: #b0b3c5; --accent-gold: #c8534d; --accent-gold-hover: #a8423d;
+            --btn-bg: rgba(50, 52, 70, 0.7); --btn-border: rgba(60, 65, 90, 0.6); --selection-blue: #3b82f6;
+            --radius-md: 4px; --radius-lg: 12px;
         }
         [data-theme="light"] {
-            --bg-color: #f0f2f5;
-            --surface-color: rgba(255, 255, 255, 0.8);
-            --border-color: rgba(200, 200, 210, 0.6);
-            --text-primary: #1f2328;
-            --text-secondary: #656d76;
-            --accent-gold: #c8534d;
-            --accent-gold-hover: #a8423d;
-            --btn-bg: rgba(240, 242, 245, 0.8);
-            --btn-border: rgba(200, 200, 210, 0.6);
-            --selection-blue: #2563eb;
+            --bg-color: #f0f2f5; --surface-color: rgba(255, 255, 255, 0.8); --border-color: rgba(200, 200, 210, 0.6);
+            --text-primary: #1f2328; --text-secondary: #656d76; --selection-blue: #2563eb;
+            --btn-bg: rgba(240, 242, 245, 0.8); --btn-border: rgba(200, 200, 210, 0.6);
         }
         * { box-sizing: border-box; }
-        body { margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-primary); font-family: 'Inter', sans-serif; line-height: 1.6; min-height: 100vh; overflow-x: hidden; }
+        body { margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-primary); font-family: 'Inter', sans-serif; line-height: 1.6; min-height: 100vh; overflow-x: hidden; transition: background 0.3s; }
         h1, h2, .insta-link { font-family: 'Playfair Display', serif; }
+        
+        /* Background Effects */
         .ambient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: var(--bg-color); overflow: hidden; }
         .gradient-blob { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.3; animation: float 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); }
-        .blob-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, var(--accent-gold), transparent); animation-delay: 0s; }
+        .blob-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, var(--accent-gold), transparent); }
         .blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #6c5ce7, transparent); animation-delay: -12s; }
-        .blob-3 { top: 40%; left: 40%; width: 40vw; height: 40vw; background: radial-gradient(circle, #0984e3, transparent); animation-delay: -6s; }
         @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(50px, 50px) scale(1.1); } }
-        .noise-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; opacity: 0.03; background-image: url("image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
+        .noise-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.03; background-image: url("image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); }
+
+        /* Layout */
         .app-container { width: 100%; max-width: 100vw; display: flex; flex-direction: column; align-items: center; padding: 0; position: relative; z-index: 1; }
-        
-        header { 
-            width: 100%; 
-            background: var(--bg-color); 
-            border-bottom: 1px solid var(--border-color); 
-            padding: 1rem 2rem; 
-            position: sticky; 
-            top: 0; 
-            z-index: 10; 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px); 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
+        header { width: 100%; background: var(--bg-color); border-bottom: 1px solid var(--border-color); padding: 1rem 2rem; position: sticky; top: 0; z-index: 10; backdrop-filter: blur(12px); display: flex; justify-content: space-between; align-items: center; }
         .header-left { display: flex; flex-direction: column; gap: 0.2rem; }
-        h1 { margin: 0; font-size: 1.8rem; font-weight: 600; color: var(--text-primary); letter-spacing: -0.03em; background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .insta-link { font-size: 0.95rem; color: var(--accent-gold); text-decoration: none; font-style: italic; transition: opacity 0.3s ease; display: inline-flex; align-items: center; gap: 6px; }
-        .insta-link:hover { opacity: 0.8; }
-        
+        h1 { margin: 0; font-size: 1.8rem; font-weight: 600; background: linear-gradient(135deg, var(--text-primary), var(--text-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .insta-link { font-size: 0.95rem; color: var(--accent-gold); text-decoration: none; font-style: italic; display: inline-flex; align-items: center; gap: 6px; }
         .controls { display: flex; gap: 1rem; align-items: center; }
         
-        .bulk-actions {
-            display: none;
-            background: var(--surface-color);
-            border: 1px solid var(--selection-blue);
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-md);
-            margin-right: 1rem;
-            animation: fadeIn 0.3s ease;
-        }
+        /* Bulk Actions */
+        .bulk-actions { display: none; background: var(--surface-color); border: 1px solid var(--selection-blue); padding: 0.5rem 1rem; border-radius: var(--radius-md); margin-right: 1rem; animation: fadeIn 0.3s ease; }
         .bulk-actions.active { display: flex; align-items: center; gap: 10px; }
-        .bulk-count { color: var(--selection-blue); font-weight: bold; font-size: 0.9rem; }
-        .btn-delete-all {
-            background: var(--selection-blue);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-        .btn-delete-all:hover { background: #2563eb; }
-
+        .btn-delete-all { background: var(--selection-blue); color: white; border: none; padding: 6px 12px; border-radius: var(--radius-md); cursor: pointer; font-size: 0.85rem; transition: background 0.2s; }
+        .btn-delete-all.confirm-mode { background: #dc2626; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        
+        /* Switch & Buttons */
         .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border-color); transition: 0.2s ease; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: 0.2s ease; border-radius: 50%; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background-color: var(--border-color); transition: 0.2s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: 0.2s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--accent-gold); }
         input:checked + .slider:before { transform: translateX(20px); }
         
-        button { font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; border: 1px solid transparent; border-radius: var(--radius-md); padding: 6px 14px; transition: all 0.2s ease; letter-spacing: 0.5px; text-transform: uppercase; }
-        .btn-login { background-color: var(--btn-bg); border-color: var(--btn-border); color: var(--text-primary); padding: 6px 16px; backdrop-filter: blur(5px); }
-        .btn-login:hover { background-color: var(--surface-color); border-color: var(--border-color); transform: translateY(-1px); }
+        button { font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; border: 1px solid transparent; border-radius: var(--radius-md); padding: 6px 14px; transition: all 0.2s; text-transform: uppercase; }
+        .btn-login { background-color: var(--btn-bg); border-color: var(--btn-border); color: var(--text-primary); backdrop-filter: blur(5px); }
+        .btn-login:hover { background-color: var(--surface-color); transform: translateY(-1px); }
         .btn-primary { background-color: var(--accent-gold); color: white; border: none; padding: 8px 20px; font-weight: 600; }
-        .btn-primary:hover { background-color: var(--accent-gold-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn-primary:hover { background-color: var(--accent-gold-hover); transform: translateY(-1px); }
 
-        .admin-panel { width: 100%; max-width: 700px; background: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2rem; margin: 3rem auto; display: none; animation: fadeIn 0.6s ease-out; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .panel-header { margin-bottom: 1.5rem; text-align: center; }
-        .panel-header h2 { font-size: 1.4rem; font-weight: 500; margin: 0 0 0.5rem 0; color: var(--text-primary); letter-spacing: -0.01em; }
-        .panel-header p { margin: 0; font-size: 0.9rem; color: var(--text-secondary); font-weight: 300; }
+        /* Admin Panel */
+        .admin-panel { width: 100%; max-width: 700px; background: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 2rem; margin: 3rem auto; display: none; animation: slideUp 0.4s ease-out; backdrop-filter: blur(12px); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .panel-header { text-align: center; margin-bottom: 1.5rem; }
         .upload-area { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-        input[type="file"] { background: var(--bg-color); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 14px; color: var(--text-primary); font-size: 0.85rem; outline: none; transition: border-color 0.3s; }
-        input[type="file"]:focus { border-color: var(--accent-gold); box-shadow: 0 0 0 2px rgba(200, 83, 77, 0.2); }
+        input[type="file"] { background: var(--bg-color); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 14px; color: var(--text-primary); outline: none; }
+        input[type="file"]:focus { border-color: var(--accent-gold); }
         .progress-container { width: 100%; height: 2px; background: var(--border-color); margin-top: 1.5rem; border-radius: 2px; overflow: hidden; display: none; }
-        .progress-bar { height: 100%; background: var(--accent-gold); width: 0%; transition: width 0.3s ease; }
-        .upload-status-list { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; max-height: 200px; overflow-y: auto; }
-        .status-item { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary); font-family: 'Inter', sans-serif; }
-        .status-item.success { color: #238636; }
-        .status-item.error { color: #da3633; }
+        .progress-bar { height: 100%; background: var(--accent-gold); width: 0%; transition: width 0.3s; }
+        .upload-status-list { margin-top: 1rem; max-height: 150px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; }
+        .status-item { font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between; }
+        .status-item.success { color: #238636; } .status-item.error { color: #da3633; }
 
-        /* --- CENTERED MASONRY GRID --- */
-        .gallery-container { 
-            width: 100%; 
-            max-width: 100%; 
-            margin: 0; 
-            padding: 1rem; 
-            column-count: 5; 
-            column-gap: 2rem; 
-            text-align: center; /* Centers content horizontally in columns */
-        }
+        /* Gallery Grid */
+        .gallery-container { width: 100%; max-width: 100%; margin: 0; padding: 1rem; column-count: 5; column-gap: 2rem; text-align: center; }
         @media (max-width: 1200px) { .gallery-container { column-count: 4; } }
         @media (max-width: 900px) { .gallery-container { column-count: 3; } }
         @media (max-width: 600px) { .gallery-container { column-count: 2; } }
         @media (max-width: 400px) { .gallery-container { column-count: 1; } }
 
-        .card { 
-            background: var(--surface-color); 
-            border: 1px solid var(--border-color); 
-            border-radius: var(--radius-lg); 
-            overflow: hidden; 
-            position: relative; 
-            break-inside: avoid; 
-            margin-bottom: 2rem; 
-            margin-left: auto; /* Centers card horizontally */
-            margin-right: auto; /* Centers card horizontally */
-            transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; 
-            cursor: zoom-in; 
-            backdrop-filter: blur(8px); 
-            -webkit-backdrop-filter: blur(8px); 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-
-        .card.selected {
-            border: 3px solid var(--selection-blue);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
-            transform: translateY(-4px);
-        }
-
-        .card img { width: 100%; height: auto; display: block; opacity: 0; transition: opacity 1s ease, transform 0.8s ease; }
+        .card { background: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; position: relative; break-inside: avoid; margin: 0 auto 2rem auto; transition: transform 0.3s, border-color 0.3s; cursor: zoom-in; backdrop-filter: blur(5px); }
+        .card.selected { border: 3px solid var(--selection-blue); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2); transform: translateY(-4px); }
+        .card img { width: 100%; height: auto; display: block; opacity: 0; transition: opacity 0.6s ease; }
         .card img.loaded { opacity: 1; }
         .card:hover { transform: translateY(-6px); border-color: var(--accent-gold); }
-        .card:hover img { transform: scale(1.08); }
-        .card.selected:hover { border-color: var(--selection-blue); }
-
-        .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 60%); display: flex; align-items: flex-end; justify-content: flex-end; padding: 1.5rem; opacity: 0; transition: opacity 0.4s ease; }
+        
+        .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; align-items: flex-end; justify-content: flex-end; padding: 1.5rem; opacity: 0; transition: opacity 0.3s; }
         .card:hover .overlay { opacity: 1; }
         .actions { display: flex; gap: 0.8rem; }
-        .btn-action { background: var(--accent-gold); border: none; color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-size: 1.2rem; }
-        .btn-action:hover { background: var(--accent-gold-hover); transform: scale(1.15); box-shadow: 0 6px 16px rgba(200, 83, 77, 0.4); }
-        .btn-delete { background: rgba(218, 54, 51, 0.9); color: white; display: none; }
-        .btn-delete:hover { background: #dc2626; transform: scale(1.15); box-shadow: 0 6px 16px rgba(218, 54, 51, 0.4); }
+        .btn-action { background: var(--accent-gold); border: none; color: white; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: transform 0.2s; }
+        .btn-action:hover { background: var(--accent-gold-hover); transform: scale(1.1); }
+        .btn-delete { background: rgba(218, 54, 51, 0.9); display: none; }
+        .btn-delete:hover { background: #dc2626; }
+        .btn-delete.confirm-mode { background: #ffffff; color: #dc2626; animation: pulse 1s infinite; }
 
-        .checkbox-overlay {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 32px;
-            height: 32px;
-            background: rgba(0,0,0,0.5);
-            border: 2px solid var(--selection-blue);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.2s;
-            z-index: 10;
-        }
-        .card:hover .checkbox-overlay { opacity: 1; }
-        .card.selected .checkbox-overlay { opacity: 1; background: var(--selection-blue); }
-        .checkbox-icon { color: white; font-size: 18px; display: none; }
+        .checkbox-overlay { position: absolute; top: 10px; left: 10px; width: 32px; height: 32px; background: rgba(0,0,0,0.6); border: 2px solid var(--selection-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: opacity 0.2s; z-index: 10; }
+        .card:hover .checkbox-overlay, .card.selected .checkbox-overlay { opacity: 1; }
+        .card.selected .checkbox-overlay { background: var(--selection-blue); }
+        .checkbox-icon { color: white; font-size: 16px; display: none; }
         .card.selected .checkbox-icon { display: block; }
 
-        .lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(53, 54, 78, 0.98); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 2rem; animation: fadeIn 0.4s ease-out; }
+        /* Lightbox & Modal */
+        .lightbox { position: fixed; inset: 0; background: rgba(10, 14, 23, 0.95); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 2rem; animation: fadeIn 0.3s; }
         .lightbox.active { display: flex; }
-        .lightbox-content { max-width: 90%; max-height: 90vh; border: 1px solid var(--border-color); border-radius: var(--radius-lg); box-shadow: 0 20px 50px rgba(0,0,0,0.5); transition: opacity 0.4s ease; }
-        .lightbox-close { position: absolute; top: 2rem; right: 2rem; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-primary); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; font-size: 1.2rem; }
-        .lightbox-close:hover { background: var(--accent-gold); color: white; border-color: var(--accent-gold); transform: rotate(90deg); }
-        .empty-state { grid-column: 1 / -1; text-align: center; padding: 6rem 1rem; border: 1px dashed var(--border-color); border-radius: var(--radius-lg); color: var(--text-secondary); font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.2rem; }
-        .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(53, 54, 78, 0.8); backdrop-filter: blur(10px); z-index: 2000; display: none; justify-content: center; align-items: center; animation: fadeIn 0.4s ease-out; }
-        .login-modal { background: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 3rem 2.5rem; width: 90%; max-width: 420px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); text-align: center; transform: translateY(30px); opacity: 0; animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; position: relative; overflow: hidden; }
-        @keyframes slideUp { to { transform: translateY(0); opacity: 1; } }
-        .login-modal::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--accent-gold), transparent); }
-        .login-icon { font-size: 3.5rem; color: var(--accent-gold); margin-bottom: 1.5rem; text-shadow: 0 0 30px rgba(200, 83, 77, 0.3); }
-        .login-title { font-size: 1.8rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary); letter-spacing: -0.02em; }
-        .login-subtitle { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 2.5rem; font-weight: 300; }
-        .login-input-group { position: relative; margin-bottom: 2rem; }
-        .login-input { width: 100%; padding: 14px 18px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); font-size: 1rem; outline: none; transition: all 0.3s ease; font-family: 'Inter', sans-serif; }
-        .login-input:focus { border-color: var(--accent-gold); box-shadow: 0 0 0 3px rgba(200, 83, 77, 0.15); }
-        .login-btn { width: 100%; background: var(--accent-gold); color: white; border: none; padding: 14px; border-radius: var(--radius-md); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 1rem; letter-spacing: 1px; text-transform: uppercase; }
-        .login-btn:hover { background: var(--accent-gold-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(200, 83, 77, 0.3); }
-        .error-message { color: #ef4444; font-size: 0.9rem; margin-top: 1.5rem; min-height: 1.5em; opacity: 0; transition: opacity 0.3s; font-family: 'Inter', sans-serif; }
-        .shake { animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
-        .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface-color); border: 1px solid var(--border-color); padding: 1rem 2rem; border-radius: var(--radius-lg); box-shadow: 0 10px 30px rgba(0,0,0,0.3); backdrop-filter: blur(10px); z-index: 3000; display: flex; align-items: center; gap: 1rem; opacity: 0; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); font-family: 'Inter', sans-serif; }
+        .lightbox-content { max-width: 90%; max-height: 90vh; border: 1px solid var(--border-color); border-radius: var(--radius-lg); }
+        .lightbox-close { position: absolute; top: 2rem; right: 2rem; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-primary); width: 48px; height: 48px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; }
+        .lightbox-close:hover { background: var(--accent-gold); color: white; transform: rotate(90deg); }
+
+        .login-overlay { position: fixed; inset: 0; background: rgba(53, 54, 78, 0.8); backdrop-filter: blur(10px); z-index: 2000; display: none; justify-content: center; align-items: center; animation: fadeIn 0.3s; }
+        .login-modal { background: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 3rem 2.5rem; width: 90%; max-width: 400px; text-align: center; transform: translateY(30px); opacity: 0; animation: slideUp 0.4s forwards; }
+        .login-icon { font-size: 3rem; color: var(--accent-gold); margin-bottom: 1rem; }
+        .login-input { width: 100%; padding: 12px; margin: 1rem 0; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); outline: none; }
+        .login-input:focus { border-color: var(--accent-gold); }
+        .login-btn-submit { width: 100%; background: var(--accent-gold); color: white; border: none; padding: 12px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; }
+        .error-msg { color: #ef4444; font-size: 0.85rem; margin-top: 1rem; opacity: 0; transition: opacity 0.3s; }
+        .shake { animation: shake 0.5s; }
+        @keyframes shake { 10%, 90% { transform: translateX(-1px); } 20%, 80% { transform: translateX(2px); } 30%, 50%, 70% { transform: translateX(-4px); } 40%, 60% { transform: translateX(4px); } }
+        
+        .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface-color); border: 1px solid var(--border-color); padding: 1rem 2rem; border-radius: var(--radius-lg); z-index: 3000; display: flex; align-items: center; gap: 1rem; opacity: 0; transition: all 0.5s; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        .toast-icon { color: var(--accent-gold); font-size: 1.2rem; }
-        .toast-text { color: var(--text-primary); font-weight: 500; font-size: 0.95rem; }
+        .empty-state { grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-secondary); font-style: italic; }
     </style>
 </head>
 <body>
-    <div class="ambient-bg"><div class="gradient-blob blob-1"></div><div class="gradient-blob blob-2"></div><div class="gradient-blob blob-3"></div></div>
+    <div class="ambient-bg"><div class="gradient-blob blob-1"></div><div class="gradient-blob blob-2"></div></div>
     <div class="noise-overlay"></div>
-    
+
+    <!-- Login Modal -->
     <div id="login-overlay" class="login-overlay">
         <div class="login-modal">
-            <div class="login-icon"><i class="fas fa-key"></i></div>
-            <h2 class="login-title">Private Access</h2>
-            <p class="login-subtitle">Enter your credentials to manage the collection</p>
+            <div class="login-icon"><i class="fas fa-lock"></i></div>
+            <h2>Admin Access</h2>
+            <p style="color:var(--text-secondary); margin-bottom:1.5rem;">Enter password to manage gallery</p>
             <form id="login-form" onsubmit="handleLogin(event)">
-                <div class="login-input-group"><input type="password" id="login-password" class="login-input" placeholder="Password" required autocomplete="off"></div>
-                <button type="submit" class="login-btn">Unlock Collection</button>
+                <input type="password" id="login-password" class="login-input" placeholder="Password" required autocomplete="off">
+                <button type="submit" class="login-btn-submit">Unlock</button>
             </form>
-            <div id="login-error" class="error-message">Incorrect password. Please try again.</div>
+            <div id="login-error" class="error-msg">Incorrect password</div>
         </div>
     </div>
 
-    <div id="welcome-toast" class="toast"><div class="toast-icon"><i class="fas fa-check-circle"></i></div><div class="toast-text">Welcome to The Gallery</div></div>
+    <!-- Toast Notification System -->
+    <div id="toast-container" class="toast">
+        <i id="toast-icon" class="fas fa-info-circle" style="color:var(--accent-gold)"></i> 
+        <span id="toast-message">Message</span>
+    </div>
 
     <div class="app-container">
         <header>
@@ -245,315 +154,410 @@
                 <h1>The Gallery</h1>
                 <a href="https://instagram.com/adichitodi" target="_blank" class="insta-link"><i class="fab fa-instagram"></i> @adichitodi</a>
             </div>
-            
             <div class="controls">
+                <!-- BULK DELETE BUTTON -->
                 <div id="bulk-actions" class="bulk-actions">
-                    <span class="bulk-count"><span id="selected-count">0</span> selected</span>
-                    <button class="btn-delete-all" onclick="deleteSelected()">
-                        <i class="fas fa-trash-alt"></i> Delete Selected
-                    </button>
+                    <span id="selected-count" style="color:var(--selection-blue); font-weight:bold; font-size:0.9rem;">0</span> selected
+                    <button id="btn-delete-all" class="btn-delete-all" onclick="handleBulkDeleteClick()"><i class="fas fa-trash"></i> Delete</button>
                 </div>
-
                 <label class="switch"><input type="checkbox" id="theme-toggle" onchange="toggleTheme()"><span class="slider"></span></label>
-                <button id="login-btn" class="btn-login" onclick="handleAuthClick()">🔒 Login</button>
+                <button id="login-btn" class="btn-login" onclick="attemptLogin()">🔒 Login</button>
             </div>
         </header>
 
+        <!-- UPLOAD PANEL -->
         <div id="admin-panel" class="admin-panel">
-            <div class="panel-header"><h2>Upload New Memories</h2><p>Select multiple images to upload.</p></div>
-            <div class="upload-area"><input type="file" id="fileInput" accept="image/*" multiple><button class="btn-primary" onclick="startUpload()">Upload Now</button></div>
-            <p id="status-msg" style="margin-top: 1.5rem; font-size: 0.9rem;"></p>
+            <div class="panel-header">
+                <h2>Upload Memories</h2>
+                <p style="color:var(--text-secondary)">Select multiple images to upload</p>
+            </div>
+            <div class="upload-area">
+                <input type="file" id="fileInput" accept="image/*" multiple>
+                <button class="btn-primary" onclick="startUpload()">Upload Now</button>
+            </div>
             <div class="progress-container" id="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
             <div class="upload-status-list" id="status-list"></div>
         </div>
 
         <div class="gallery-container" id="gallery-container">
-            <div class="empty-state"><i class="fas fa-camera-retro" style="font-size: 2.5rem; margin-bottom: 1.5rem; opacity: 0.3;"></i><br>No memories uploaded yet.</div>
+            <div class="empty-state"><i class="fas fa-camera-retro" style="font-size:2rem; margin-bottom:1rem; opacity:0.3"></i><br>No memories yet</div>
         </div>
     </div>
 
-    <div id="lightbox" class="lightbox"><button class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button><img id="lightbox-img" class="lightbox-content" src="" alt="Full size preview"></div>
+    <div id="lightbox" class="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
+        <img id="lightbox-img" class="lightbox-content" src="" alt="Preview">
+    </div>
 
     <script>
-        let isLoggedIn = false;
-        const CORRECT_PASSWORD = "124";
+        let isLoggedIn = false; // STRICTLY FALSE ON LOAD (Auto-logout)
         let selectedFiles = new Set();
+        let deleteConfirmActive = false; // State for click-to-confirm
 
+        // Initialize on Load
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             document.documentElement.setAttribute('data-theme', savedTheme);
             document.getElementById('theme-toggle').checked = savedTheme === 'light';
-            loadImages();
-            showToast();
+            
+            checkAuthStatus(); 
+            loadImages();      
+            showToast("Welcome to The Gallery", "info");
         });
 
         function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
         }
 
-        function handleAuthClick() {
-            if (isLoggedIn) { isLoggedIn = false; updateUI(); return; }
+        // --- Authentication ---
+        async function checkAuthStatus() {
+            try {
+                const res = await fetch('/api/auth-status');
+                const data = await res.json();
+                // Even if server says logged in, we force UI to start logged out for security
+                // Uncomment next line if you want persistent login across refreshes:
+                // isLoggedIn = data.isLoggedIn; 
+                isLoggedIn = false; // FORCE LOGOUT ON REFRESH
+                updateUI(); 
+            } catch (e) { 
+                isLoggedIn = false;
+                updateUI(); 
+            }
+        }
+
+        function attemptLogin() {
+            if (isLoggedIn) { logout(); return; }
             openLoginModal();
         }
 
         function openLoginModal() {
-            if (isLoggedIn) return; 
             const overlay = document.getElementById('login-overlay');
-            const modal = document.querySelector('.login-modal');
             const input = document.getElementById('login-password');
             document.getElementById('login-error').style.opacity = '0';
-            modal.classList.remove('shake');
             input.value = '';
-            input.focus();
             overlay.style.display = 'flex';
+            setTimeout(() => input.focus(), 100);
         }
 
         function closeLoginModal() { document.getElementById('login-overlay').style.display = 'none'; }
 
         function handleLogin(e) {
             e.preventDefault();
-            const password = document.getElementById('login-password').value;
+            const pwd = document.getElementById('login-password').value;
             const modal = document.querySelector('.login-modal');
-            const errorMsg = document.getElementById('login-error');
-            if (password === CORRECT_PASSWORD) {
-                isLoggedIn = true;
-                updateUI();
-                closeLoginModal();
-                showToast();
-            } else {
-                modal.classList.add('shake');
-                errorMsg.style.opacity = '1';
-                setTimeout(() => modal.classList.remove('shake'), 600);
-            }
+            const err = document.getElementById('login-error');
+
+            fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: pwd })
+            })
+            .then(r => r.json())
+            .then(d => {
+                if (d.success) {
+                    isLoggedIn = true;
+                    closeLoginModal();
+                    updateUI();
+                    showToast("Access Granted", "success");
+                } else {
+                    modal.classList.add('shake');
+                    err.style.opacity = '1';
+                    setTimeout(() => modal.classList.remove('shake'), 500);
+                    showToast("Invalid Password", "error");
+                }
+            });
+        }
+
+        async function logout() {
+            await fetch('/api/logout', { method: 'POST' });
+            isLoggedIn = false;
+            updateUI();
+            showToast("Logged Out", "info");
         }
 
         function updateUI() {
             const btn = document.getElementById('login-btn');
             const panel = document.getElementById('admin-panel');
+            const bulkBar = document.getElementById('bulk-actions');
+            
             if (isLoggedIn) {
                 btn.innerText = "🔓 Logout";
-                btn.style.backgroundColor = "var(--accent-gold)";
+                btn.style.background = "var(--accent-gold)";
                 btn.style.color = "white";
-                btn.style.borderColor = "var(--accent-gold)";
                 panel.style.display = "block";
+                if(selectedFiles.size > 0) bulkBar.classList.add('active');
             } else {
                 btn.innerText = "🔒 Login";
-                btn.style.backgroundColor = "var(--btn-bg)";
+                btn.style.background = "var(--btn-bg)";
                 btn.style.color = "var(--text-primary)";
-                btn.style.borderColor = "var(--btn-border)";
                 panel.style.display = "none";
+                bulkBar.classList.remove('active');
+                selectedFiles.clear();
+                updateBulkActions();
             }
             loadImages();
         }
 
+        // --- Gallery Logic ---
         async function loadImages() {
+            const container = document.getElementById('gallery-container');
             try {
-                const response = await fetch('/images');
-                const images = await response.json();
-                const container = document.getElementById('gallery-container');
+                const res = await fetch('/images');
+                const images = await res.json();
+                
                 if (images.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><i class="fas fa-camera-retro" style="font-size: 2.5rem; margin-bottom: 1.5rem; opacity: 0.3;"></i><br>No memories uploaded yet.</div>';
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-camera-retro" style="font-size:2rem; margin-bottom:1rem; opacity:0.3"></i><br>No memories yet</div>';
                     return;
                 }
+
                 container.innerHTML = '';
-                images.forEach((img) => {
+                images.forEach(img => {
                     const card = document.createElement('div');
                     card.className = 'card';
-                    
-                    const checkbox = document.createElement('div');
-                    checkbox.className = 'checkbox-overlay';
-                    checkbox.onclick = (e) => {
-                        e.stopPropagation();
-                        toggleSelection(img.name, card);
-                    };
-                    const icon = document.createElement('i');
-                    icon.className = 'fas fa-check checkbox-icon';
-                    checkbox.appendChild(icon);
+                    if (selectedFiles.has(img.name)) card.classList.add('selected');
+
+                    const cb = document.createElement('div');
+                    cb.className = 'checkbox-overlay';
+                    cb.onclick = (e) => { e.stopPropagation(); toggleSelection(img.name, card); };
+                    cb.innerHTML = '<i class="fas fa-check checkbox-icon"></i>';
 
                     const imgEl = document.createElement('img');
                     imgEl.src = img.url;
-                    imgEl.alt = "Wedding Photo";
                     imgEl.onload = () => imgEl.classList.add('loaded');
                     imgEl.onclick = () => openLightbox(img.url);
-                    
+
                     const overlay = document.createElement('div');
                     overlay.className = 'overlay';
-                    const actionsDiv = document.createElement('div');
-                    actionsDiv.className = 'actions';
+                    const actions = document.createElement('div');
+                    actions.className = 'actions';
+
+                    const dlBtn = document.createElement('button');
+                    dlBtn.className = 'btn-action';
+                    dlBtn.innerHTML = '<i class="fas fa-download"></i>';
+                    dlBtn.onclick = (e) => { e.stopPropagation(); window.open(img.url, '_blank'); };
+
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'btn-action btn-delete';
+                    delBtn.innerHTML = '<i class="fas fa-trash"></i>';
                     
-                    const downloadBtn = document.createElement('button');
-                    downloadBtn.className = 'btn-action';
-                    downloadBtn.innerHTML = '<i class="fas fa-download"></i>';
-                    downloadBtn.title = "Download";
-                    downloadBtn.onclick = (e) => { e.stopPropagation(); window.open(img.url, '_blank'); };
-                    
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.className = 'btn-action btn-delete';
-                    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-                    deleteBtn.style.display = isLoggedIn ? 'block' : 'none';
-                    deleteBtn.onclick = (e) => { e.stopPropagation(); deleteImage(encodeURIComponent(img.name)); };
-                    
-                    actionsDiv.appendChild(downloadBtn);
-                    if (isLoggedIn) actionsDiv.appendChild(deleteBtn);
-                    overlay.appendChild(actionsDiv);
-                    
-                    card.appendChild(checkbox);
+                    if (isLoggedIn) {
+                        delBtn.style.display = 'block';
+                        delBtn.onclick = (e) => { 
+                            e.stopPropagation(); 
+                            handleDeleteClick(img.name, delBtn); 
+                        };
+                        actions.appendChild(delBtn);
+                    }
+
+                    actions.appendChild(dlBtn);
+                    overlay.appendChild(actions);
+
+                    card.appendChild(cb);
                     card.appendChild(imgEl);
                     card.appendChild(overlay);
                     container.appendChild(card);
                 });
-            } catch (error) { console.error("Error loading images:", error); }
+            } catch (e) { console.error("Load failed", e); }
         }
 
-        function toggleSelection(filename, cardElement) {
-            if (selectedFiles.has(filename)) {
-                selectedFiles.delete(filename);
-                cardElement.classList.remove('selected');
+        function toggleSelection(name, card) {
+            if (selectedFiles.has(name)) {
+                selectedFiles.delete(name);
+                card.classList.remove('selected');
             } else {
-                selectedFiles.add(filename);
-                cardElement.classList.add('selected');
+                selectedFiles.add(name);
+                card.classList.add('selected');
             }
             updateBulkActions();
         }
 
         function updateBulkActions() {
-            const bulkBar = document.getElementById('bulk-actions');
-            const countSpan = document.getElementById('selected-count');
-            countSpan.innerText = selectedFiles.size;
+            const bar = document.getElementById('bulk-actions');
+            document.getElementById('selected-count').innerText = selectedFiles.size;
+            const btn = document.getElementById('btn-delete-all');
             
-            if (selectedFiles.size > 0) {
-                bulkBar.classList.add('active');
+            if (isLoggedIn && selectedFiles.size > 0) {
+                bar.classList.add('active');
+                // Reset confirm state when selection changes
+                deleteConfirmActive = false;
+                btn.classList.remove('confirm-mode');
+                btn.innerHTML = '<i class="fas fa-trash"></i> Delete';
             } else {
-                bulkBar.classList.remove('active');
+                bar.classList.remove('active');
             }
         }
 
+        // --- Click-to-Confirm Logic (No Dialogs) ---
+        function handleDeleteClick(filename, btnElement) {
+            if (deleteConfirmActive) {
+                // Second click: Actually delete
+                deleteImage(filename);
+                deleteConfirmActive = false;
+                // Reset all buttons
+                document.querySelectorAll('.btn-delete').forEach(b => {
+                    b.classList.remove('confirm-mode');
+                    b.innerHTML = '<i class="fas fa-trash"></i>';
+                });
+            } else {
+                // First click: Ask for confirmation visually
+                deleteConfirmActive = true;
+                btnElement.classList.add('confirm-mode');
+                btnElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                showToast("Click again to confirm delete", "warning");
+                
+                // Reset after 3 seconds if not clicked
+                setTimeout(() => {
+                    if(deleteConfirmActive) {
+                        deleteConfirmActive = false;
+                        btnElement.classList.remove('confirm-mode');
+                        btnElement.innerHTML = '<i class="fas fa-trash"></i>';
+                    }
+                }, 3000);
+            }
+        }
+
+        function handleBulkDeleteClick() {
+            if (selectedFiles.size === 0) return;
+            
+            const btn = document.getElementById('btn-delete-all');
+            
+            if (deleteConfirmActive) {
+                // Second click: Delete all
+                deleteSelected();
+                deleteConfirmActive = false;
+                btn.classList.remove('confirm-mode');
+                btn.innerHTML = '<i class="fas fa-trash"></i> Delete';
+            } else {
+                // First click: Confirm
+                deleteConfirmActive = true;
+                btn.classList.add('confirm-mode');
+                btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Sure?';
+                showToast("Click again to delete all selected", "warning");
+                
+                setTimeout(() => {
+                    if(deleteConfirmActive) {
+                        deleteConfirmActive = false;
+                        btn.classList.remove('confirm-mode');
+                        btn.innerHTML = '<i class="fas fa-trash"></i> Delete';
+                    }
+                }, 3000);
+            }
+        }
+
+        // --- Upload Logic ---
         async function startUpload() {
             const input = document.getElementById('fileInput');
-            const statusMsg = document.getElementById('status-msg');
-            const progressBar = document.getElementById('progress-bar');
-            const progressContainer = document.getElementById('progress-container');
-            const statusList = document.getElementById('status-list');
-            
-            if (input.files.length === 0) {
-                statusMsg.innerText = "Please select files.";
-                statusMsg.style.color = "#da3633";
+            const files = Array.from(input.files);
+            if (!files.length) {
+                showToast("Please select files first", "error");
                 return;
             }
 
-            const files = Array.from(input.files);
-            let uploadedCount = 0;
-            let failedCount = 0;
+            const statusMsg = document.getElementById('status-msg');
+            const bar = document.getElementById('progress-bar');
+            const cont = document.getElementById('progress-container');
+            const list = document.getElementById('status-list');
 
-            statusMsg.innerText = `Uploading ${files.length} files...`;
-            statusMsg.style.color = "#b0b3c5";
-            progressContainer.style.display = 'block';
-            statusList.innerHTML = '';
-
-            const addStatusItem = (name, status) => {
-                const div = document.createElement('div');
-                div.className = `status-item ${status}`;
-                div.innerHTML = `<span>${name}</span> <span>${status.toUpperCase()}</span>`;
-                statusList.prepend(div);
-            };
-
+            statusMsg.innerText = `Uploading ${files.length}...`;
+            cont.style.display = 'block';
+            list.innerHTML = '';
+            
+            let uploaded = 0;
             for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const formData = new FormData();
-                formData.append('image', file);
-
+                const fd = new FormData();
+                fd.append('image', files[i]);
                 try {
-                    const res = await fetch('/upload', { method: 'POST', body: formData });
+                    const res = await fetch('/upload', { method: 'POST', body: fd });
                     if (res.ok) {
-                        uploadedCount++;
-                        addStatusItem(file.name, 'success');
+                        uploaded++;
+                        list.innerHTML += `<div class="status-item success"><span>${files[i].name}</span> <span>OK</span></div>`;
                     } else {
-                        failedCount++;
-                        addStatusItem(file.name, 'error');
+                        list.innerHTML += `<div class="status-item error"><span>${files[i].name}</span> <span>Fail</span></div>`;
                     }
-                } catch (err) {
-                    failedCount++;
-                    addStatusItem(file.name, 'error');
+                } catch (e) {
+                    list.innerHTML += `<div class="status-item error"><span>${files[i].name}</span> <span>Error</span></div>`;
                 }
-
-                const progress = ((i + 1) / files.length) * 100;
-                progressBar.style.width = `${progress}%`;
+                bar.style.width = `${((i + 1) / files.length) * 100}%`;
             }
 
             setTimeout(() => {
-                statusMsg.innerText = `Complete! ${uploadedCount} uploaded, ${failedCount} failed.`;
-                statusMsg.style.color = failedCount > 0 ? "#da3633" : "#238636";
-                progressContainer.style.display = 'none';
-                input.value = ''; 
-                setTimeout(() => statusMsg.innerText = '', 3000);
-                loadImages(); 
-            }, 500);
+                statusMsg.innerText = `Done! ${uploaded}/${files.length} uploaded.`;
+                cont.style.display = 'none';
+                input.value = '';
+                loadImages();
+                showToast(`Uploaded ${uploaded} files`, "success");
+            }, 1000);
         }
 
+        // --- Delete Logic ---
         async function deleteImage(filename) {
-            if(!confirm("Are you sure you want to delete this photo?")) return;
             try {
                 const res = await fetch(`/delete/${filename}`, { method: 'DELETE' });
                 if (res.ok) {
                     selectedFiles.delete(decodeURIComponent(filename));
                     updateBulkActions();
-                    loadImages(); 
-                } else alert("Failed to delete.");
-            } catch (error) { alert("Error deleting file."); }
-        }
-
-        async function deleteSelected() {
-            if (selectedFiles.size === 0) return;
-            if(!confirm(`Are you sure you want to delete ${selectedFiles.size} selected photos?`)) return;
-
-            const filenames = Array.from(selectedFiles).map(f => encodeURIComponent(f));
-            
-            try {
-                const res = await fetch('/delete-multiple', { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ filenames: filenames })
-                });
-                
-                if (res.ok) {
-                    selectedFiles.clear();
-                    updateBulkActions();
                     loadImages();
-                    showToastMessage("Selected photos deleted!");
+                    showToast("Photo deleted", "success");
                 } else {
-                    alert("Failed to delete selected photos.");
+                    const err = await res.json();
+                    showToast(err.error || "Failed to delete", "error");
                 }
-            } catch (error) {
-                alert("Error deleting files.");
+            } catch (e) { 
+                showToast("Error deleting file", "error"); 
             }
         }
 
+        async function deleteSelected() {
+            if (!selectedFiles.size) return;
+            
+            let count = 0;
+            for (const name of selectedFiles) {
+                const res = await fetch(`/delete/${encodeURIComponent(name)}`, { method: 'DELETE' });
+                if (res.ok) count++;
+            }
+            
+            selectedFiles.clear();
+            updateBulkActions();
+            loadImages();
+            showToast(`Deleted ${count} items`, "success");
+        }
+
+        // --- Utilities ---
         function openLightbox(url) {
-            const lightbox = document.getElementById('lightbox');
-            const img = document.getElementById('lightbox-img');
-            img.src = url;
-            lightbox.classList.add('active');
+            const lb = document.getElementById('lightbox');
+            document.getElementById('lightbox-img').src = url;
+            lb.classList.add('active');
         }
-
         function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
-        document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLightbox(); });
-        document.getElementById('login-overlay').addEventListener('click', function(e) { if (e.target === this) closeLoginModal(); });
-        document.getElementById('login-password').addEventListener('keypress', function(e) { if (e.key === 'Enter') { handleLogin(e); } });
-
-        function showToast() {
-            const toast = document.getElementById('welcome-toast');
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 3000);
-        }
-
-        function showToastMessage(msg) {
-            const toast = document.getElementById('welcome-toast');
-            toast.querySelector('.toast-text').innerText = msg;
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        document.getElementById('lightbox').onclick = (e) => { if(e.target===e.currentTarget) closeLightbox(); };
+        document.getElementById('login-overlay').onclick = (e) => { if(e.target===e.currentTarget) closeLoginModal(); };
+        
+        function showToast(msg, type = "info") {
+            const t = document.getElementById('toast-container');
+            const icon = document.getElementById('toast-icon');
+            const text = document.getElementById('toast-message');
+            
+            text.innerText = msg;
+            
+            if (type === "success") {
+                icon.className = "fas fa-check-circle";
+                icon.style.color = "#238636";
+            } else if (type === "error") {
+                icon.className = "fas fa-exclamation-circle";
+                icon.style.color = "#da3633";
+            } else if (type === "warning") {
+                icon.className = "fas fa-exclamation-triangle";
+                icon.style.color = "#d97706";
+            } else {
+                icon.className = "fas fa-info-circle";
+                icon.style.color = "var(--accent-gold)";
+            }
+            
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
         }
     </script>
 </body>
