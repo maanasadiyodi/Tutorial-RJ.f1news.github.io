@@ -1,6 +1,6 @@
 {
-  "name": "zgallery-render",
-  "version": "1.0.0",
+  "name": "zgallery-secure",
+  "version": "2.1.0",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
