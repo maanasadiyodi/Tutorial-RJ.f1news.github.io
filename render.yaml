@@ -1,0 +1,17 @@
+# render.yaml
+services:
+  - type: web
+    name: zgallery
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        sync: false  # Set manually in Render dashboard
+      - key: MAX_UPLOAD_SIZE
+        value: "10485760"

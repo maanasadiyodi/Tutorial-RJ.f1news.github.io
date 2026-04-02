@@ -1,0 +1,71 @@
+// worker.js
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+    
+    // CORS Headers
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    };
+
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { headers: corsHeaders });
+    }
+
+    // --- API: GET /images ---
+    if (url.pathname === '/images' && request.method === 'GET') {
+      try {
+        const list = await env.ASSETS.list();
+        const images = list.objects
+          .filter(obj => obj.key.endsWith('.jpg') || obj.key.endsWith('.png') || obj.key.endsWith('.gif'))
+          .map(obj => ({ name: obj.key, url: `/uploads/${obj.key}` }));
+        
+        return new Response(JSON.stringify(images), { 
+          headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: corsHeaders });
+      }
+    }
+
+    // --- API: POST /upload ---
+    if (url.pathname === '/upload' && request.method === 'POST') {
+      const formData = await request.formData();
+      const file = formData.get('image');
+      
+      if (!file) {
+        return new Response(JSON.stringify({ error: 'No file' }), { status: 400, headers: corsHeaders });
+      }
+
+      const arrayBuffer = await file.arrayBuffer();
+      const blob = new Blob([arrayBuffer], { type: file.type });
+
+      try {
+        // Save to Cloudflare Assets
+        await env.ASSETS.put(file.name, blob);
+        return new Response(JSON.stringify({ message: 'Uploaded', url: `/uploads/${file.name}` }), { 
+          headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: corsHeaders });
+      }
+    }
+
+    // --- API: DELETE /delete/:filename ---
+    if (url.pathname.startsWith('/delete/') && request.method === 'DELETE') {
+      const filename = decodeURIComponent(url.pathname.replace('/delete/', ''));
+      try {
+        await env.ASSETS.delete(filename);
+        return new Response(JSON.stringify({ success: true }), { headers: corsHeaders });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: corsHeaders });
+      }
+    }
+
+    // --- Fallback: Serve Static Files (Frontend) ---'''
+    // This serves index.html from the 'public' folder
+    return env.ASSETS.fetch(request);
+  }
+};
