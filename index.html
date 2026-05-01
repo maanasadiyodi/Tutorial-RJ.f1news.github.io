@@ -1,286 +1,862 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>For Avanthika ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --glass: rgba(255, 255, 255, 0.85);
-            --apple-pink: #ff2d55;
-            --pixel-font: 'Press Start 2P', cursive;
-            --main-img: url('https://imghoster.co/ib/Uq7zqSxlVgmM3qE_1770636954.jpg');
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>SwissDrop · Ephemeral Secure Transfer</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            touch-action: manipulation;
-        }
+    body {
+      background: #0a0c10;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+      color: #e8edf5;
+      position: relative;
+    }
 
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: var(--pixel-font);
-            background: #000;
-            overflow: hidden;
-            position: relative;
-        }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="1" stitchTiles="stitch"/></filter><rect width="200" height="200" filter="url(%23noise)" opacity="0.03"/></svg>');
+      pointer-events: none;
+      z-index: 0;
+    }
 
-        /* Blurred background image */
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: var(--main-img);
-            background-size: cover;
-            background-position: center;
-            filter: blur(8px) brightness(0.7);
-            transform: scale(1.1);
-            z-index: 1;
-        }
+    .container {
+      max-width: 960px;
+      width: 100%;
+      background: rgba(18, 22, 28, 0.96);
+      backdrop-filter: blur(0px);
+      border-radius: 36px;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(64, 128, 128, 0.15);
+      overflow: hidden;
+      transition: all 0.2s;
+      border: 1px solid rgba(64, 128, 128, 0.25);
+    }
 
-        .glass-card {
-            width: 92%;
-            max-width: 340px;
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            border: 4px solid #fff;
-            border-radius: 20px;
-            padding: 20px 15px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            position: relative;
-            z-index: 10;
-        }
+    .card-pane {
+      padding: 2rem 2rem 2rem 2rem;
+    }
 
-        .hp-label {
-            font-size: 8px;
-            color: #333;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
+    .header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(64, 128, 128, 0.3);
+    }
 
-        .hearts-row {
-            display: flex;
-            justify-content: center;
-            gap: 4px;
-            margin-bottom: 12px;
-        }
+    .logo {
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      background: linear-gradient(135deg, #c0d4e8, #7a9cbb);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
 
-        .pixel-heart {
-            width: 18px;
-            height: 18px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 9"><path d="M2 1h1v1h1v1h1V2h1V1h1v1h1v3H7v1H6v1H5v1H4V7H3V6H2V5H1V2h1V1z" fill="%23ff2d55"/></svg>');
-            background-size: contain;
-            image-rendering: pixelated;
-            transition: all 0.3s ease;
-        }
+    .logo i {
+      background: none;
+      color: #7a9cbb;
+    }
 
-        .pixel-heart.broken {
-            filter: grayscale(1) opacity(0.2);
-            transform: scale(0.6);
-        }
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: #11161c;
+      padding: 0.35rem 1rem 0.35rem 1.2rem;
+      border-radius: 60px;
+      border: 1px solid #2a2f38;
+    }
 
-        .img-frame {
-            width: 100%;
-            height: 220px;
-            border: 4px solid #000;
-            border-radius: 8px;
-            background: #eee;
-            overflow: hidden;
-            position: relative;
-        }
+    .role-tag {
+      background: #1a2a2a;
+      padding: 0.2rem 0.7rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #7ab3c8;
+    }
 
-        .main-photo {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    button {
+      background: #1e232b;
+      border: 1px solid #373e48;
+      color: #e0e6f0;
+      padding: 0.5rem 1.2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      border-radius: 40px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
 
-        h1 {
-            font-size: 10px;
-            line-height: 1.5;
-            color: #000;
-            margin: 15px 0;
-            min-height: 30px;
-        }
+    button:hover {
+      background: #2c323c;
+      border-color: #5f8a9c;
+      transform: translateY(-1px);
+    }
 
-        .button-area {
-            position: relative;
-            height: 180px;
-            width: 100%;
-            background: rgba(0,0,0,0.05);
-            border: 2px dashed rgba(0,0,0,0.1);
-            border-radius: 10px;
-            margin-top: 10px;
-        }
+    button.primary {
+      background: #2c5a6e;
+      border-color: #3a6d84;
+      color: white;
+      box-shadow: 0 4px 12px rgba(44, 90, 110, 0.3);
+    }
 
-        .btn {
-            position: absolute;
-            font-family: var(--pixel-font);
-            font-size: 12px;
-            border: 4px solid #000;
-            padding: 15px;
-            cursor: pointer;
-            box-shadow: 4px 4px 0 #000;
-            transition: transform 0.1s, width 0.2s, height 0.2s;
-        }
+    button.primary:hover {
+      background: #234a5c;
+      border-color: #4f7e96;
+      transform: translateY(-1px);
+    }
 
-        .btn:active {
-            box-shadow: 2px 2px 0 #000;
-            transform: translate(2px, 2px);
-        }
+    button:disabled {
+      opacity: 0.5;
+      transform: none;
+      cursor: not-allowed;
+      background: #2a2f38;
+      border-color: #3a404b;
+    }
 
-        #yesBtn {
-            background: #4ef037;
-            color: #000;
-            left: 50%;
-            top: 65%;
-            transform: translate(-50%, -50%);
-            z-index: 100;
-            width: 110px;
-        }
+    .notice {
+      background: #1a2428;
+      border-left: 3px solid #5f8a9c;
+      padding: 0.7rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #bdd4e0;
+      border-radius: 16px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-        #noBtn {
-            background: #ff2d55;
-            color: #fff;
-            left: 50%;
-            top: 25%;
-            transform: translateX(-50%);
-            z-index: 50;
-            width: 80px;
-        }
+    .drop-zone {
+      border: 2px dashed #3a4548;
+      border-radius: 28px;
+      padding: 2rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #101318;
+      margin-bottom: 1rem;
+    }
 
-        .shake { animation: shake 0.2s ease-in-out; }
-        @keyframes shake {
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
+    .drop-zone:hover {
+      border-color: #5f8a9c;
+      background: #181d24;
+    }
 
-        #success {
-            position: fixed;
-            inset: 0;
-            background: #fff;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            padding: 20px;
-            text-align: center;
-        }
-        
-        #success::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image: var(--main-img);
-            background-size: cover;
-            background-position: center;
-            opacity: 0.15;
-            z-index: -1;
-        }
-    </style>
+    .drop-zone i {
+      font-size: 2.2rem;
+      color: #7a9cbb;
+      margin-bottom: 0.5rem;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .limits {
+      display: flex;
+      justify-content: center;
+      gap: 1.8rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #9aa9bb;
+      margin-top: 1rem;
+    }
+
+    .selected-indicator {
+      background: #1f242a;
+      border-radius: 40px;
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #bdd4e0;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+    }
+
+    .upload-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 0.5rem 0 1.5rem 0;
+      background: #11161c;
+      padding: 0.75rem 1rem;
+      border-radius: 48px;
+    }
+
+    .progress-wrapper {
+      margin-top: 0.8rem;
+      width: 100%;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      background: #1a1f26;
+      padding: 0.5rem 0.8rem;
+      border-radius: 60px;
+    }
+    .progress-bar-bg {
+      flex: 1;
+      height: 6px;
+      background: #2d2f36;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #5f8a9c, #8ab3c7);
+      border-radius: 10px;
+      transition: width 0.1s linear;
+    }
+    .progress-text {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #8ab3c7;
+      font-family: monospace;
+    }
+
+    .files-header {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #bcc7d4;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .file-card {
+      background: #12171f;
+      border: 1px solid #252c34;
+      border-radius: 24px;
+      margin-bottom: 0.8rem;
+      padding: 1rem 1.2rem;
+      transition: all 0.15s ease;
+    }
+
+    .file-card:hover {
+      border-color: #5f8a9c;
+      background: #161d26;
+    }
+
+    .file-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      word-break: break-word;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .file-meta {
+      font-size: 0.7rem;
+      color: #8f9eb2;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .expiry {
+      color: #c0a06b;
+      background: #1e241a;
+      padding: 0.2rem 0.6rem;
+      border-radius: 30px;
+      font-weight: 600;
+    }
+
+    .link-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
+    .link-input {
+      background: #0b0f14;
+      border: 1px solid #2d343e;
+      color: #ced8e8;
+      padding: 0.4rem 0.7rem;
+      font-size: 0.7rem;
+      font-family: 'SF Mono', monospace;
+      border-radius: 16px;
+      width: 210px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-left: auto;
+    }
+
+    .action-buttons button {
+      background: #1e232b;
+      border: none;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.7rem;
+    }
+
+    .dl-btn { color: #9ab3c5; }
+    .del-btn { color: #c08a7a; }
+
+    .empty-message {
+      text-align: center;
+      padding: 2rem;
+      color: #6c7a8e;
+      background: #0e131a;
+      border-radius: 40px;
+      border: 1px dashed #2d3440;
+    }
+
+    .footer {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #6f858e;
+      text-align: center;
+      border-top: 1px solid #252c34;
+      margin-top: 1.8rem;
+      padding-top: 1.2rem;
+    }
+
+    @media (max-width: 600px) {
+      .card-pane { padding: 1.3rem; }
+      .link-input { width: 130px; }
+      .action-buttons { margin-left: 0; margin-top: 8px; }
+    }
+  </style>
 </head>
 <body>
-
-    <div class="glass-card" id="mainCard">
-        <div class="hp-label">Avanthika HP</div>
-        <div class="hearts-row" id="heartContainer">
-            <div class="pixel-heart"></div><div class="pixel-heart"></div><div class="pixel-heart"></div><div class="pixel-heart"></div><div class="pixel-heart"></div>
-        </div>
-
-        <div class="img-frame">
-            <img class="main-photo" src="https://imghoster.co/ib/Uq7zqSxlVgmM3qE_1770636954.jpg" alt="Avanthika Photo">
-        </div>
-
-        <h1 id="headline">Will you be my Valentine?</h1>
-
-        <div class="button-area" id="gameArea">
-            <button class="btn" id="noBtn">NO</button>
-            <button class="btn" id="yesBtn">YES</button>
-        </div>
+<div class="container">
+  <div class="card-pane">
+    <div class="header">
+      <div class="logo">
+        <i class="fas fa-cloud-upload-alt"></i> 
+        <span>SwissDrop</span>
+      </div>
+      <div class="user-area">
+        <i class="fas fa-user-astronaut"></i>
+        <span id="usernameDisplay" style="font-weight:600;">guest</span>
+        <span class="role-tag" id="roleDisplay">guest</span>
+        <button id="authButton" class="primary"><i class="fas fa-key"></i> login</button>
+      </div>
     </div>
 
-    <div id="success">
-        <h1 style="font-size: 16px; margin-bottom: 20px;">SUCCESS! ❤️</h1>
-        <div class="img-frame" style="width: 240px; height: 240px;">
-            <img src="https://imghoster.co/ib/Uq7zqSxlVgmM3qE_1770636954.jpg" class="main-photo">
-        </div>
-        <p style="margin-top: 25px; font-size: 12px;">Nanniyunde Sireee! ❤️</p>
+    <div id="guestNotice" class="notice">
+      <i class="fas fa-info-circle"></i> 
+      <span>Guest mode · max 2 files · 4h auto-delete</span>
     </div>
 
-    <script>
-        const noBtn = document.getElementById('noBtn');
-        const yesBtn = document.getElementById('yesBtn');
-        const card = document.getElementById('mainCard');
-        const headline = document.getElementById('headline');
-        const successScreen = document.getElementById('success');
+    <div class="drop-zone" id="dropZone">
+      <i class="fas fa-arrow-down-to-bracket"></i>
+      <p style="font-weight:500;">drag & drop or click to choose</p>
+      <p style="font-size:0.7rem; color:#8f9eb2;">max 100 MB · ephemeral storage</p>
+      <div id="selectedFileBox" class="selected-indicator" style="display:none;">
+        <i class="fas fa-file-circle-check"></i> <span id="selectedFileLabel"></span>
+      </div>
+      <div id="progressWrapper" class="progress-wrapper">
+        <div class="progress-bar-bg"><div id="progressFill" class="progress-fill"></div></div>
+        <span id="progressPercent" class="progress-text">0%</span>
+      </div>
+      <div class="limits">
+        <span><i class="fas fa-weight-hanging"></i> 100 MB limit</span>
+        <span><i class="fas fa-hourglass-half"></i> 4 hours lifetime</span>
+      </div>
+    </div>
+    <input type="file" id="fileInput" class="file-input" />
 
-        let hp = 5;
-        let scale = 1;
+    <div class="upload-row">
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap:wrap;">
+        <button id="uploadButton" class="primary" disabled><i class="fas fa-cloud-upload-alt"></i> upload file</button>
+        <span id="guestLimitHint" style="font-size:0.7rem; color:#c0a06b; font-weight:500;"></span>
+      </div>
+    </div>
 
-        const textStages = [
-            "Eda chathikalle", 
-            "Ada Gommale", 
-            "Ethre click cheyum enn kaanalo", 
-            "ARE YOU SURE?", 
-            "JUST CLICK YES!"
-        ];
+    <div>
+      <div class="files-header">
+        <i class="fas fa-database"></i> active transfers
+      </div>
+      <div id="filesContainer"></div>
+      <div id="emptyMessage" class="empty-message">
+        <i class="fas fa-inbox"></i> no files — drop a file to start sharing
+      </div>
+    </div>
 
-        function moveNo() {
-            const area = document.getElementById('gameArea');
-            const maxX = area.clientWidth - noBtn.offsetWidth - 10;
-            const maxY = area.clientHeight - noBtn.offsetHeight - 10;
+    <div class="footer">
+      <i class="fas fa-shield-alt"></i> swiss privacy · ephemeral · auto-purging after 4h
+    </div>
+  </div>
+</div>
 
-            const newX = Math.max(5, Math.random() * maxX);
-            const newY = Math.max(5, Math.random() * maxY);
+<script>
+  (() => {
+    const STORAGE_KEY = 'swissdrop_files';
+    const USER_KEY = 'swissdrop_user';
+    const MAX_MB = 100;
+    const MAX_BYTES = MAX_MB * 1024 * 1024;
+    const LIFETIME = 4 * 60 * 60 * 1000;
+    const GUEST_LIMIT = 2;
 
-            noBtn.style.left = `${newX}px`;
-            noBtn.style.top = `${newY}px`;
-            noBtn.style.transform = 'none';
+    let files = [];
+    let user = null;
+    let selectedFile = null;
+    let isUploading = false;
+
+    // DOM elements
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const selectedFileBox = document.getElementById('selectedFileBox');
+    const selectedFileLabel = document.getElementById('selectedFileLabel');
+    const uploadBtn = document.getElementById('uploadButton');
+    const filesContainer = document.getElementById('filesContainer');
+    const emptyMsg = document.getElementById('emptyMessage');
+    const authBtn = document.getElementById('authButton');
+    const usernameDisplay = document.getElementById('usernameDisplay');
+    const roleDisplay = document.getElementById('roleDisplay');
+    const guestNotice = document.getElementById('guestNotice');
+    const guestLimitHint = document.getElementById('guestLimitHint');
+    const progressWrapper = document.getElementById('progressWrapper');
+    const progressFill = document.getElementById('progressFill');
+    const progressPercent = document.getElementById('progressPercent');
+
+    function loadFiles() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        files = raw ? JSON.parse(raw) : [];
+      } catch {
+        files = [];
+      }
+      cleanExpired();
+    }
+
+    function saveFiles() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(files));
+      } catch (e) {
+        console.warn('Storage quota may be exceeded', e);
+      }
+    }
+
+    function cleanExpired() {
+      const now = Date.now();
+      const before = files.length;
+      files = files.filter(f => now - f.created < LIFETIME);
+      if (before !== files.length) saveFiles();
+    }
+
+    function loadUser() {
+      try {
+        const raw = localStorage.getItem(USER_KEY);
+        user = raw ? JSON.parse(raw) : null;
+      } catch { user = null; }
+      if (!user || !user.name) user = { name: 'guest', role: 'guest' };
+    }
+
+    function saveUser() {
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+    }
+
+    function isGuest() {
+      return user.role === 'guest';
+    }
+
+    function myFiles() {
+      return files.filter(f => f.user === user.name);
+    }
+
+    function canUpload() {
+      return isGuest() ? myFiles().length < GUEST_LIMIT : true;
+    }
+
+    function resetProgressUI() {
+      progressWrapper.style.display = 'none';
+      progressFill.style.width = '0%';
+      progressPercent.textContent = '0%';
+    }
+
+    function showProgress() {
+      progressWrapper.style.display = 'flex';
+      progressFill.style.width = '0%';
+      progressPercent.textContent = '0%';
+    }
+
+    function updateProgress(percent) {
+      if (progressWrapper.style.display !== 'flex') progressWrapper.style.display = 'flex';
+      const pct = Math.min(100, Math.max(0, Math.floor(percent)));
+      progressFill.style.width = `${pct}%`;
+      progressPercent.textContent = `${pct}%`;
+    }
+
+    function render() {
+      usernameDisplay.textContent = user.name;
+      roleDisplay.textContent = isGuest() ? 'guest' : 'pro';
+      if (guestNotice) guestNotice.style.display = isGuest() ? 'flex' : 'none';
+      authBtn.innerHTML = isGuest() ? '<i class="fas fa-sign-in-alt"></i> login' : '<i class="fas fa-sign-out-alt"></i> logout';
+
+      const allowed = canUpload();
+      const disableUpload = !allowed || !selectedFile || isUploading;
+      uploadBtn.disabled = disableUpload;
+
+      if (selectedFile && !isUploading) {
+        selectedFileBox.style.display = 'flex';
+        selectedFileLabel.textContent = `${selectedFile.name} (${formatBytes(selectedFile.size)})`;
+      } else if (!selectedFile) {
+        selectedFileBox.style.display = 'none';
+      }
+
+      if (isGuest() && !allowed && myFiles().length >= GUEST_LIMIT) {
+        guestLimitHint.innerHTML = `<i class="fas fa-exclamation-triangle"></i> guest limit: ${GUEST_LIMIT} files max · login for more`;
+      } else {
+        guestLimitHint.innerHTML = '';
+      }
+
+      renderFileList();
+    }
+
+    function renderFileList() {
+      const list = myFiles().sort((a, b) => b.created - a.created);
+      filesContainer.innerHTML = '';
+      if (list.length === 0) {
+        emptyMsg.style.display = 'flex';
+        return;
+      }
+      emptyMsg.style.display = 'none';
+
+      list.forEach(f => {
+        const remaining = f.created + LIFETIME - Date.now();
+        const mins = Math.max(0, Math.floor(remaining / 60000));
+        const link = `${window.location.origin}${window.location.pathname}?dl=${f.id}`;
+        const fileDiv = document.createElement('div');
+        fileDiv.className = 'file-card';
+        fileDiv.innerHTML = `
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px;">
+            <div class="file-info" style="flex:1;">
+              <div class="file-name">
+                <i class="fas fa-file-lines"></i> 
+                <span>${escapeHtml(f.name)}</span>
+              </div>
+              <div class="file-meta">
+                <span><i class="fas fa-database"></i> ${formatBytes(f.size)}</span>
+                <span class="expiry"><i class="far fa-clock"></i> ${mins} min left</span>
+              </div>
+              <div class="link-row">
+                <input class="link-input" value="${escapeHtml(link)}" readonly spellcheck="false" />
+                <button class="copy-link-btn" data-link="${escapeAttr(link)}"><i class="far fa-copy"></i> copy</button>
+              </div>
+            </div>
+            <div class="action-buttons">
+              <button class="dl-btn" data-id="${f.id}"><i class="fas fa-download"></i> dl</button>
+              <button class="del-btn" data-id="${f.id}"><i class="fas fa-trash-alt"></i> del</button>
+            </div>
+          </div>
+        `;
+        filesContainer.appendChild(fileDiv);
+      });
+
+      document.querySelectorAll('.dl-btn').forEach(btn => {
+        const id = btn.dataset.id;
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          downloadFile(id);
+        };
+      });
+      document.querySelectorAll('.del-btn').forEach(btn => {
+        const id = btn.dataset.id;
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          removeFile(id);
+        };
+      });
+      document.querySelectorAll('.copy-link-btn').forEach(btn => {
+        const linkVal = btn.dataset.link;
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          navigator.clipboard.writeText(linkVal).then(() => showToast('✓ link copied')).catch(() => alert('Copy manually'));
+        };
+      });
+    }
+
+    function showToast(msg) {
+      let toast = document.getElementById('swissToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'swissToast';
+        toast.style.position = 'fixed';
+        toast.style.bottom = '24px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.backgroundColor = '#2c5a6e';
+        toast.style.color = '#e8edf5';
+        toast.style.padding = '0.6rem 1.4rem';
+        toast.style.borderRadius = '60px';
+        toast.style.fontSize = '0.8rem';
+        toast.style.fontWeight = '500';
+        toast.style.zIndex = '9999';
+        toast.style.backdropFilter = 'blur(6px)';
+        toast.style.boxShadow = '0 10px 20px rgba(0,0,0,0.3)';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.style.opacity = '1';
+      setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m]);
+    }
+
+    function escapeAttr(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+    }
+
+    function formatBytes(bytes) {
+      if (bytes === 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    // Fixed upload with proper chunked reading and final base64 assembly
+    function uploadFileWithProgress(fileObj) {
+      return new Promise((resolve, reject) => {
+        const fileSize = fileObj.size;
+        const chunkSize = 512 * 1024; // 512KB chunks for smooth progress
+        let offset = 0;
+        let loaded = 0;
+        const chunks = [];
+
+        function readNext() {
+          if (offset >= fileSize) {
+            const finalBlob = new Blob(chunks, { type: fileObj.type || 'application/octet-stream' });
+            const finalReader = new FileReader();
+            finalReader.onload = (e) => resolve(e.target.result);
+            finalReader.onerror = (err) => reject(err);
+            finalReader.readAsDataURL(finalBlob);
+            return;
+          }
+          const end = Math.min(offset + chunkSize, fileSize);
+          const slice = fileObj.slice(offset, end);
+          const sliceReader = new FileReader();
+          sliceReader.onload = (e) => {
+            chunks.push(e.target.result);
+            loaded += (end - offset);
+            const percent = (loaded / fileSize) * 100;
+            updateProgress(percent);
+            offset = end;
+            readNext();
+          };
+          sliceReader.onerror = (err) => reject(err);
+          sliceReader.readAsArrayBuffer(slice);
         }
+        readNext();
+      });
+    }
 
-        noBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (hp > 0) {
-                hp--;
-                const hearts = document.querySelectorAll('.pixel-heart');
-                if (hearts[hp]) hearts[hp].classList.add('broken');
+    async function uploadFile() {
+      if (!selectedFile || !user || !canUpload() || isUploading) {
+        if (!canUpload() && isGuest()) showToast(`Guest limit: max ${GUEST_LIMIT} files. Login or delete older files.`);
+        return;
+      }
+      if (selectedFile.size > MAX_BYTES) {
+        showToast(`File exceeds ${MAX_MB} MB limit.`);
+        return;
+      }
 
-                card.classList.add('shake');
-                setTimeout(() => card.classList.remove('shake'), 200);
+      isUploading = true;
+      uploadBtn.disabled = true;
+      showProgress();
+      updateProgress(0);
 
-                // Updated stages logic
-                headline.innerText = textStages[4 - hp] || "CLICK YES!";
+      try {
+        const fileDataUrl = await uploadFileWithProgress(selectedFile);
+        const newFile = {
+          id: 'f_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10),
+          name: selectedFile.name,
+          size: selectedFile.size,
+          type: selectedFile.type,
+          data: fileDataUrl,
+          created: Date.now(),
+          user: user.name,
+        };
+        files.push(newFile);
+        saveFiles();
+        fileInput.value = '';
+        selectedFile = null;
+        render();
+        showToast(`✓ ${newFile.name} uploaded · valid for 4 hours`);
+        resetProgressUI();
+      } catch (err) {
+        console.error('Upload error:', err);
+        showToast('Upload failed. Please try again.');
+        resetProgressUI();
+      } finally {
+        isUploading = false;
+        uploadBtn.disabled = !canUpload() || !selectedFile;
+        render();
+      }
+    }
 
-                scale += 0.5;
-                yesBtn.style.transform = `translate(-50%, -50%) scale(${scale})`;
-                
-                moveNo();
+    function downloadFile(id) {
+      const file = files.find(f => f.id === id);
+      if (!file) {
+        showToast('File not found');
+        return;
+      }
+      if (Date.now() - file.created > LIFETIME) {
+        showToast('File expired');
+        cleanExpired();
+        render();
+        return;
+      }
+      const link = document.createElement('a');
+      link.href = file.data;
+      link.download = file.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
 
-                if (hp === 0) {
-                    noBtn.style.display = 'none';
-                    yesBtn.style.width = "95%";
-                    yesBtn.style.height = "90%";
-                    yesBtn.style.top = "50%";
-                    yesBtn.style.left = "50%";
-                    yesBtn.style.transform = "translate(-50%, -50%)";
-                    headline.innerText = "NO MORE OPTIONS!";
-                }
-            }
-        });
+    function removeFile(id) {
+      if (confirm('Permanently delete this file?')) {
+        files = files.filter(f => f.id !== id);
+        saveFiles();
+        render();
+        showToast('File deleted');
+      }
+    }
 
-        yesBtn.addEventListener('click', () => {
-            successScreen.style.display = 'flex';
-        });
-    </script>
+    function selectFile(fileObj) {
+      if (!fileObj) {
+        selectedFile = null;
+        render();
+        return;
+      }
+      if (fileObj.size > MAX_BYTES) {
+        showToast(`File exceeds ${MAX_MB} MB limit`);
+        fileInput.value = '';
+        selectedFile = null;
+        render();
+        return;
+      }
+      selectedFile = fileObj;
+      render();
+    }
+
+    // Event handlers
+    authBtn.onclick = () => {
+      if (isGuest()) {
+        const nameInput = prompt('Enter username (authenticated mode, unlimited files)');
+        if (!nameInput || !nameInput.trim()) return;
+        user = { name: nameInput.trim(), role: 'authenticated' };
+        saveUser();
+        render();
+        showToast(`Welcome ${user.name} — unlimited storage`);
+      } else {
+        user = { name: 'guest', role: 'guest' };
+        saveUser();
+        render();
+        showToast('Guest mode: max 2 files');
+      }
+    };
+
+    dropZone.onclick = () => fileInput.click();
+    dropZone.ondragover = (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = '#5f8a9c';
+      dropZone.style.background = '#181d24';
+    };
+    dropZone.ondragleave = () => {
+      dropZone.style.borderColor = '#3a4548';
+      dropZone.style.background = '#101318';
+    };
+    dropZone.ondrop = (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = '#3a4548';
+      dropZone.style.background = '#101318';
+      if (e.dataTransfer.files && e.dataTransfer.files.length) {
+        const dropped = e.dataTransfer.files[0];
+        selectFile(dropped);
+        fileInput.files = e.dataTransfer.files;
+      }
+    };
+    fileInput.onchange = () => {
+      if (fileInput.files.length) selectFile(fileInput.files[0]);
+      else selectFile(null);
+    };
+    uploadBtn.onclick = uploadFile;
+
+    function handleDownloadParam() {
+      const params = new URLSearchParams(window.location.search);
+      const dlId = params.get('dl');
+      if (dlId) {
+        const target = files.find(f => f.id === dlId);
+        if (target && (Date.now() - target.created) < LIFETIME) {
+          downloadFile(dlId);
+        } else {
+          showToast('File unavailable or expired');
+        }
+        history.replaceState({}, '', window.location.pathname);
+      }
+    }
+
+    // Auto cleanup interval
+    setInterval(() => {
+      cleanExpired();
+      render();
+    }, 45000);
+
+    // Initialization
+    loadFiles();
+    loadUser();
+    if (!user || !user.name) {
+      user = { name: 'guest', role: 'guest' };
+      saveUser();
+    }
+    render();
+    setTimeout(() => handleDownloadParam(), 150);
+    resetProgressUI();
+  })();
+</script>
 </body>
 </html>
