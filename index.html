@@ -3,10 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-  <title>SwissDrop</title>
-  <!-- Google Fonts -->
+  <title>SwissDrop · Ephemeral Secure Transfer</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
@@ -22,7 +20,7 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      padding: 1.5rem;
+      padding: 1rem;
       color: #e8edf5;
       position: relative;
     }
@@ -40,24 +38,28 @@
     }
 
     .container {
-      max-width: 960px;
+      max-width: 1100px;
       width: 100%;
       background: rgba(18, 22, 28, 0.96);
-      backdrop-filter: blur(0px);
-      border-radius: 36px;
+      border-radius: 32px;
       box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(64, 128, 128, 0.15);
       overflow: hidden;
-      transition: all 0.2s;
       border: 1px solid rgba(64, 128, 128, 0.25);
     }
 
     .card-pane {
-      padding: 2rem 2rem 2rem 2rem;
+      padding: 1.75rem;
+    }
+
+    @media (max-width: 640px) {
+      .card-pane {
+        padding: 1.25rem;
+      }
     }
 
     .header {
       display: flex;
-      align-items: baseline;
+      align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 1rem;
@@ -67,9 +69,8 @@
     }
 
     .logo {
-      font-size: 1.7rem;
+      font-size: 1.6rem;
       font-weight: 700;
-      letter-spacing: -0.3px;
       background: linear-gradient(135deg, #c0d4e8, #7a9cbb);
       background-clip: text;
       -webkit-background-clip: text;
@@ -87,13 +88,14 @@
     .user-area {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.8rem;
       font-size: 0.85rem;
       font-weight: 500;
       background: #11161c;
-      padding: 0.35rem 1rem 0.35rem 1.2rem;
+      padding: 0.3rem 1rem 0.3rem 1.2rem;
       border-radius: 60px;
       border: 1px solid #2a2f38;
+      flex-wrap: wrap;
     }
 
     .role-tag {
@@ -109,14 +111,13 @@
       background: #1e232b;
       border: 1px solid #373e48;
       color: #e0e6f0;
-      padding: 0.5rem 1.2rem;
+      padding: 0.45rem 1.2rem;
       font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
       font-family: inherit;
       border-radius: 40px;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
     button:hover {
@@ -129,21 +130,49 @@
       background: #2c5a6e;
       border-color: #3a6d84;
       color: white;
-      box-shadow: 0 4px 12px rgba(44, 90, 110, 0.3);
+      box-shadow: 0 2px 8px rgba(44, 90, 110, 0.2);
     }
 
     button.primary:hover {
       background: #234a5c;
-      border-color: #4f7e96;
-      transform: translateY(-1px);
+    }
+
+    button.danger {
+      background: #6e2c2c;
+      border-color: #843a3a;
+      color: white;
+    }
+
+    button.danger:hover {
+      background: #5a2323;
+    }
+
+    button.outline {
+      background: transparent;
+      border-color: #3a6d84;
+      color: #8ab3c7;
+    }
+
+    button.outline:hover {
+      background: #1a2a30;
+      border-color: #5f8a9c;
+    }
+
+    button.icon-btn {
+      padding: 0.4rem 0.8rem;
+      background: #1e232b;
+      border-color: #3a4548;
+    }
+
+    button.icon-btn:hover {
+      background: #2c5a6e;
+      border-color: #5f8a9c;
     }
 
     button:disabled {
       opacity: 0.5;
       transform: none;
       cursor: not-allowed;
-      background: #2a2f38;
-      border-color: #3a404b;
     }
 
     .notice {
@@ -158,12 +187,13 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     .drop-zone {
       border: 2px dashed #3a4548;
       border-radius: 28px;
-      padding: 2rem 1rem;
+      padding: 2rem 1.5rem;
       text-align: center;
       cursor: pointer;
       transition: all 0.2s;
@@ -186,39 +216,43 @@
       display: none;
     }
 
-    .limits {
-      display: flex;
-      justify-content: center;
-      gap: 1.8rem;
-      font-size: 0.7rem;
-      font-weight: 500;
-      color: #9aa9bb;
+    .selected-files-container {
       margin-top: 1rem;
+      max-height: 180px;
+      overflow-y: auto;
     }
 
-    .selected-indicator {
-      background: #1f242a;
-      border-radius: 40px;
-      padding: 0.5rem 1rem;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: #bdd4e0;
-      display: inline-flex;
+    .selected-file-item {
+      background: #1a1f26;
+      border-radius: 12px;
+      padding: 0.5rem 0.8rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
       align-items: center;
+      font-size: 0.8rem;
       gap: 0.5rem;
-      margin-top: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .remove-file-btn {
+      background: none;
+      border: none;
+      color: #c08a7a;
+      cursor: pointer;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.8rem;
     }
 
     .upload-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
       gap: 1rem;
       margin: 0.5rem 0 1.5rem 0;
       background: #11161c;
       padding: 0.75rem 1rem;
       border-radius: 48px;
+      flex-wrap: wrap;
     }
 
     .progress-wrapper {
@@ -256,27 +290,156 @@
       font-size: 0.85rem;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
       color: #bcc7d4;
-      margin-top: 0.5rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    /* Selection toolbar - ALWAYS VISIBLE */
+    .selection-toolbar {
+      background: #1a2428;
+      border-radius: 60px;
+      padding: 0.6rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
       margin-bottom: 1rem;
+      border: 1px solid #2a3a3a;
+    }
+
+    .selection-toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .selection-count {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #8ab3c7;
+      background: #0e131a;
+      padding: 0.3rem 0.9rem;
+      border-radius: 30px;
+    }
+
+    .selection-actions {
       display: flex;
       align-items: center;
       gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    /* Custom checkbox */
+    .custom-checkbox {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      width: 20px;
+      height: 20px;
+    }
+    
+    .custom-checkbox input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      width: 0;
+      height: 0;
+    }
+    
+    .checkmark {
+      position: relative;
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background: #1a1f26;
+      border: 2px solid #3a4548;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .custom-checkbox:hover .checkmark {
+      border-color: #5f8a9c;
+      background: #222833;
+    }
+    
+    .custom-checkbox input:checked ~ .checkmark {
+      background: #2c5a6e;
+      border-color: #5f8a9c;
+    }
+    
+    .custom-checkbox .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    
+    .custom-checkbox input:checked ~ .checkmark:after {
+      display: block;
+    }
+
+    /* File list */
+    .files-list {
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .files-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    .files-list::-webkit-scrollbar-track {
+      background: #1a1f26;
+      border-radius: 10px;
+    }
+    .files-list::-webkit-scrollbar-thumb {
+      background: #3a4548;
+      border-radius: 10px;
     }
 
     .file-card {
       background: #12171f;
       border: 1px solid #252c34;
-      border-radius: 24px;
-      margin-bottom: 0.8rem;
-      padding: 1rem 1.2rem;
+      border-radius: 20px;
+      margin-bottom: 0.75rem;
+      padding: 0.9rem 1rem;
       transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
 
     .file-card:hover {
       border-color: #5f8a9c;
       background: #161d26;
+    }
+
+    .file-card.selected {
+      border-color: #5f8a9c;
+      background: #1a2a30;
+    }
+
+    .file-info {
+      flex: 1;
+      min-width: 150px;
     }
 
     .file-name {
@@ -286,6 +449,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     .file-meta {
@@ -294,6 +458,8 @@
       display: flex;
       gap: 1rem;
       align-items: center;
+      flex-wrap: wrap;
+      margin-top: 0.25rem;
     }
 
     .expiry {
@@ -304,41 +470,11 @@
       font-weight: 600;
     }
 
-    .link-row {
+    .file-actions {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-top: 0.5rem;
     }
-
-    .link-input {
-      background: #0b0f14;
-      border: 1px solid #2d343e;
-      color: #ced8e8;
-      padding: 0.4rem 0.7rem;
-      font-size: 0.7rem;
-      font-family: 'SF Mono', monospace;
-      border-radius: 16px;
-      width: 210px;
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      margin-left: auto;
-    }
-
-    .action-buttons button {
-      background: #1e232b;
-      border: none;
-      padding: 0.3rem 0.9rem;
-      font-size: 0.7rem;
-    }
-
-    .dl-btn { color: #9ab3c5; }
-    .del-btn { color: #c08a7a; }
 
     .empty-message {
       text-align: center;
@@ -349,274 +485,235 @@
       border: 1px dashed #2d3440;
     }
 
-    .footer {
-      font-size: 0.7rem;
-      font-weight: 500;
-      color: #6f858e;
-      text-align: center;
-      border-top: 1px solid #252c34;
+    /* Stats container */
+    .stats-container {
       margin-top: 1.8rem;
       padding-top: 1.2rem;
+      border-top: 1px solid #252c34;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      font-size: 0.7rem;
+      color: #7e8c9e;
     }
 
-    @media (max-width: 600px) {
-      .card-pane { padding: 1.3rem; }
-      .link-input { width: 130px; }
-      .action-buttons { margin-left: 0; margin-top: 8px; }
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #11161c;
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      border: 1px solid #252c34;
+    }
+
+    .stat-item i {
+      color: #7a9cbb;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 640px) {
+      .stat-item {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.65rem;
+      }
+      .file-card {
+        padding: 0.8rem;
+      }
+      .selection-toolbar {
+        padding: 0.5rem 1rem;
+      }
+      button {
+        padding: 0.4rem 1rem;
+      }
+      .selection-count {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.7rem;
+      }
+      .file-actions {
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: 0.5rem;
+      }
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <div class="card-pane">
-    <div class="header">
-      <div class="logo">
-        <i class="fas fa-cloud-upload-alt"></i> 
-        <span>SwissDrop</span>
-      </div>
-      <div class="user-area">
-        <i class="fas fa-user-astronaut"></i>
-        <span id="usernameDisplay" style="font-weight:600;">guest</span>
-        <span class="role-tag" id="roleDisplay">guest</span>
-        <button id="authButton" class="primary"><i class="fas fa-key"></i> login</button>
-      </div>
-    </div>
-
-    <div id="guestNotice" class="notice">
-      <i class="fas fa-info-circle"></i> 
-      <span>Guest mode · max 2 files · 4h auto-delete</span>
-    </div>
-
-    <div class="drop-zone" id="dropZone">
-      <i class="fas fa-arrow-down-to-bracket"></i>
-      <p style="font-weight:500;">drag & drop or click to choose</p>
-      <p style="font-size:0.7rem; color:#8f9eb2;">max 100 MB · ephemeral storage</p>
-      <div id="selectedFileBox" class="selected-indicator" style="display:none;">
-        <i class="fas fa-file-circle-check"></i> <span id="selectedFileLabel"></span>
-      </div>
-      <div id="progressWrapper" class="progress-wrapper">
-        <div class="progress-bar-bg"><div id="progressFill" class="progress-fill"></div></div>
-        <span id="progressPercent" class="progress-text">0%</span>
-      </div>
-      <div class="limits">
-        <span><i class="fas fa-weight-hanging"></i> 100 MB limit</span>
-        <span><i class="fas fa-hourglass-half"></i> 4 hours lifetime</span>
-      </div>
-    </div>
-    <input type="file" id="fileInput" class="file-input" />
-
-    <div class="upload-row">
-      <div style="display: flex; gap: 12px; align-items: center; flex-wrap:wrap;">
-        <button id="uploadButton" class="primary" disabled><i class="fas fa-cloud-upload-alt"></i> upload file</button>
-        <span id="guestLimitHint" style="font-size:0.7rem; color:#c0a06b; font-weight:500;"></span>
-      </div>
-    </div>
-
-    <div>
-      <div class="files-header">
-        <i class="fas fa-database"></i> active transfers
-      </div>
-      <div id="filesContainer"></div>
-      <div id="emptyMessage" class="empty-message">
-        <i class="fas fa-inbox"></i> no files — drop a file to start sharing
-      </div>
-    </div>
-
-    <div class="footer">
-      <i class="fas fa-shield-alt"></i> swiss privacy · ephemeral · auto-purging after 4h
-    </div>
-  </div>
-</div>
+<div id="app"></div>
 
 <script>
-  (() => {
-    const STORAGE_KEY = 'swissdrop_files';
+  (function() {
+    const DB_NAME = 'SwissDropDB';
+    const DB_VERSION = 7;
+    const STORE_NAME = 'files';
     const USER_KEY = 'swissdrop_user';
     const MAX_MB = 100;
     const MAX_BYTES = MAX_MB * 1024 * 1024;
     const LIFETIME = 4 * 60 * 60 * 1000;
-    const GUEST_LIMIT = 2;
+    const GUEST_LIMIT = 5;
 
-    let files = [];
-    let user = null;
-    let selectedFile = null;
+    let db = null;
+    let currentUser = null;
+    let selectedFilesToUpload = [];
+    let selectedFileIds = new Set();
     let isUploading = false;
 
-    // DOM elements
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-    const selectedFileBox = document.getElementById('selectedFileBox');
-    const selectedFileLabel = document.getElementById('selectedFileLabel');
-    const uploadBtn = document.getElementById('uploadButton');
-    const filesContainer = document.getElementById('filesContainer');
-    const emptyMsg = document.getElementById('emptyMessage');
-    const authBtn = document.getElementById('authButton');
-    const usernameDisplay = document.getElementById('usernameDisplay');
-    const roleDisplay = document.getElementById('roleDisplay');
-    const guestNotice = document.getElementById('guestNotice');
-    const guestLimitHint = document.getElementById('guestLimitHint');
-    const progressWrapper = document.getElementById('progressWrapper');
-    const progressFill = document.getElementById('progressFill');
-    const progressPercent = document.getElementById('progressPercent');
-
-    function loadFiles() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        files = raw ? JSON.parse(raw) : [];
-      } catch {
-        files = [];
-      }
-      cleanExpired();
+    function initDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+          db = request.result;
+          resolve(db);
+        };
+        request.onupgradeneeded = (event) => {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+            store.createIndex('userId', 'userId', { unique: false });
+            store.createIndex('created', 'created', { unique: false });
+            store.createIndex('shareId', 'shareId', { unique: false });
+          }
+        };
+      });
     }
 
-    function saveFiles() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(files));
-      } catch (e) {
-        console.warn('Storage quota may be exceeded', e);
-      }
+    async function saveFileToDB(fileData) {
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.add(fileData);
+        request.onsuccess = () => resolve(true);
+        request.onerror = () => reject(request.error);
+      });
     }
 
-    function cleanExpired() {
-      const now = Date.now();
-      const before = files.length;
-      files = files.filter(f => now - f.created < LIFETIME);
-      if (before !== files.length) saveFiles();
+    async function getUserFiles(userId) {
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const index = store.index('userId');
+        const request = index.getAll(userId);
+        request.onsuccess = () => {
+          const files = request.result || [];
+          const now = Date.now();
+          const validFiles = files.filter(f => now - f.created < LIFETIME);
+          if (validFiles.length !== files.length) {
+            const deleteTransaction = db.transaction([STORE_NAME], 'readwrite');
+            const deleteStore = deleteTransaction.objectStore(STORE_NAME);
+            files.forEach(f => {
+              if (now - f.created >= LIFETIME) deleteStore.delete(f.id);
+            });
+          }
+          resolve(validFiles);
+        };
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function getFileFromDB(fileId) {
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.get(fileId);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function deleteFileFromDB(fileId) {
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.delete(fileId);
+        request.onsuccess = () => resolve(true);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function deleteMultipleFiles(fileIds) {
+      let count = 0;
+      for (const fileId of fileIds) {
+        try { await deleteFileFromDB(fileId); count++; } catch (err) {}
+      }
+      return count;
+    }
+
+    async function updateFileInDB(fileData) {
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.put(fileData);
+        request.onsuccess = () => resolve(true);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function getFilesByShareId(shareId) {
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const index = store.index('shareId');
+        const request = index.getAll(shareId);
+        request.onsuccess = () => {
+          const files = request.result || [];
+          const now = Date.now();
+          resolve(files.filter(f => now - f.created < LIFETIME));
+        };
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    function generateUserId(name) {
+      return 'user_' + name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + btoa(name).substring(0, 8);
     }
 
     function loadUser() {
       try {
         const raw = localStorage.getItem(USER_KEY);
-        user = raw ? JSON.parse(raw) : null;
-      } catch { user = null; }
-      if (!user || !user.name) user = { name: 'guest', role: 'guest' };
+        if (raw) {
+          currentUser = JSON.parse(raw);
+          if (!currentUser.id) {
+            currentUser.id = generateUserId(currentUser.name);
+            saveUser();
+          }
+        } else {
+          const guestId = 'guest_' + Math.random().toString(36).substring(2, 10);
+          currentUser = { name: 'guest', role: 'guest', id: guestId, createdAt: Date.now() };
+          saveUser();
+        }
+      } catch { 
+        currentUser = null; 
+      }
+      if (!currentUser || !currentUser.name) {
+        const guestId = 'guest_' + Math.random().toString(36).substring(2, 10);
+        currentUser = { name: 'guest', role: 'guest', id: guestId, createdAt: Date.now() };
+        saveUser();
+      }
     }
 
     function saveUser() {
-      localStorage.setItem(USER_KEY, JSON.stringify(user));
+      localStorage.setItem(USER_KEY, JSON.stringify(currentUser));
     }
 
     function isGuest() {
-      return user.role === 'guest';
+      return currentUser.role === 'guest';
     }
 
-    function myFiles() {
-      return files.filter(f => f.user === user.name);
+    function formatBytes(bytes) {
+      if (bytes === 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
 
-    function canUpload() {
-      return isGuest() ? myFiles().length < GUEST_LIMIT : true;
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m]);
     }
 
-    function resetProgressUI() {
-      progressWrapper.style.display = 'none';
-      progressFill.style.width = '0%';
-      progressPercent.textContent = '0%';
-    }
-
-    function showProgress() {
-      progressWrapper.style.display = 'flex';
-      progressFill.style.width = '0%';
-      progressPercent.textContent = '0%';
-    }
-
-    function updateProgress(percent) {
-      if (progressWrapper.style.display !== 'flex') progressWrapper.style.display = 'flex';
-      const pct = Math.min(100, Math.max(0, Math.floor(percent)));
-      progressFill.style.width = `${pct}%`;
-      progressPercent.textContent = `${pct}%`;
-    }
-
-    function render() {
-      usernameDisplay.textContent = user.name;
-      roleDisplay.textContent = isGuest() ? 'guest' : 'pro';
-      if (guestNotice) guestNotice.style.display = isGuest() ? 'flex' : 'none';
-      authBtn.innerHTML = isGuest() ? '<i class="fas fa-sign-in-alt"></i> login' : '<i class="fas fa-sign-out-alt"></i> logout';
-
-      const allowed = canUpload();
-      const disableUpload = !allowed || !selectedFile || isUploading;
-      uploadBtn.disabled = disableUpload;
-
-      if (selectedFile && !isUploading) {
-        selectedFileBox.style.display = 'flex';
-        selectedFileLabel.textContent = `${selectedFile.name} (${formatBytes(selectedFile.size)})`;
-      } else if (!selectedFile) {
-        selectedFileBox.style.display = 'none';
-      }
-
-      if (isGuest() && !allowed && myFiles().length >= GUEST_LIMIT) {
-        guestLimitHint.innerHTML = `<i class="fas fa-exclamation-triangle"></i> guest limit: ${GUEST_LIMIT} files max · login for more`;
-      } else {
-        guestLimitHint.innerHTML = '';
-      }
-
-      renderFileList();
-    }
-
-    function renderFileList() {
-      const list = myFiles().sort((a, b) => b.created - a.created);
-      filesContainer.innerHTML = '';
-      if (list.length === 0) {
-        emptyMsg.style.display = 'flex';
-        return;
-      }
-      emptyMsg.style.display = 'none';
-
-      list.forEach(f => {
-        const remaining = f.created + LIFETIME - Date.now();
-        const mins = Math.max(0, Math.floor(remaining / 60000));
-        const link = `${window.location.origin}${window.location.pathname}?dl=${f.id}`;
-        const fileDiv = document.createElement('div');
-        fileDiv.className = 'file-card';
-        fileDiv.innerHTML = `
-          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px;">
-            <div class="file-info" style="flex:1;">
-              <div class="file-name">
-                <i class="fas fa-file-lines"></i> 
-                <span>${escapeHtml(f.name)}</span>
-              </div>
-              <div class="file-meta">
-                <span><i class="fas fa-database"></i> ${formatBytes(f.size)}</span>
-                <span class="expiry"><i class="far fa-clock"></i> ${mins} min left</span>
-              </div>
-              <div class="link-row">
-                <input class="link-input" value="${escapeHtml(link)}" readonly spellcheck="false" />
-                <button class="copy-link-btn" data-link="${escapeAttr(link)}"><i class="far fa-copy"></i> copy</button>
-              </div>
-            </div>
-            <div class="action-buttons">
-              <button class="dl-btn" data-id="${f.id}"><i class="fas fa-download"></i> dl</button>
-              <button class="del-btn" data-id="${f.id}"><i class="fas fa-trash-alt"></i> del</button>
-            </div>
-          </div>
-        `;
-        filesContainer.appendChild(fileDiv);
-      });
-
-      document.querySelectorAll('.dl-btn').forEach(btn => {
-        const id = btn.dataset.id;
-        btn.onclick = (e) => {
-          e.stopPropagation();
-          downloadFile(id);
-        };
-      });
-      document.querySelectorAll('.del-btn').forEach(btn => {
-        const id = btn.dataset.id;
-        btn.onclick = (e) => {
-          e.stopPropagation();
-          removeFile(id);
-        };
-      });
-      document.querySelectorAll('.copy-link-btn').forEach(btn => {
-        const linkVal = btn.dataset.link;
-        btn.onclick = (e) => {
-          e.stopPropagation();
-          navigator.clipboard.writeText(linkVal).then(() => showToast('✓ link copied')).catch(() => alert('Copy manually'));
-        };
-      });
-    }
-
-    function showToast(msg) {
+    function showToast(msg, isError = false) {
       let toast = document.getElementById('swissToast');
       if (!toast) {
         toast = document.createElement('div');
@@ -636,226 +733,397 @@
         toast.style.boxShadow = '0 10px 20px rgba(0,0,0,0.3)';
         document.body.appendChild(toast);
       }
+      toast.style.backgroundColor = isError ? '#8b3a3a' : '#2c5a6e';
       toast.textContent = msg;
       toast.style.opacity = '1';
-      setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+      setTimeout(() => { toast.style.opacity = '0'; }, 2500);
+      setTimeout(() => { toast.style.backgroundColor = '#2c5a6e'; }, 3000);
     }
 
-    function escapeHtml(str) {
-      return String(str).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m]);
+    function updateProgress(percent, message) {
+      const wrapper = document.getElementById('progressWrapper');
+      const fill = document.getElementById('progressFill');
+      const percentSpan = document.getElementById('progressPercent');
+      const msgSpan = document.getElementById('progressMessage');
+      if (wrapper) wrapper.style.display = 'flex';
+      if (fill) fill.style.width = `${percent}%`;
+      if (percentSpan) percentSpan.textContent = `${Math.floor(percent)}%`;
+      if (msgSpan) msgSpan.textContent = message || `Uploading... ${Math.floor(percent)}%`;
+    }
+    
+    function resetProgressUI() {
+      const wrapper = document.getElementById('progressWrapper');
+      if (wrapper) wrapper.style.display = 'none';
     }
 
-    function escapeAttr(str) {
-      return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
-    }
-
-    function formatBytes(bytes) {
-      if (bytes === 0) return '0 B';
-      const k = 1024;
-      const sizes = ['B', 'KB', 'MB'];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-    }
-
-    // Fixed upload with proper chunked reading and final base64 assembly
-    function uploadFileWithProgress(fileObj) {
+    function uploadSingleFileWithProgress(fileObj, onProgress) {
       return new Promise((resolve, reject) => {
-        const fileSize = fileObj.size;
-        const chunkSize = 512 * 1024; // 512KB chunks for smooth progress
-        let offset = 0;
-        let loaded = 0;
-        const chunks = [];
-
-        function readNext() {
-          if (offset >= fileSize) {
-            const finalBlob = new Blob(chunks, { type: fileObj.type || 'application/octet-stream' });
-            const finalReader = new FileReader();
-            finalReader.onload = (e) => resolve(e.target.result);
-            finalReader.onerror = (err) => reject(err);
-            finalReader.readAsDataURL(finalBlob);
-            return;
-          }
-          const end = Math.min(offset + chunkSize, fileSize);
-          const slice = fileObj.slice(offset, end);
-          const sliceReader = new FileReader();
-          sliceReader.onload = (e) => {
-            chunks.push(e.target.result);
-            loaded += (end - offset);
-            const percent = (loaded / fileSize) * 100;
-            updateProgress(percent);
-            offset = end;
-            readNext();
-          };
-          sliceReader.onerror = (err) => reject(err);
-          sliceReader.readAsArrayBuffer(slice);
-        }
-        readNext();
+        const reader = new FileReader();
+        reader.onload = (e) => { if (onProgress) onProgress(100); resolve(e.target.result); };
+        reader.onerror = (err) => reject(err);
+        let progress = 0;
+        const interval = setInterval(() => {
+          if (progress < 90) { progress += 10; if (onProgress) onProgress(progress); }
+        }, 200);
+        reader.onloadend = () => { clearInterval(interval); if (onProgress) onProgress(100); };
+        reader.readAsDataURL(fileObj);
       });
     }
 
-    async function uploadFile() {
-      if (!selectedFile || !user || !canUpload() || isUploading) {
-        if (!canUpload() && isGuest()) showToast(`Guest limit: max ${GUEST_LIMIT} files. Login or delete older files.`);
-        return;
+    async function uploadMultipleFiles(filesToUpload) {
+      const uploaded = [];
+      for (let i = 0; i < filesToUpload.length; i++) {
+        const file = filesToUpload[i];
+        updateProgress((i / filesToUpload.length) * 100, `Uploading ${i+1}/${filesToUpload.length}: ${file.name}`);
+        try {
+          const dataUrl = await uploadSingleFileWithProgress(file, (p) => {
+            const overall = ((i + (p / 100)) / filesToUpload.length) * 100;
+            updateProgress(overall, `Uploading ${i+1}/${filesToUpload.length}: ${file.name} (${p}%)`);
+          });
+          const newFile = {
+            id: 'f_' + Date.now() + '_' + Math.random().toString(36).substring(2, 15) + '_' + i,
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            data: dataUrl,
+            created: Date.now(),
+            userId: currentUser.id,
+            userName: currentUser.name,
+          };
+          await saveFileToDB(newFile);
+          uploaded.push(newFile);
+        } catch (err) {
+          console.error(err);
+          showToast(`Failed: ${file.name}`, true);
+        }
       }
-      if (selectedFile.size > MAX_BYTES) {
-        showToast(`File exceeds ${MAX_MB} MB limit.`);
-        return;
-      }
+      return uploaded;
+    }
 
+    async function handleUpload() {
+      if (selectedFilesToUpload.length === 0) { showToast('Select files first'); return; }
+      const existing = await getUserFiles(currentUser.id);
+      if (isGuest() && existing.length + selectedFilesToUpload.length > GUEST_LIMIT) {
+        showToast(`Guest limit: ${GUEST_LIMIT} files max`, true);
+        return;
+      }
+      for (const f of selectedFilesToUpload) {
+        if (f.size > MAX_BYTES) { showToast(`${f.name} > ${MAX_MB}MB`, true); return; }
+      }
       isUploading = true;
-      uploadBtn.disabled = true;
-      showProgress();
-      updateProgress(0);
-
+      const btn = document.getElementById('uploadButton');
+      if (btn) btn.disabled = true;
+      updateProgress(0, 'Starting...');
       try {
-        const fileDataUrl = await uploadFileWithProgress(selectedFile);
-        const newFile = {
-          id: 'f_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10),
-          name: selectedFile.name,
-          size: selectedFile.size,
-          type: selectedFile.type,
-          data: fileDataUrl,
-          created: Date.now(),
-          user: user.name,
-        };
-        files.push(newFile);
-        saveFiles();
-        fileInput.value = '';
-        selectedFile = null;
-        render();
-        showToast(`✓ ${newFile.name} uploaded · valid for 4 hours`);
+        const uploaded = await uploadMultipleFiles(selectedFilesToUpload);
+        selectedFilesToUpload = [];
+        selectedFileIds.clear();
+        const fileInput = document.getElementById('fileInput');
+        if (fileInput) fileInput.value = '';
+        await renderMainApp();
+        showToast(`✓ Uploaded ${uploaded.length} file(s)`);
         resetProgressUI();
       } catch (err) {
-        console.error('Upload error:', err);
-        showToast('Upload failed. Please try again.');
+        showToast('Upload failed', true);
         resetProgressUI();
       } finally {
         isUploading = false;
-        uploadBtn.disabled = !canUpload() || !selectedFile;
-        render();
+        await renderMainApp();
       }
     }
 
-    function downloadFile(id) {
-      const file = files.find(f => f.id === id);
-      if (!file) {
-        showToast('File not found');
-        return;
-      }
-      if (Date.now() - file.created > LIFETIME) {
-        showToast('File expired');
-        cleanExpired();
-        render();
-        return;
-      }
-      const link = document.createElement('a');
-      link.href = file.data;
-      link.download = file.name;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    function removeSelectedUpload(index) {
+      selectedFilesToUpload.splice(index, 1);
+      renderMainApp();
     }
 
-    function removeFile(id) {
-      if (confirm('Permanently delete this file?')) {
-        files = files.filter(f => f.id !== id);
-        saveFiles();
-        render();
-        showToast('File deleted');
+    function addFiles(newFiles) {
+      for (const f of newFiles) {
+        if (f.size <= MAX_BYTES) selectedFilesToUpload.push(f);
+        else showToast(`${f.name} exceeds ${MAX_MB}MB`, true);
+      }
+      renderMainApp();
+    }
+
+    async function createShareLink(fileIds, isSingle = false) {
+      const shareId = 'share_' + Date.now() + '_' + Math.random().toString(36).substring(2, 15);
+      for (const id of fileIds) {
+        const file = await getFileFromDB(id);
+        if (file) { file.shareId = shareId; await updateFileInDB(file); }
+      }
+      const link = `${location.origin}${location.pathname}?share=${shareId}`;
+      if (isSingle) {
+        navigator.clipboard.writeText(link).then(() => showToast(`✓ Share link copied for 1 file`));
+      }
+      return link;
+    }
+
+    async function shareSingleFile(fileId) {
+      const link = await createShareLink([fileId], true);
+      return link;
+    }
+
+    async function deleteSelectedFiles() {
+      const ids = Array.from(selectedFileIds);
+      if (ids.length === 0) { showToast('No files selected'); return; }
+      if (confirm(`Delete ${ids.length} file(s) permanently?`)) {
+        const deleted = await deleteMultipleFiles(ids);
+        selectedFileIds.clear();
+        await renderMainApp();
+        showToast(`✓ Deleted ${deleted} file(s)`);
       }
     }
 
-    function selectFile(fileObj) {
-      if (!fileObj) {
-        selectedFile = null;
-        render();
-        return;
-      }
-      if (fileObj.size > MAX_BYTES) {
-        showToast(`File exceeds ${MAX_MB} MB limit`);
-        fileInput.value = '';
-        selectedFile = null;
-        render();
-        return;
-      }
-      selectedFile = fileObj;
-      render();
+    async function shareSelectedFiles() {
+      const ids = Array.from(selectedFileIds);
+      if (ids.length === 0) { showToast('No files selected'); return; }
+      const link = await createShareLink(ids);
+      navigator.clipboard.writeText(link).then(() => showToast(`✓ Share link copied (${ids.length} files)`));
     }
 
-    // Event handlers
-    authBtn.onclick = () => {
-      if (isGuest()) {
-        const nameInput = prompt('Enter username (authenticated mode, unlimited files)');
-        if (!nameInput || !nameInput.trim()) return;
-        user = { name: nameInput.trim(), role: 'authenticated' };
-        saveUser();
-        render();
-        showToast(`Welcome ${user.name} — unlimited storage`);
-      } else {
-        user = { name: 'guest', role: 'guest' };
-        saveUser();
-        render();
-        showToast('Guest mode: max 2 files');
-      }
-    };
+    function selectAllFiles() {
+      const checkboxes = document.querySelectorAll('.file-checkbox-input');
+      const fileIds = Array.from(checkboxes).map(cb => cb.dataset.fileId);
+      fileIds.forEach(id => selectedFileIds.add(id));
+      updateSelectionUI();
+    }
 
-    dropZone.onclick = () => fileInput.click();
-    dropZone.ondragover = (e) => {
-      e.preventDefault();
-      dropZone.style.borderColor = '#5f8a9c';
-      dropZone.style.background = '#181d24';
-    };
-    dropZone.ondragleave = () => {
-      dropZone.style.borderColor = '#3a4548';
-      dropZone.style.background = '#101318';
-    };
-    dropZone.ondrop = (e) => {
-      e.preventDefault();
-      dropZone.style.borderColor = '#3a4548';
-      dropZone.style.background = '#101318';
-      if (e.dataTransfer.files && e.dataTransfer.files.length) {
-        const dropped = e.dataTransfer.files[0];
-        selectFile(dropped);
-        fileInput.files = e.dataTransfer.files;
-      }
-    };
-    fileInput.onchange = () => {
-      if (fileInput.files.length) selectFile(fileInput.files[0]);
-      else selectFile(null);
-    };
-    uploadBtn.onclick = uploadFile;
+    function clearSelection() {
+      selectedFileIds.clear();
+      updateSelectionUI();
+    }
 
-    function handleDownloadParam() {
-      const params = new URLSearchParams(window.location.search);
-      const dlId = params.get('dl');
-      if (dlId) {
-        const target = files.find(f => f.id === dlId);
-        if (target && (Date.now() - target.created) < LIFETIME) {
-          downloadFile(dlId);
+    function updateSelectionUI() {
+      const countSpan = document.getElementById('selectionCount');
+      const shareBtn = document.getElementById('shareSelectedBtn');
+      const delBtn = document.getElementById('deleteSelectedBtn');
+      const clearSelBtn = document.getElementById('clearSelectionBtn');
+      const count = selectedFileIds.size;
+      
+      if (countSpan) countSpan.textContent = `${count} file${count !== 1 ? 's' : ''} selected`;
+      if (shareBtn) shareBtn.disabled = count === 0;
+      if (delBtn) delBtn.disabled = count === 0;
+      if (clearSelBtn) clearSelBtn.disabled = count === 0;
+      
+      document.querySelectorAll('.file-checkbox-input').forEach(cb => {
+        const fid = cb.dataset.fileId;
+        const isChecked = selectedFileIds.has(fid);
+        cb.checked = isChecked;
+        const card = cb.closest('.file-card');
+        if (card) card.classList.toggle('selected', isChecked);
+      });
+    }
+
+    async function renderDownloadPage(shareId) {
+      const shared = await getFilesByShareId(shareId);
+      if (shared.length === 0) {
+        document.getElementById('app').innerHTML = `<div style="display:flex;justify-content:center;align-items:center;min-height:100vh;"><div style="background:#1a1f2a;padding:2rem;border-radius:32px;text-align:center;"><i class="fas fa-exclamation-triangle" style="font-size:3rem;color:#c0a06b;"></i><h2 style="margin:1rem 0">Share Not Found</h2><a href="/" style="color:#7ab3c8;">← Back</a></div></div>`;
+        return;
+      }
+      const totalSize = shared.reduce((s, f) => s + f.size, 0);
+      let filesHtml = '';
+      for (const f of shared) {
+        const isImage = f.type?.startsWith('image/');
+        const isVideo = f.type?.startsWith('video/');
+        filesHtml += `
+          <div class="file-card">
+            <div class="file-info">
+              <div class="file-name"><i class="fas ${isImage ? 'fa-image' : isVideo ? 'fa-video' : 'fa-file'}"></i>${escapeHtml(f.name)}</div>
+              <div class="file-meta"><span>${formatBytes(f.size)}</span></div>
+              ${(isImage || isVideo) ? `<div style="margin-top:0.8rem;background:#0e131a;border-radius:16px;padding:1rem;text-align:center;">${isImage ? `<img src="${f.data}" style="max-width:100%;max-height:180px;border-radius:8px;">` : isVideo ? `<video controls style="max-width:100%;max-height:180px;"><source src="${f.data}"></video>` : ''}</div>` : ''}
+            </div>
+            <div><button class="download-single" data-id="${f.id}" style="background:#2c5a6e;padding:0.5rem 1rem;"><i class="fas fa-download"></i> Download</button></div>
+          </div>`;
+      }
+      document.getElementById('app').innerHTML = `
+        <div style="display:flex;justify-content:center;min-height:100vh;padding:1.5rem;">
+          <div style="max-width:800px;width:100%;background:#12171f;border-radius:32px;padding:2rem;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:1.5rem;"><div><i class="fas fa-cloud-upload-alt" style="color:#7a9cbb;font-size:1.5rem;"></i><span style="font-weight:700;margin-left:0.5rem;">SwissDrop</span></div></div>
+            <div style="text-align:center;margin:1rem 0"><i class="fas fa-folder-open" style="font-size:2.5rem;color:#7ab3c8;"></i><h2>Shared Files</h2><p style="color:#8f9eb2">${shared.length} file(s) · ${formatBytes(totalSize)}</p></div>
+            ${filesHtml}
+            <div style="display:flex;gap:1rem;justify-content:center;margin-top:2rem;"><button id="downloadAllBtn" style="background:#2c5a6e;padding:0.8rem 2rem;">Download All</button><a href="/" style="background:#1e232b;padding:0.8rem 2rem;border-radius:40px;text-decoration:none;">Back</a></div>
+          </div>
+        </div>`;
+      document.querySelectorAll('.download-single').forEach(btn => {
+        btn.onclick = async () => {
+          const file = await getFileFromDB(btn.dataset.id);
+          if (file && Date.now() - file.created < LIFETIME) { const a = document.createElement('a'); a.href = file.data; a.download = file.name; a.click(); }
+          else showToast('File expired', true);
+        };
+      });
+      const allBtn = document.getElementById('downloadAllBtn');
+      if (allBtn) allBtn.onclick = () => shared.forEach(f => { const a = document.createElement('a'); a.href = f.data; a.download = f.name; a.click(); setTimeout(()=>{}, 200); });
+    }
+
+    async function renderMainApp() {
+      const userFiles = await getUserFiles(currentUser.id);
+      const totalFiles = userFiles.length;
+      const remaining = isGuest() ? Math.max(0, GUEST_LIMIT - totalFiles) : Infinity;
+      const uploadPreview = selectedFilesToUpload.map((f, idx) => `<div class="selected-file-item"><span><i class="fas fa-file"></i> ${escapeHtml(f.name)} (${formatBytes(f.size)})</span><button class="remove-file-btn" data-idx="${idx}"><i class="fas fa-times"></i></button></div>`).join('');
+      
+      const filesHtml = userFiles.length === 0 ? '<div class="empty-message"><i class="fas fa-inbox"></i> No files — upload to share</div>' : userFiles.map(f => {
+        const mins = Math.max(0, Math.floor((f.created + LIFETIME - Date.now()) / 60000));
+        return `<div class="file-card">
+          <label class="custom-checkbox">
+            <input type="checkbox" class="file-checkbox-input" data-file-id="${f.id}">
+            <span class="checkmark"></span>
+          </label>
+          <div class="file-info">
+            <div class="file-name"><i class="fas fa-file"></i> ${escapeHtml(f.name)}</div>
+            <div class="file-meta"><span>${formatBytes(f.size)}</span><span class="expiry"><i class="far fa-clock"></i> ${mins} min</span></div>
+          </div>
+          <div class="file-actions">
+            <button class="share-single-btn icon-btn" data-id="${f.id}" title="Share this file"><i class="fas fa-share-alt"></i> Share</button>
+            <button class="single-delete-btn icon-btn" data-id="${f.id}" title="Delete this file"><i class="fas fa-trash-alt"></i> Delete</button>
+          </div>
+        </div>`;
+      }).join('');
+      
+      const mainHtml = `
+        <div class="container">
+          <div class="card-pane">
+            <div class="header">
+              <div class="logo"><i class="fas fa-cloud-upload-alt"></i> SwissDrop</div>
+              <div class="user-area"><i class="fas fa-user-astronaut"></i><span>${escapeHtml(currentUser.name)}</span><span class="role-tag">${isGuest() ? `guest (${totalFiles}/${GUEST_LIMIT})` : 'pro'}</span><button id="authButton" class="primary"><i class="fas fa-key"></i> ${isGuest() ? 'login' : 'logout'}</button></div>
+            </div>
+            <div id="guestNotice" class="notice" style="display:${isGuest() ? 'flex' : 'none'}"><i class="fas fa-info-circle"></i> Guest mode · max ${GUEST_LIMIT} files · persistent storage</div>
+            <div class="drop-zone" id="dropZone"><i class="fas fa-cloud-upload-alt"></i><p>drag & drop or click to select</p><p style="font-size:0.7rem;color:#8f9eb2;">max ${MAX_MB} MB per file · ${isGuest() ? remaining + ' slots left' : 'unlimited'}</p>${uploadPreview ? `<div class="selected-files-container">${uploadPreview}</div>` : ''}<div id="progressWrapper" class="progress-wrapper" style="display:none;"><div class="progress-bar-bg"><div id="progressFill" class="progress-fill"></div></div><div style="flex:1;font-size:0.7rem;"><span id="progressMessage"></span></div><span id="progressPercent" class="progress-text">0%</span></div></div>
+            <input type="file" id="fileInput" class="file-input" multiple>
+            <div class="upload-row"><button id="uploadButton" class="primary" ${selectedFilesToUpload.length === 0 || isUploading ? 'disabled' : ''}><i class="fas fa-cloud-upload-alt"></i> Upload ${selectedFilesToUpload.length} file(s)</button><button id="clearFilesBtn" ${selectedFilesToUpload.length === 0 ? 'disabled' : ''}><i class="fas fa-trash-alt"></i> Clear</button></div>
+            
+            <div class="files-header"><span><i class="fas fa-database"></i> Your Files</span></div>
+            
+            <!-- Selection Toolbar - ALWAYS VISIBLE -->
+            <div class="selection-toolbar">
+              <div class="selection-toolbar-left">
+                <button id="selectAllBtn" class="primary" style="background:#2c5a6e;"><i class="fas fa-check-double"></i> Select All</button>
+                <span class="selection-count" id="selectionCount">0 selected</span>
+              </div>
+              <div class="selection-actions">
+                <button id="shareSelectedBtn" class="primary" disabled><i class="fas fa-share-alt"></i> Share</button>
+                <button id="deleteSelectedBtn" class="danger" disabled><i class="fas fa-trash-alt"></i> Delete</button>
+                <button id="clearSelectionBtn" class="outline" disabled><i class="fas fa-times"></i> Clear</button>
+              </div>
+            </div>
+            
+            <div class="files-list" id="filesContainer">${filesHtml}</div>
+            
+            <div class="stats-container">
+              <div class="stat-item"><i class="fas fa-weight-hanging"></i> ${MAX_MB} MB max</div>
+              <div class="stat-item"><i class="fas fa-hourglass-half"></i> 4h auto-delete</div>
+              <div class="stat-item"><i class="fas fa-layer-group"></i> Multi-file</div>
+              <div class="stat-item"><i class="fas fa-database"></i> Persistent</div>
+            </div>
+          </div>
+        </div>`;
+      
+      document.getElementById('app').innerHTML = mainHtml;
+      attachEvents(userFiles);
+    }
+
+    function attachEvents(userFiles) {
+      // Individual file checkboxes
+      document.querySelectorAll('.file-checkbox-input').forEach(cb => {
+        cb.onchange = () => {
+          const fid = cb.dataset.fileId;
+          if (cb.checked) selectedFileIds.add(fid);
+          else selectedFileIds.delete(fid);
+          updateSelectionUI();
+        };
+      });
+      
+      // Single delete buttons
+      document.querySelectorAll('.single-delete-btn').forEach(btn => {
+        btn.onclick = async () => {
+          if (confirm('Delete this file permanently?')) {
+            await deleteFileFromDB(btn.dataset.id);
+            selectedFileIds.delete(btn.dataset.id);
+            await renderMainApp();
+            showToast('File deleted');
+          }
+        };
+      });
+      
+      // Single share buttons - NEW: individual file sharing
+      document.querySelectorAll('.share-single-btn').forEach(btn => {
+        btn.onclick = async () => {
+          const fileId = btn.dataset.id;
+          await shareSingleFile(fileId);
+        };
+      });
+      
+      // Selection toolbar buttons
+      const selectAllBtn = document.getElementById('selectAllBtn');
+      const shareBtn = document.getElementById('shareSelectedBtn');
+      const deleteBtn = document.getElementById('deleteSelectedBtn');
+      const clearBtn = document.getElementById('clearSelectionBtn');
+      
+      if (selectAllBtn) selectAllBtn.onclick = () => selectAllFiles();
+      if (shareBtn) shareBtn.onclick = shareSelectedFiles;
+      if (deleteBtn) deleteBtn.onclick = deleteSelectedFiles;
+      if (clearBtn) clearBtn.onclick = clearSelection;
+      
+      // Drag & drop
+      const dropZone = document.getElementById('dropZone');
+      const fileInput = document.getElementById('fileInput');
+      if (dropZone) {
+        dropZone.onclick = () => fileInput?.click();
+        dropZone.ondragover = (e) => { e.preventDefault(); dropZone.style.borderColor = '#5f8a9c'; };
+        dropZone.ondragleave = () => { dropZone.style.borderColor = '#3a4548'; };
+        dropZone.ondrop = (e) => {
+          e.preventDefault();
+          dropZone.style.borderColor = '#3a4548';
+          if (e.dataTransfer.files.length) addFiles(Array.from(e.dataTransfer.files));
+        };
+      }
+      
+      if (fileInput) {
+        fileInput.onchange = (e) => { if (e.target.files.length) addFiles(Array.from(e.target.files)); e.target.value = ''; };
+      }
+      
+      document.getElementById('uploadButton')?.addEventListener('click', handleUpload);
+      document.getElementById('clearFilesBtn')?.addEventListener('click', () => { selectedFilesToUpload = []; renderMainApp(); });
+      
+      document.getElementById('authButton')?.addEventListener('click', async () => {
+        if (isGuest()) {
+          const name = prompt('Enter username (pro mode, unlimited files)');
+          if (name?.trim()) {
+            currentUser = { name: name.trim(), role: 'authenticated', id: generateUserId(name.trim()), createdAt: Date.now() };
+            saveUser();
+            selectedFileIds.clear();
+            await renderMainApp();
+            showToast(`Welcome ${currentUser.name} — unlimited storage!`);
+          }
         } else {
-          showToast('File unavailable or expired');
+          const guestId = 'guest_' + Math.random().toString(36).substring(2, 10);
+          currentUser = { name: 'guest', role: 'guest', id: guestId, createdAt: Date.now() };
+          saveUser();
+          selectedFileIds.clear();
+          await renderMainApp();
+          showToast('Switched to guest mode');
         }
-        history.replaceState({}, '', window.location.pathname);
-      }
+      });
+      
+      document.querySelectorAll('.remove-file-btn').forEach(btn => {
+        btn.onclick = () => { removeSelectedUpload(parseInt(btn.dataset.idx)); };
+      });
+      
+      updateSelectionUI();
     }
 
-    // Auto cleanup interval
-    setInterval(() => {
-      cleanExpired();
-      render();
-    }, 45000);
-
-    // Initialization
-    loadFiles();
-    loadUser();
-    if (!user || !user.name) {
-      user = { name: 'guest', role: 'guest' };
-      saveUser();
+    async function handleRouting() {
+      const share = new URLSearchParams(location.search).get('share');
+      if (share) { await renderDownloadPage(share); return true; }
+      return false;
     }
-    render();
-    setTimeout(() => handleDownloadParam(), 150);
-    resetProgressUI();
+
+    async function init() {
+      await initDB();
+      loadUser();
+      if (!await handleRouting()) await renderMainApp();
+      setInterval(async () => { if (!location.search.includes('share')) await renderMainApp(); }, 60000);
+    }
+    init();
   })();
 </script>
 </body>
